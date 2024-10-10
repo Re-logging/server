@@ -31,6 +31,11 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    // 스웨거
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+    // 크롤링
+    implementation("org.jsoup:jsoup:1.17.1")
 }
 
 kotlin {
