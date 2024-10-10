@@ -42,3 +42,7 @@ kotlin {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.named("compileKotlin") {
+    dependsOn("ktlintFormat")
+}
