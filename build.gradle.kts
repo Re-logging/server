@@ -58,6 +58,6 @@ spotless {
         targetExclude("**/build/**/*.kt")
         trimTrailingWhitespace()
         endWithNewline()
-        ktlint()
+        ktfmt()
     }
 }
