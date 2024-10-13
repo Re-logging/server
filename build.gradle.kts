@@ -3,7 +3,7 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     id("org.springframework.boot") version "3.3.4"
     id("io.spring.dependency-management") version "1.1.6"
-    id("org.jlleitschuh.gradle.ktlint") version "11.3.2"
+    id("com.diffplug.spotless") version "6.23.3"
     kotlin("plugin.jpa") version "1.9.25"
 }
 
@@ -49,5 +49,15 @@ tasks.withType<Test> {
 }
 
 tasks.named("compileKotlin") {
-    dependsOn("ktlintFormat")
+    dependsOn("spotlessApply")
+}
+
+spotless {
+    kotlin {
+        target("**/*.kt")
+        targetExclude("**/build/**/*.kt")
+        trimTrailingWhitespace()
+        endWithNewline()
+        ktfmt().kotlinlangStyle()
+    }
 }
