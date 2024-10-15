@@ -1,8 +1,6 @@
 name: develop branch CI
 
 on:
- push:
-   branches: [ "develop", release-** ]
  pull_request:
    branches: [ "develop", release-** ]
    types: [ "opened", "reopened", "synchronize", "closed" ]
