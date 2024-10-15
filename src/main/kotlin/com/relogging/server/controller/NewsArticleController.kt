@@ -1,6 +1,7 @@
 package com.relogging.server.controller
 
 import com.relogging.server.dto.request.NewsArticleRequest
+import com.relogging.server.dto.response.NewsArticleListResponse
 import com.relogging.server.dto.response.NewsArticleResponse
 import com.relogging.server.service.newsArticle.NewsArticleService
 import io.swagger.v3.oas.annotations.Operation
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
@@ -44,6 +46,15 @@ class NewsArticleController(
         @PathVariable id: Long,
     ): ResponseEntity<NewsArticleResponse> {
         val response: NewsArticleResponse = newsArticleService.getNewsArticle(id)
+        return ResponseEntity.ok(response)
+    }
+
+    @Operation(summary = "뉴스 아티클 리스트 조회하기")
+    @GetMapping("/list")
+    fun getNewsArticleList(
+        @RequestParam(defaultValue = "0", required = false) page: Int,
+    ): ResponseEntity<NewsArticleListResponse> {
+        val response: NewsArticleListResponse = newsArticleService.getNewsArticlePage(page)
         return ResponseEntity.ok(response)
     }
 

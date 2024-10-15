@@ -12,7 +12,7 @@ data class NewsArticleRequest(
     val aiSummary: String?,
     val source: String?,
     val author: String?,
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @field:JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val publishedAt: LocalDateTime?,
     val imageList: List<ImageRequest> = emptyList(),
 )
