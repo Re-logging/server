@@ -15,7 +15,7 @@ class GlobalExceptionAdvice {
                 e.globalErrorCode.errorCode,
                 e.globalErrorCode.message,
             ),
-            e.globalErrorCode.status
+            e.globalErrorCode.status,
         )
     }
 }

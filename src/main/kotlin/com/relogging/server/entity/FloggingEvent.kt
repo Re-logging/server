@@ -1,6 +1,13 @@
 package com.relogging.server.entity
 
-import jakarta.persistence.*
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.OneToMany
+import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
@@ -19,7 +26,8 @@ class FloggingEvent(
     val isVolunteerWork: Boolean,
     val organizerName: String,
     val region: String,
-    @field:Column(columnDefinition = "BIGINT DEFAULT 0") private var hits: Long = 0,
+    @field:Column(columnDefinition = "BIGINT DEFAULT 0")
+    var hits: Long = 0,
     @field:OneToMany(mappedBy = "floggingEvent", cascade = [CascadeType.ALL])
-    var imageList: List<Image> = ArrayList()
-) : BaseEntity() {}
+    var imageList: List<Image> = ArrayList(),
+) : BaseEntity()
