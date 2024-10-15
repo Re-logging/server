@@ -59,5 +59,6 @@ spotless {
         trimTrailingWhitespace()
         endWithNewline()
         ktfmt().kotlinlangStyle()
+        ktlint()
     }
 }

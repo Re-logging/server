@@ -1,8 +1,8 @@
 package com.relogging.server.global.exception
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import java.time.LocalDateTime
 import org.springframework.http.HttpStatus
+import java.time.LocalDateTime
 
 class ErrorResponse(
     @JsonFormat(
