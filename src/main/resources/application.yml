@@ -24,3 +24,7 @@ spring:
 
 image-dir:
   news-article: ${NEWS_ARTICLE_IMAGE_DIR}
+
+  ai:
+    openai:
+      api-key: ${OPEN_AI_KEY}
