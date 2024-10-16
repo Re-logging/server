@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import java.util.Date
+import java.time.LocalDateTime
 import kotlin.collections.ArrayList
 
 @Entity
@@ -21,11 +21,12 @@ class NewsArticle(
     @field:Column(nullable = false)
     var title: String,
     var content: String,
-    var aiSummary: String,
-    var source: String,
-    var author: String,
-    var publishedDate: Date,
-    @field:Column(columnDefinition = "BIGINT DEFAULT 0") var hits: Long = 0,
+    var aiSummary: String?,
+    var source: String?,
+    var author: String?,
+    var publishedAt: LocalDateTime?,
+    @field:Column(columnDefinition = "BIGINT DEFAULT 0")
+    var hits: Long = 0,
     @field:OneToMany(mappedBy = "newsArticle", cascade = [CascadeType.ALL])
     var imageList: List<Image> = ArrayList(),
 ) : BaseEntity()

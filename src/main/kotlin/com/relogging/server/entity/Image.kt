@@ -20,7 +20,8 @@ class Image(
     @field:Column(nullable = false)
     var url: String,
     var caption: String? = null,
-    var orderIndex: Int? = null,
+    @field:Column(nullable = false)
+    var orderIndex: Int,
     @field:ManyToOne(fetch = FetchType.LAZY, targetEntity = FloggingEvent::class)
     @field:JoinColumn(name = "floggingEventId")
     var floggingEvent: FloggingEvent? = null,
