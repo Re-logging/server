@@ -8,7 +8,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import java.time.LocalDateTime
+import java.time.LocalDate
 import kotlin.collections.ArrayList
 
 @Entity
@@ -24,7 +24,7 @@ class NewsArticle(
     var aiSummary: String?,
     var source: String?,
     var author: String?,
-    var publishedAt: LocalDateTime?,
+    var publishedAt: LocalDate?,
     @field:Column(columnDefinition = "BIGINT DEFAULT 0")
     var hits: Long = 0,
     @field:OneToMany(mappedBy = "newsArticle", cascade = [CascadeType.ALL])

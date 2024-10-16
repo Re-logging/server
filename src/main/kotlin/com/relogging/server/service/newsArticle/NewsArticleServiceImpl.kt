@@ -10,6 +10,7 @@ import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.repository.NewsArticleRepository
 import com.relogging.server.service.image.ImageService
+import com.relogging.server.service.openai.OpenAiService
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -21,18 +22,17 @@ import org.springframework.web.multipart.MultipartFile
 class NewsArticleServiceImpl(
     private val newsArticleRepository: NewsArticleRepository,
     private val imageService: ImageService,
+    private val openAiService: OpenAiService,
 ) : NewsArticleService {
     @Transactional
     override fun createNewsArticle(
         request: NewsArticleRequest,
-        imageList: List<MultipartFile>,
+        image: MultipartFile,
     ): NewsArticleResponse {
         val newsArticle = NewsArticleConvertor.toEntity(request)
-        newsArticle.imageList =
-            request.imageList.zip(imageList).map { (imageRequest, file) ->
-                val savedFilePath = imageService.saveImageFile(file)
-                ImageConvertor.toEntity(imageRequest, savedFilePath, newsArticle)
-            }
+        val savedFilePath = imageService.saveImageFile(image)
+        newsArticle.imageList += ImageConvertor.toEntity(savedFilePath, request.imageCaption, newsArticle)
+        newsArticle.aiSummary = openAiService.aiSummary(newsArticle.content)
         val savedArticle = newsArticleRepository.save(newsArticle)
         return NewsArticleConvertor.toResponse(savedArticle)
     }

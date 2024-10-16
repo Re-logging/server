@@ -1,6 +1,6 @@
 package com.relogging.server.dto.response
 
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 data class NewsArticleResponse(
     val id: Long,
@@ -9,15 +9,15 @@ data class NewsArticleResponse(
     val aiSummary: String?,
     val source: String?,
     val author: String?,
-    val publishedAt: LocalDateTime?,
+    val publishedAt: LocalDate?,
     val hits: Long,
-    val imageList: List<ImageResponse>,
+    val imageCaption: String?,
 )
 
 data class NewsArticleSimpleResponse(
     val id: Long,
     val title: String,
-    val publishedAt: LocalDateTime?,
+    val publishedAt: LocalDate?,
     val imagePath: String?,
 )
 
