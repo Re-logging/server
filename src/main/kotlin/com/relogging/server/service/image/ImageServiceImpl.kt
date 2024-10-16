@@ -9,10 +9,10 @@ import java.nio.file.Paths
 import java.util.UUID
 
 @Service
-class ImageServiceImpl : ImageService {
+class ImageServiceImpl(
     @Value("\${image-dir.news-article}")
-    private lateinit var uploadDir: String
-
+    private var uploadDir: String,
+) : ImageService {
     @Transactional
     override fun saveImageFile(file: MultipartFile): String {
         val fileName = UUID.randomUUID().toString() + "_" + file.originalFilename
