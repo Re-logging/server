@@ -1,5 +1,6 @@
 package com.relogging.server.service.image
 
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -12,6 +13,7 @@ class ImageServiceImpl : ImageService {
     @Value("\${image-dir.news-article}")
     private lateinit var uploadDir: String
 
+    @Transactional
     override fun saveImageFile(file: MultipartFile): String {
         val fileName = UUID.randomUUID().toString() + "_" + file.originalFilename
         val filePath = Paths.get(uploadDir, fileName)
