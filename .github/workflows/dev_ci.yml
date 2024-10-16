@@ -35,6 +35,8 @@ jobs:
       DATASOURCE_URL: ${{ secrets.LOCAL_DATASOURCE_URL }}
       DATASOURCE_USERNAME: ${{ secrets.LOCAL_DATASOURCE_USERNAME }}
       DATASOURCE_PASSWORD: ${{ secrets.LOCAL_DATASOURCE_PASSWORD }}
+      NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
+      OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
       
 
     steps:
