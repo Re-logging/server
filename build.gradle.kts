@@ -18,6 +18,8 @@ java {
 
 repositories {
     mavenCentral()
+    // AI
+    maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 dependencies {
@@ -37,6 +39,8 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
     // 크롤링
     implementation("org.jsoup:jsoup:1.17.1")
+    // AI
+    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-SNAPSHOT")
 }
 
 kotlin {
