@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile
 interface NewsArticleService {
     fun createNewsArticle(
         request: NewsArticleRequest,
-        imageList: List<MultipartFile>,
+        image: MultipartFile,
     ): NewsArticleResponse
 
     fun getNewsArticle(id: Long): NewsArticleResponse

@@ -28,7 +28,7 @@ object NewsArticleConvertor {
             author = newsArticle.author,
             publishedAt = newsArticle.publishedAt,
             hits = newsArticle.hits,
-            imageList = newsArticle.imageList.map { ImageConvertor.toResponse(it) },
+            imageCaption = newsArticle.imageList.getOrNull(0)?.caption,
         )
 
     private fun toSimpleResponse(response: NewsArticle): NewsArticleSimpleResponse =

@@ -25,18 +25,13 @@ import org.springframework.web.multipart.MultipartFile
 class NewsArticleController(
     private val newsArticleService: NewsArticleService,
 ) {
-    @Operation(
-        summary = "뉴스 아티클 생성하기",
-        description =
-            "이미지와 캡션 순서를 맞춰주세요. publishedAt은 LocalDateTime 표준 형식입니다." +
-                " request 부분은 application/json 명시해주어야 합니다. 스웨거에서는 작동하지 않습니다.",
-    )
+    @Operation(summary = "뉴스 아티클 생성하기")
     @PostMapping("/", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createArticle(
         @RequestPart request: @Valid NewsArticleRequest,
-        @RequestPart(value = "image") imageList: List<MultipartFile> = emptyList(),
+        @RequestPart(value = "image") image: MultipartFile,
     ): ResponseEntity<NewsArticleResponse> {
-        val response: NewsArticleResponse = newsArticleService.createNewsArticle(request, imageList)
+        val response: NewsArticleResponse = newsArticleService.createNewsArticle(request, image)
         return ResponseEntity.ok(response)
     }
 
