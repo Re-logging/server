@@ -37,6 +37,16 @@ class NewsArticleServiceImpl(
         return NewsArticleConvertor.toResponse(savedArticle)
     }
 
+    @Transactional
+    override fun saveNewsArticles(newsArticles: List<NewsArticle>) {
+        newsArticleRepository.saveAll(newsArticles)
+    }
+
+    @Transactional(readOnly = true)
+    override fun findAllTitles(): List<String> {
+        return newsArticleRepository.findAllTitles() // 제목만 가져오는 쿼리
+    }
+
     @Transactional(readOnly = true)
     override fun getNewsArticle(id: Long): NewsArticleResponse = NewsArticleConvertor.toResponse(getNewsArticleById(id))
 

@@ -1,6 +1,8 @@
 package com.relogging.server.controller
 
+import com.relogging.server.service.CrawlingService
 import com.relogging.server.service.image.ImageService
+import com.relogging.server.service.newsArticle.NewsArticleService
 import com.relogging.server.service.openai.OpenAiService
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
@@ -18,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile
 class TestController(
     private val imageService: ImageService,
     private val openAiService: OpenAiService,
+    private val crawlingService: CrawlingService,
+    private val newsArticleService: NewsArticleService,
 ) {
     @PostMapping("/image", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createArticle(
@@ -28,4 +32,10 @@ class TestController(
     fun aiSummary(
         @RequestBody content: String,
     ): ResponseEntity<String> = ResponseEntity.ok(openAiService.aiSummary(content))
+
+    @PostMapping("/crawl")
+    fun startCrawling(): ResponseEntity<String> {
+        crawlingService.crawlAndSaveNewsArticles()
+        return ResponseEntity.ok("크롤링을 성공적으로 시작했습니다")
+    }
 }
