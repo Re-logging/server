@@ -14,9 +14,9 @@ class GlobalExceptionAdvice {
     fun handleCommonException(e: GlobalException): ResponseEntity<ErrorResponse> =
         ResponseEntity<ErrorResponse>(
             ErrorResponse(
-                e.globalErrorCode.status,
-                e.globalErrorCode.errorCode,
-                e.globalErrorCode.message,
+                status = e.globalErrorCode.status.value(),
+                error = e.globalErrorCode.errorCode,
+                message = e.globalErrorCode.message,
             ),
             e.globalErrorCode.status,
         )
@@ -32,11 +32,28 @@ class GlobalExceptionAdvice {
 
         return ResponseEntity(
             ErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                "VALIDATION_FAILED",
-                errorMessage,
+                status = HttpStatus.BAD_REQUEST.value(),
+                error = "VALIDATION_FAILED",
+                message = errorMessage,
             ),
             HttpStatus.BAD_REQUEST,
         )
+    }
+
+    @ExceptionHandler(Throwable::class)
+    fun handleAllExceptions(ex: Throwable): ResponseEntity<ErrorResponse> {
+        val status =
+            when (ex) {
+                is IllegalArgumentException -> HttpStatus.BAD_REQUEST
+                is NullPointerException -> HttpStatus.INTERNAL_SERVER_ERROR
+                else -> HttpStatus.INTERNAL_SERVER_ERROR
+            }
+        val errorResponse =
+            ErrorResponse(
+                status = status.value(),
+                error = status.reasonPhrase,
+                message = ex.message ?: "An unexpected error occurred",
+            )
+        return ResponseEntity(errorResponse, status)
     }
 }

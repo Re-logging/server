@@ -43,16 +43,17 @@ class NewsArticleServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun findAllTitles(): List<String> {
-        return newsArticleRepository.findAllTitles() // 제목만 가져오는 쿼리
-    }
+    override fun findAllTitles(): List<String> = newsArticleRepository.findAllTitles()
 
     @Transactional(readOnly = true)
     override fun getNewsArticle(id: Long): NewsArticleResponse = NewsArticleConvertor.toResponse(getNewsArticleById(id))
 
     @Transactional(readOnly = true)
-    override fun getNewsArticlePage(page: Int): NewsArticleListResponse {
-        val pageable: Pageable = PageRequest.of(page, 9)
+    override fun getNewsArticlePage(
+        page: Int,
+        pageSize: Int,
+    ): NewsArticleListResponse {
+        val pageable: Pageable = PageRequest.of(page, pageSize)
         val newsArticlePage: Page<NewsArticle> = newsArticleRepository.findAll(pageable)
         return NewsArticleConvertor.toResponse(newsArticlePage)
     }

@@ -18,7 +18,10 @@ interface NewsArticleService {
 
     fun getNewsArticle(id: Long): NewsArticleResponse
 
-    fun getNewsArticlePage(page: Int): NewsArticleListResponse
+    fun getNewsArticlePage(
+        page: Int,
+        pageSize: Int,
+    ): NewsArticleListResponse
 
     fun deleteNewsArticle(id: Long)
 }

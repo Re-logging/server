@@ -48,8 +48,9 @@ class NewsArticleController(
     @GetMapping("/list")
     fun getNewsArticleList(
         @RequestParam(defaultValue = "0", required = false) page: Int,
+        @RequestParam(defaultValue = "9", required = false) pageSize: Int,
     ): ResponseEntity<NewsArticleListResponse> {
-        val response: NewsArticleListResponse = newsArticleService.getNewsArticlePage(page)
+        val response: NewsArticleListResponse = newsArticleService.getNewsArticlePage(page, pageSize)
         return ResponseEntity.ok(response)
     }
 
