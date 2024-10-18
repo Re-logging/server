@@ -34,5 +34,5 @@ class PloggingEvent(
     val managerName: String,
     val phoneNumber: String,
     val participationTarget: String,
-    val volunteerScore: String
+    val volunteerScore: String,
 ) : BaseEntity()

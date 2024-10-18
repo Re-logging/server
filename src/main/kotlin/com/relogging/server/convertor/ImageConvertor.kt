@@ -17,15 +17,13 @@ object ImageConvertor {
             newsArticle = article,
         )
 
-    fun toResponse(
-        image: Image?
-    ): ImageResponse? {
+    fun toResponse(image: Image?): ImageResponse? {
         return image?.let {
             ImageResponse(
                 id = it.id!!,
                 url = it.url,
                 caption = it.caption,
-                orderIndex = it.orderIndex
+                orderIndex = it.orderIndex,
             )
         }
     }

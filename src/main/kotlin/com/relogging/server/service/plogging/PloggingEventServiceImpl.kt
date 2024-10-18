@@ -14,13 +14,14 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PloggingEventServiceImpl(
-    private val ploggingEventRepository: PloggingEventRepository
+    private val ploggingEventRepository: PloggingEventRepository,
 ) : PloggingEventService {
     @Transactional(readOnly = true)
     override fun getPloggingEvent(id: Long): PloggingEventResponse {
-        val findEvent: PloggingEvent = this.ploggingEventRepository.findById(id).orElseThrow {
-            throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND)
-        }
+        val findEvent: PloggingEvent =
+            this.ploggingEventRepository.findById(id).orElseThrow {
+                throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND)
+            }
         return PloggingEventConvertor.toResponse(findEvent)
     }
 

@@ -29,7 +29,9 @@ class PloggingEventController(
 
     @Operation(summary = "플로깅 행사 조회하기")
     @GetMapping("/{id}")
-    fun getPloggingEvent(@PathVariable id: Long): ResponseEntity<PloggingEventResponse> {
+    fun getPloggingEvent(
+        @PathVariable id: Long,
+    ): ResponseEntity<PloggingEventResponse> {
         val response: PloggingEventResponse = this.ploggingEventService.getPloggingEvent(id)
         return ResponseEntity.ok(response)
     }

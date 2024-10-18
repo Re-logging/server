@@ -16,7 +16,7 @@ data class PloggingEventResponse(
     val phoneNumber: String,
     val participationTarget: String,
     val volunteerScore: String,
-    val imageList: List<ImageResponse>
+    val imageList: List<ImageResponse>,
 )
 
 data class PloggingEventListResponse(
@@ -27,5 +27,5 @@ data class PloggingEventListResponse(
     val hits: Long,
     val image: ImageResponse?,
     val startDate: LocalDateTime,
-    val endDate: LocalDateTime
+    val endDate: LocalDateTime,
 )

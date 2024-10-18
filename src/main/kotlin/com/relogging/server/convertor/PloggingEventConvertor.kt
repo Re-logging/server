@@ -14,7 +14,7 @@ object PloggingEventConvertor {
             hits = ploggingEvent.hits,
             image = ImageConvertor.toResponse(ploggingEvent.imageList.getOrNull(0)),
             startDate = ploggingEvent.startDate,
-            endDate = ploggingEvent.endDate
+            endDate = ploggingEvent.endDate,
         )
 
     fun toResponse(ploggingEvent: PloggingEvent): PloggingEventResponse =
@@ -32,6 +32,6 @@ object PloggingEventConvertor {
             phoneNumber = ploggingEvent.phoneNumber,
             participationTarget = ploggingEvent.participationTarget,
             volunteerScore = ploggingEvent.volunteerScore,
-            imageList = ploggingEvent.imageList.mapNotNull { entity -> ImageConvertor.toResponse(entity) }  // 이미지 리스트 변환
+            imageList = ploggingEvent.imageList.mapNotNull { entity -> ImageConvertor.toResponse(entity) },
         )
 }
