@@ -13,6 +13,7 @@ class PloggingEvent(
     val title: String,
     val content: String,
     val startDate: LocalDateTime,
+    val endDate: LocalDateTime,
     val location: String,
     val participantLimit: Int,
     val currentParticipants: Int,
@@ -23,4 +24,6 @@ class PloggingEvent(
     var hits: Long = 0,
     @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL])
     var imageList: List<Image> = ArrayList(),
+    val manager: String,
+    val phoneNumber: String,
 ) : BaseEntity()
