@@ -31,6 +31,8 @@ class PloggingEvent(
     var hits: Long = 0,
     @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL])
     var imageList: List<Image> = ArrayList(),
-    val manager: String,
+    val managerName: String,
     val phoneNumber: String,
+    val participationTarget: String,
+    val volunteerScore: String
 ) : BaseEntity()
