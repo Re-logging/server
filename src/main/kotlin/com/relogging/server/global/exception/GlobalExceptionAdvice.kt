@@ -39,21 +39,4 @@ class GlobalExceptionAdvice {
             HttpStatus.BAD_REQUEST,
         )
     }
-
-    @ExceptionHandler(Throwable::class)
-    fun handleAllExceptions(ex: Throwable): ResponseEntity<ErrorResponse> {
-        val status =
-            when (ex) {
-                is IllegalArgumentException -> HttpStatus.BAD_REQUEST
-                is NullPointerException -> HttpStatus.INTERNAL_SERVER_ERROR
-                else -> HttpStatus.INTERNAL_SERVER_ERROR
-            }
-        val errorResponse =
-            ErrorResponse(
-                status = status.value(),
-                error = status.reasonPhrase,
-                message = ex.message ?: "An unexpected error occurred",
-            )
-        return ResponseEntity(errorResponse, status)
-    }
 }
