@@ -17,6 +17,7 @@ data class NewsArticleResponse(
 data class NewsArticleSimpleResponse(
     val id: Long,
     val title: String,
+    val aiSummary: String?,
     val publishedAt: LocalDate?,
     val imagePath: String?,
 )
