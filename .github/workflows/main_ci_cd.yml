@@ -117,6 +117,15 @@ jobs:
           password: ${{ secrets.PROD_SERVER_PASSWORD }}
           debug: true
           script: |
+            rm .env
+            touch .env
+            echo "MYSQL_DATABASE=${{ secrets.PROD_MYSQL_DATABASE }}" >> .env
+            echo "MYSQL_ROOT_PASSWORD=${{ secrets.PROD_MYSQL_ROOT_PASSWORD }}" >> .env
+            echo "DATASOURCE_URL=${{ secrets.PROD_DATASOURCE_URL }}" >> .env
+            echo "DATASOURCE_USERNAME=${{ secrets.PROD_DATASOURCE_USERNAME }}" >> .env
+            echo "DATASOURCE_PASSWORD=${{ secrets.PROD_DATASOURCE_PASSWORD }}" >> .env
+            echo "NEWS_ARTICLE_IMAGE_DIR=${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}" >> .env
+            echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
             docker stop ${{ secrets.CONTAINER_NAME }}
             docker rm ${{ secrets.CONTAINER_NAME }}
