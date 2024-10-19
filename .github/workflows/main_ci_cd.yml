@@ -129,7 +129,7 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
             docker stop ${{ secrets.CONTAINER_NAME }}
             docker rm ${{ secrets.CONTAINER_NAME }}
-            docker run --name=${{ secrets.CONTAINER_NAME }} -d -p 8083:8080 -v $HOME/logs:/logs ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
+            docker run --name=${{ secrets.CONTAINER_NAME }} -d -p 8083:8080 -v $HOME/logs:/logs --env-file ./.env ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
             docker container prune -f
             docker image prune -f
 
