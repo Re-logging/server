@@ -21,30 +21,66 @@ class NewsArticleCrawlingServiceImpl(
         val newsArticleList = mutableListOf<NewsArticle>()
         newsArticleList.addAll(crawlEconomyNews())
         newsArticleList.addAll(crawlESGEconomy())
+        newsArticleList.map { it.aiSummary = aiService.aiSummary(it.content) }
         newsArticleService.saveNewsArticles(newsArticleList)
     }
 
-    private fun crawlEconomyNews(): List<NewsArticle> {
-        val baseUrl = "https://www.hkbs.co.kr/"
+    private fun crawlEconomyNews(): List<NewsArticle> =
+        crawlNewsArticle(
+            baseUrl = "https://www.hkbs.co.kr/",
+            existingTitles = newsArticleService.findAllTitles().toSet(),
+            pageSize = 9,
+            titleSelector = "#skin-15 > div:nth-child(\$page) > a > strong",
+            searchUrlSelector = "#skin-15 > div:nth-child(\$page) > a",
+            contentSelector = "article#article-view-content-div p",
+            authorSelector = "div.account strong.name",
+            publishedSelector = "#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2)",
+            imageSelector = "article#article-view-content-div img",
+            imageCaptionSelector = "article#article-view-content-div img",
+        )
+
+    private fun crawlESGEconomy(): List<NewsArticle> =
+        crawlNewsArticle(
+            baseUrl = "https://www.esgeconomy.com/",
+            existingTitles = newsArticleService.findAllTitles().toSet(),
+            pageSize = 12,
+            titleSelector = "#skin-12 > div:nth-child(\$page) > div > a > strong",
+            searchUrlSelector = "#skin-12 > div:nth-child(\$page) > div > a",
+            contentSelector = "#article-view-content-div p",
+            authorSelector = "#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(1)",
+            publishedSelector = "#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2)",
+            imageSelector = "#article-view-content-div > div:nth-child(1) > figure > div > img",
+            imageCaptionSelector = "#article-view-content-div > div:nth-child(1) > figure > div > img",
+        )
+
+    private fun crawlNewsArticle(
+        baseUrl: String,
+        existingTitles: Set<String>,
+        pageSize: Int,
+        titleSelector: String,
+        searchUrlSelector: String,
+        contentSelector: String,
+        authorSelector: String,
+        publishedSelector: String,
+        imageSelector: String,
+        imageCaptionSelector: String,
+    ): List<NewsArticle> {
         val rootDoc = Jsoup.connect(baseUrl).get()
         val newsArticleList = mutableListOf<NewsArticle>()
-        val existingTitles = newsArticleService.findAllTitles().toSet()
 
-        for (page in 1..10) {
-            val title = rootDoc.select("#skin-15 > div:nth-child($page) > a > strong").text().trim()
+        for (page in 1..pageSize) {
+            val title = rootDoc.select(titleSelector.replace("\$page", "$page")).text().trim()
             if (title in existingTitles) {
                 continue // 중복 크롤링 방지
             }
-
-            val searchUrl = baseUrl + rootDoc.select("#skin-15 > div:nth-child($page) > a").attr("href")
+            val searchUrl = baseUrl + rootDoc.select(searchUrlSelector.replace("\$page", "$page")).attr("href")
             val doc = Jsoup.connect(searchUrl).get()
-
-            val content = doc.select("article#article-view-content-div p").joinToString("\n") { it.text() }
-            val author = doc.select("div.account strong.name").text().trim()
+            val content = doc.select(contentSelector).joinToString("\n") { it.text() }
+            val author = doc.select(authorSelector).text().trim()
             val publishedAt =
                 LocalDate.parse(
                     doc
-                        .select("#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2)")
+                        .select(publishedSelector)
                         .text()
                         .substring(3, 13),
                     dateFormatter,
@@ -58,8 +94,8 @@ class NewsArticleCrawlingServiceImpl(
                     publishedAt = publishedAt,
                     aiSummary = null,
                 )
-            val imageUrl = doc.select("article#article-view-content-div img").attr("src").trim()
-            val imageCaption = doc.select("article#article-view-content-div img").attr("alt").trim()
+            val imageUrl = doc.select(imageSelector).attr("src").trim()
+            val imageCaption = doc.select(imageCaptionSelector).attr("alt").trim()
             if (imageUrl.isNotEmpty()) {
                 val image =
                     Image(
@@ -70,65 +106,6 @@ class NewsArticleCrawlingServiceImpl(
                     )
                 newsArticle.imageList = listOf(image)
             }
-            newsArticle.aiSummary = aiService.aiSummary(newsArticle.content)
-            newsArticleList.add(newsArticle)
-        }
-        return newsArticleList
-    }
-
-    private fun crawlESGEconomy(): List<NewsArticle> {
-        val baseUrl = "https://www.esgeconomy.com/"
-        val rootDoc = Jsoup.connect(baseUrl).get()
-        val newsArticleList = mutableListOf<NewsArticle>()
-        val existingTitles = newsArticleService.findAllTitles().toSet()
-
-        for (page in 1..12) {
-            val title = rootDoc.select("#skin-12 > div:nth-child($page) > div > a > strong").text().trim()
-            if (title in existingTitles) {
-                continue // 중복 크롤링 방지
-            }
-            val searchUrl = baseUrl + rootDoc.select("#skin-12 > div:nth-child($page) > div > a").attr("href")
-            val doc = Jsoup.connect(searchUrl).get()
-            val content = doc.select("#article-view-content-div").joinToString("\n") { it.text() }
-            val author = doc.select("#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(1)").text().trim()
-
-            println(
-                doc
-                    .select("#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2)")
-                    .text() +
-                    "\n" + "$searchUrl",
-            )
-
-            val publishedAt =
-                LocalDate.parse(
-                    doc
-                        .select("#article-view > div > header > div > article:nth-child(1) > ul > li:nth-child(2)")
-                        .text()
-                        .substring(3, 13),
-                    dateFormatter,
-                )
-            val newsArticle =
-                NewsArticle(
-                    title = title,
-                    content = content,
-                    source = searchUrl,
-                    author = author,
-                    publishedAt = publishedAt,
-                    aiSummary = null,
-                )
-            val imageUrl = doc.select("#article-view-content-div > div:nth-child(1) > figure > div > img").attr("src").trim()
-            val imageCaption = doc.select("#article-view-content-div > div:nth-child(1) > figure > div > img").attr("alt").trim()
-            if (imageUrl.isNotEmpty()) {
-                val image =
-                    Image(
-                        url = imageUrl,
-                        caption = imageCaption,
-                        orderIndex = 0,
-                        newsArticle = newsArticle,
-                    )
-                newsArticle.imageList = listOf(image)
-            }
-            newsArticle.aiSummary = aiService.aiSummary(newsArticle.content)
             newsArticleList.add(newsArticle)
         }
         return newsArticleList
