@@ -105,7 +105,7 @@ jobs:
           touch .env
           echo "MYSQL_DATABASE=${{ secrets.LOCAL_MYSQL_DATABASE }}" >> .env
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.LOCAL_MYSQL_ROOT_PASSWORD }}" >> .env
-          echo "DATASOURCE_URL=${{ secrets.LOCAL_DATASOURCE_URL }}" >> .env
+          echo "DATASOURCE_URL=${{ secrets.DEV_DATASOURCE_URL }}" >> .env
           echo "DATASOURCE_USERNAME=${{ secrets.LOCAL_DATASOURCE_USERNAME }}" >> .env
           echo "DATASOURCE_PASSWORD=${{ secrets.LOCAL_DATASOURCE_PASSWORD }}" >> .env
           echo "NEWS_ARTICLE_IMAGE_DIR=${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}" >> .env
