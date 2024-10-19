@@ -14,9 +14,9 @@ class GlobalExceptionAdvice {
     fun handleCommonException(e: GlobalException): ResponseEntity<ErrorResponse> =
         ResponseEntity<ErrorResponse>(
             ErrorResponse(
-                e.globalErrorCode.status,
-                e.globalErrorCode.errorCode,
-                e.globalErrorCode.message,
+                status = e.globalErrorCode.status.value(),
+                error = e.globalErrorCode.errorCode,
+                message = e.globalErrorCode.message,
             ),
             e.globalErrorCode.status,
         )
@@ -32,9 +32,9 @@ class GlobalExceptionAdvice {
 
         return ResponseEntity(
             ErrorResponse(
-                HttpStatus.BAD_REQUEST,
-                "VALIDATION_FAILED",
-                errorMessage,
+                status = HttpStatus.BAD_REQUEST.value(),
+                error = "VALIDATION_FAILED",
+                message = errorMessage,
             ),
             HttpStatus.BAD_REQUEST,
         )

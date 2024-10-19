@@ -37,12 +37,23 @@ class NewsArticleServiceImpl(
         return NewsArticleConvertor.toResponse(savedArticle)
     }
 
+    @Transactional
+    override fun saveNewsArticles(newsArticles: List<NewsArticle>) {
+        newsArticleRepository.saveAll(newsArticles)
+    }
+
+    @Transactional(readOnly = true)
+    override fun findAllTitles(): List<String> = newsArticleRepository.findAllTitles()
+
     @Transactional(readOnly = true)
     override fun getNewsArticle(id: Long): NewsArticleResponse = NewsArticleConvertor.toResponse(getNewsArticleById(id))
 
     @Transactional(readOnly = true)
-    override fun getNewsArticlePage(page: Int): NewsArticleListResponse {
-        val pageable: Pageable = PageRequest.of(page, 9)
+    override fun getNewsArticlePage(
+        page: Int,
+        pageSize: Int,
+    ): NewsArticleListResponse {
+        val pageable: Pageable = PageRequest.of(page, pageSize)
         val newsArticlePage: Page<NewsArticle> = newsArticleRepository.findAll(pageable)
         return NewsArticleConvertor.toResponse(newsArticlePage)
     }
