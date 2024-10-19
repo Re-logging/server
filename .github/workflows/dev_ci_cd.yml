@@ -62,7 +62,7 @@ jobs:
       run: ./gradlew test
 
   deploy-dev:
-    if: (github.ref == 'refs/heads/dev' || contains(github.ref, 'release')) && github.event.pull_request.merged == true
+    if: (github.ref == 'refs/heads/develop' || contains(github.ref, 'release')) && github.event.pull_request.merged == true
     needs: build
     runs-on: ubuntu-latest
 
