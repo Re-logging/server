@@ -22,9 +22,9 @@ class Image(
     var caption: String? = null,
     @field:Column(nullable = false)
     var orderIndex: Int,
-    @field:ManyToOne(fetch = FetchType.LAZY, targetEntity = FloggingEvent::class)
-    @field:JoinColumn(name = "floggingEventId")
-    var floggingEvent: FloggingEvent? = null,
+    @field:ManyToOne(fetch = FetchType.LAZY, targetEntity = PloggingEvent::class)
+    @field:JoinColumn(name = "ploggingEventId")
+    var ploggingEvent: PloggingEvent? = null,
     @field:ManyToOne(fetch = FetchType.LAZY)
     @field:JoinColumn(name = "newsArticleId")
     var newsArticle: NewsArticle? = null,

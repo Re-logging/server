@@ -31,18 +31,19 @@ object NewsArticleConvertor {
             imageCaption = newsArticle.imageList.getOrNull(0)?.caption,
         )
 
-    private fun toSimpleResponse(response: NewsArticle): NewsArticleSimpleResponse =
+    private fun toSimpleResponse(newsArticle: NewsArticle): NewsArticleSimpleResponse =
         NewsArticleSimpleResponse(
-            id = response.id!!,
-            title = response.title,
-            publishedAt = response.publishedAt,
-            imagePath = response.imageList.getOrNull(0)?.url,
+            id = newsArticle.id!!,
+            title = newsArticle.title,
+            aiSummary = newsArticle.aiSummary,
+            publishedAt = newsArticle.publishedAt,
+            imagePath = newsArticle.imageList.getOrNull(0)?.url,
         )
 
-    fun toResponse(response: Page<NewsArticle>): NewsArticleListResponse =
+    fun toResponse(newsArticles: Page<NewsArticle>): NewsArticleListResponse =
         NewsArticleListResponse(
-            totalElements = response.totalElements,
-            totalPage = response.totalPages,
-            newsArticleSimpleResponseList = response.content.map { toSimpleResponse(it) },
+            totalElements = newsArticles.totalElements,
+            totalPage = newsArticles.totalPages,
+            newsArticleSimpleResponseList = newsArticles.content.map { toSimpleResponse(it) },
         )
 }
