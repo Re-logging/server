@@ -113,6 +113,6 @@ jobs:
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_IMAGE }}
           docker stop ${{ secrets.CONTAINER_NAME }} 
           docker rm ${{ secrets.CONTAINER_NAME }}
-          docker run --name=${{ secrets.CONTAINER_NAME }} -d -p 8080:8080 -v $HOME/logs:/logs --env-file ./.env ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_IMAGE }}
+          docker run --name=${{ secrets.CONTAINER_NAME }} -d -p 8080:8080 -v $HOME/logs:/logs --env-file ./.env --network relogging_relogging ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_IMAGE }}
           docker container prune -f
           docker image prune -f
