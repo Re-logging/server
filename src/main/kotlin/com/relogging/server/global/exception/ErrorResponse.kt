@@ -1,7 +1,6 @@
 package com.relogging.server.global.exception
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import org.springframework.http.HttpStatus
 import java.time.LocalDateTime
 
 class ErrorResponse(
@@ -10,19 +9,8 @@ class ErrorResponse(
         pattern = "yyyy-MM-dd HH:mm:ss",
         timezone = "Asia/Seoul",
     )
-    val timestamp: LocalDateTime,
+    val timestamp: LocalDateTime = LocalDateTime.now(),
     val status: Int,
     val error: String,
     val message: String,
-) {
-    constructor(
-        httpStatus: HttpStatus,
-        errCode: String,
-        message: String,
-    ) : this(
-        timestamp = LocalDateTime.now(),
-        status = httpStatus.value(),
-        error = errCode,
-        message = message,
-    )
-}
+)
