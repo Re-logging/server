@@ -17,12 +17,13 @@ class NewsArticleCrawlingServiceImpl(
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"),
 ) : CrawlingService {
     @Scheduled(cron = "0 0 3 * * *") // 매일 오전 3시에 작업 수행
-    override fun crawlAndSaveNewsArticles() {
+    override fun crawlAndSaveNewsArticles(): Int {
         val newsArticleList = mutableListOf<NewsArticle>()
         newsArticleList.addAll(crawlEconomyNews())
         newsArticleList.addAll(crawlESGEconomy())
         newsArticleList.map { it.aiSummary = aiService.aiSummary(it.content) }
         newsArticleService.saveNewsArticles(newsArticleList)
+        return newsArticleList.size
     }
 
     private fun crawlEconomyNews(): List<NewsArticle> =
