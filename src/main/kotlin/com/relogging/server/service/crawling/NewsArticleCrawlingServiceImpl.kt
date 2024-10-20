@@ -1,4 +1,4 @@
-package com.relogging.server.service
+package com.relogging.server.service.crawling
 
 import com.relogging.server.entity.Image
 import com.relogging.server.entity.NewsArticle
@@ -74,7 +74,8 @@ class NewsArticleCrawlingServiceImpl(
             if (title in existingTitles) {
                 continue // 중복 크롤링 방지
             }
-            val searchUrl = baseUrl + rootDoc.select(searchUrlSelector.replace("\$page", "$page")).attr("href")
+            val searchUrl =
+                baseUrl + rootDoc.select(searchUrlSelector.replace("\$page", "$page")).attr("href")
             val doc = Jsoup.connect(searchUrl).get()
             val content = doc.select(contentSelector).joinToString("\n") { it.text() }
             val author = doc.select(authorSelector).text().trim()

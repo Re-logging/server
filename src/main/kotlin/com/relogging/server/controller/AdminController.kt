@@ -2,7 +2,7 @@ package com.relogging.server.controller
 
 import com.relogging.server.dto.request.NewsArticleRequest
 import com.relogging.server.dto.response.NewsArticleResponse
-import com.relogging.server.service.CrawlingService
+import com.relogging.server.service.crawling.CrawlingService
 import com.relogging.server.service.newsArticle.NewsArticleService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
