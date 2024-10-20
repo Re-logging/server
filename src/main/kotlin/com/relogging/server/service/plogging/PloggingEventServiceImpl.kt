@@ -20,7 +20,7 @@ class PloggingEventServiceImpl(
     override fun getPloggingEvent(id: Long): PloggingEventResponse {
         val findEvent: PloggingEvent =
             this.ploggingEventRepository.findById(id).orElseThrow {
-                throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND)
+                throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
             }
         return PloggingEventConvertor.toResponse(findEvent)
     }
