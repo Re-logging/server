@@ -1,9 +1,12 @@
 package com.relogging.server.controller
 
 import com.relogging.server.dto.request.NewsArticleRequest
+import com.relogging.server.dto.request.PloggingEventRequest
 import com.relogging.server.dto.response.NewsArticleResponse
+import com.relogging.server.dto.response.PloggingEventResponse
 import com.relogging.server.service.crawling.CrawlingService
 import com.relogging.server.service.newsArticle.NewsArticleService
+import com.relogging.server.service.plogging.PloggingEventService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -24,6 +27,7 @@ class AdminController(
     private val newsArticleCrawlingService: CrawlingService,
     private val ploggingEventCrawlingService: CrawlingService,
     private val newsArticleService: NewsArticleService,
+    private val ploggingEventService: PloggingEventService,
 ) {
     @Operation(summary = "뉴스 아티클 생성하기", description = "뉴스가 100자 미만이면 AI 요약을 하지 않습니다.")
     @PostMapping("/newsArticles/", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -49,5 +53,16 @@ class AdminController(
     fun startCrawling(): ResponseEntity<String> {
         val count = newsArticleCrawlingService.crawlAndSave()
         return ResponseEntity.ok("뉴스 아티클 $count 개 크롤링 성공했습니다")
+    }
+
+    @Operation(summary = "플로깅 행사 생성하기")
+    @PostMapping("/ploggingEvent", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun createPloggingEvent(
+        @RequestPart request: @Valid PloggingEventRequest,
+        @RequestPart(value = "image") image: MultipartFile,
+    ): ResponseEntity<PloggingEventResponse> {
+        val response: PloggingEventResponse =
+            this.ploggingEventService.createPloggingEvent(request, image)
+        return ResponseEntity.ok(response)
     }
 }

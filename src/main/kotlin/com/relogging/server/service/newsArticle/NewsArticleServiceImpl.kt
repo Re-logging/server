@@ -31,7 +31,12 @@ class NewsArticleServiceImpl(
     ): NewsArticleResponse {
         val newsArticle = NewsArticleConvertor.toEntity(request)
         val savedFilePath = imageService.saveImageFile(image)
-        newsArticle.imageList += ImageConvertor.toEntity(savedFilePath, request.imageCaption, newsArticle)
+        newsArticle.imageList +=
+            ImageConvertor.toEntityWithNews(
+                savedFilePath,
+                request.imageCaption,
+                newsArticle,
+            )
         newsArticle.aiSummary = openAiService.aiSummary(newsArticle.content)
         val savedArticle = newsArticleRepository.save(newsArticle)
         return NewsArticleConvertor.toResponse(savedArticle)
