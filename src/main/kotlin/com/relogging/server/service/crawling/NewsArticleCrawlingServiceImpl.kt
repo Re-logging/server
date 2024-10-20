@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@Service
+@Service("newsArticleCrawlingService")
 class NewsArticleCrawlingServiceImpl(
     private val newsArticleService: NewsArticleService,
     private val aiService: OpenAiService,
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"),
 ) : CrawlingService {
     @Scheduled(cron = "0 0 3 * * *") // 매일 오전 3시에 작업 수행
-    override fun crawlAndSaveNewsArticles(): Int {
+    override fun crawlAndSave(): Int {
         val newsArticleList = mutableListOf<NewsArticle>()
         newsArticleList.addAll(crawlEconomyNews())
         newsArticleList.addAll(crawlESGEconomy())

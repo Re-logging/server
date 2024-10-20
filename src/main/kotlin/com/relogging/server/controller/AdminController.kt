@@ -21,7 +21,8 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api/admin")
 @Tag(name = "Admin", description = "admin 컨트롤러")
 class AdminController(
-    private val crawlingService: CrawlingService,
+    private val newsArticleCrawlingService: CrawlingService,
+    private val ploggingEventCrawlingService: CrawlingService,
     private val newsArticleService: NewsArticleService,
 ) {
     @Operation(summary = "뉴스 아티클 생성하기", description = "뉴스가 100자 미만이면 AI 요약을 하지 않습니다.")
@@ -46,7 +47,7 @@ class AdminController(
     @Operation(summary = "뉴스 아티클 크롤링하기")
     @PostMapping("/newsArticles/crawl")
     fun startCrawling(): ResponseEntity<String> {
-        val count = crawlingService.crawlAndSaveNewsArticles()
+        val count = newsArticleCrawlingService.crawlAndSave()
         return ResponseEntity.ok("뉴스 아티클 $count 개 크롤링 성공했습니다")
     }
 }
