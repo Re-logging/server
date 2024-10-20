@@ -52,4 +52,7 @@ class PloggingEventServiceImpl(
         val savedEvent = this.ploggingEventRepository.save(ploggingEvent)
         return PloggingEventConvertor.toResponse(savedEvent)
     }
+
+    @Transactional
+    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.deleteById(id)
 }

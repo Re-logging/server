@@ -65,4 +65,13 @@ class AdminController(
             this.ploggingEventService.createPloggingEvent(request, image)
         return ResponseEntity.ok(response)
     }
+
+    @Operation(summary = "플로깅 행사 삭제하기")
+    @DeleteMapping("/ploggingEvent/{id}")
+    fun deletePloggingEvent(
+        @PathVariable id: Long,
+    ): ResponseEntity<String> {
+        this.ploggingEventService.deletePloggingEvent(id)
+        return ResponseEntity.ok("플로깅 행사 삭제에 성공했습니다")
+    }
 }
