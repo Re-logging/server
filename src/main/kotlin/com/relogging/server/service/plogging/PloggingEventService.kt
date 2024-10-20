@@ -14,7 +14,7 @@ interface PloggingEventService {
 
     fun createPloggingEvent(
         request: PloggingEventRequest,
-        image: MultipartFile,
+        image: MultipartFile?,
     ): PloggingEventResponse
 
     fun deletePloggingEvent(id: Long)

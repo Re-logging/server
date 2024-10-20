@@ -59,7 +59,7 @@ class AdminController(
     @PostMapping("/ploggingEvent", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createPloggingEvent(
         @RequestPart request: @Valid PloggingEventRequest,
-        @RequestPart(value = "image") image: MultipartFile,
+        @RequestPart(value = "image", required = false) image: MultipartFile?,
     ): ResponseEntity<PloggingEventResponse> {
         val response: PloggingEventResponse =
             this.ploggingEventService.createPloggingEvent(request, image)

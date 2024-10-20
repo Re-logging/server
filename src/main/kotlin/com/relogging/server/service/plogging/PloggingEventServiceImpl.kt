@@ -22,13 +22,7 @@ class PloggingEventServiceImpl(
     private val imageService: ImageService,
 ) : PloggingEventService {
     @Transactional(readOnly = true)
-    override fun getPloggingEvent(id: Long): PloggingEventResponse {
-        val findEvent: PloggingEvent =
-            this.ploggingEventRepository.findById(id).orElseThrow {
-                throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
-            }
-        return PloggingEventConvertor.toResponse(findEvent)
-    }
+    override fun getPloggingEvent(id: Long): PloggingEventResponse = PloggingEventConvertor.toResponse(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getPloggingEventList(pageable: Pageable): Page<PloggingEventListResponse> {
@@ -39,20 +33,27 @@ class PloggingEventServiceImpl(
     @Transactional
     override fun createPloggingEvent(
         request: PloggingEventRequest,
-        image: MultipartFile,
+        image: MultipartFile?,
     ): PloggingEventResponse {
         val ploggingEvent: PloggingEvent = PloggingEventConvertor.toEntity(request)
-        val savedFilePath = this.imageService.saveImageFile(image)
-        ploggingEvent.imageList +=
-            ImageConvertor.toEntityWithPloggingEvent(
-                savedFilePath,
-                request.imageCaption,
-                ploggingEvent,
-            )
+        if (image != null) {
+            val savedFilePath = this.imageService.saveImageFile(image)
+            ploggingEvent.imageList +=
+                ImageConvertor.toEntityWithPloggingEvent(
+                    savedFilePath,
+                    request.imageCaption,
+                    ploggingEvent,
+                )
+        }
         val savedEvent = this.ploggingEventRepository.save(ploggingEvent)
         return PloggingEventConvertor.toResponse(savedEvent)
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.deleteById(id)
+    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+
+    private fun getPloggingEventById(id: Long): PloggingEvent =
+        this.ploggingEventRepository.findById(id).orElseThrow {
+            throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
+        }
 }
