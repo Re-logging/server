@@ -18,6 +18,10 @@ interface NewsArticleService {
 
     fun getNewsArticle(id: Long): NewsArticleResponse
 
+    fun getPrevNewsArticle(id: Long): NewsArticleResponse
+
+    fun getNextNewsArticle(id: Long): NewsArticleResponse
+
     fun getNewsArticlePage(
         page: Int,
         pageSize: Int,

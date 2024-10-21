@@ -49,6 +49,22 @@ class NewsArticleServiceImpl(
     override fun getNewsArticle(id: Long): NewsArticleResponse = NewsArticleConvertor.toResponse(getNewsArticleById(id))
 
     @Transactional(readOnly = true)
+    override fun getPrevNewsArticle(id: Long): NewsArticleResponse =
+        NewsArticleConvertor.toResponse(
+            newsArticleRepository
+                .findFirstByIdLessThanOrderByIdDesc(id)
+                .orElseThrow { throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND) },
+        )
+
+    @Transactional(readOnly = true)
+    override fun getNextNewsArticle(id: Long): NewsArticleResponse =
+        NewsArticleConvertor.toResponse(
+            newsArticleRepository.findFirstByIdGreaterThanOrderByIdAsc(id).orElseThrow {
+                throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND)
+            },
+        )
+
+    @Transactional(readOnly = true)
     override fun getNewsArticlePage(
         page: Int,
         pageSize: Int,
