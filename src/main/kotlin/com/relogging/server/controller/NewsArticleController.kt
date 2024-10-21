@@ -27,6 +27,24 @@ class NewsArticleController(
         return ResponseEntity.ok(response)
     }
 
+    @Operation(summary = "이전 뉴스 아티클 조회하기")
+    @GetMapping("/{id}/prev")
+    fun getPrevNewsArticle(
+        @PathVariable id: Long,
+    ): ResponseEntity<NewsArticleResponse> {
+        val response: NewsArticleResponse = newsArticleService.getPrevNewsArticle(id)
+        return ResponseEntity.ok(response)
+    }
+
+    @Operation(summary = "다음 뉴스 아티클 조회하기")
+    @GetMapping("/{id}/next")
+    fun getNextNewsArticle(
+        @PathVariable id: Long,
+    ): ResponseEntity<NewsArticleResponse> {
+        val response: NewsArticleResponse = newsArticleService.getNextNewsArticle(id)
+        return ResponseEntity.ok(response)
+    }
+
     @Operation(summary = "뉴스 아티클 리스트 조회하기")
     @GetMapping("/list")
     fun getNewsArticleList(
