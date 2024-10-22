@@ -1,4 +1,4 @@
-package com.relogging.server.service
+package com.relogging.server.service.crawling
 
 import com.relogging.server.entity.Image
 import com.relogging.server.entity.NewsArticle
