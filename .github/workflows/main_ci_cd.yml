@@ -55,6 +55,8 @@ jobs:
       DATASOURCE_PASSWORD: ${{ secrets.LOCAL_DATASOURCE_PASSWORD }}
       NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
       OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
+      PLOGGING_EVENT_IMAGE_DIR: ${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}
+      WEB_DRIVER_PATH: ${{ secrets.WEB_DRIVER_PATH }}
     
     steps:  
       - name: Checkout
@@ -125,7 +127,9 @@ jobs:
             echo "DATASOURCE_USERNAME=${{ secrets.PROD_DATASOURCE_USERNAME }}" >> .env
             echo "DATASOURCE_PASSWORD=${{ secrets.PROD_DATASOURCE_PASSWORD }}" >> .env
             echo "NEWS_ARTICLE_IMAGE_DIR=${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}" >> .env
+            echo "PLOGGING_EVENT_IMAGE_DIR=${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}" >> .env           
             echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
+            echo "WEB_DRIVER_PATH=${{ secrets.WEB_DRIVER_PATH }}" >> .env
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
             docker stop ${{ secrets.CONTAINER_NAME }}
             docker rm ${{ secrets.CONTAINER_NAME }}
