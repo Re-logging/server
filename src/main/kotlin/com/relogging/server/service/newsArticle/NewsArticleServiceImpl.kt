@@ -70,7 +70,7 @@ class NewsArticleServiceImpl(
         pageSize: Int,
     ): NewsArticleListResponse {
         val pageable: Pageable = PageRequest.of(page, pageSize)
-        val newsArticlePage: Page<NewsArticle> = newsArticleRepository.findAll(pageable)
+        val newsArticlePage: Page<NewsArticle> = newsArticleRepository.findAllByOrderByPublishedAtDescIdAsc(pageable)
         return NewsArticleConvertor.toResponse(newsArticlePage)
     }
 
