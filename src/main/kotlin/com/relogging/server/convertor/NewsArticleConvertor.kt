@@ -28,6 +28,7 @@ object NewsArticleConvertor {
             author = newsArticle.author,
             publishedAt = newsArticle.publishedAt,
             hits = newsArticle.hits,
+            imagePath = newsArticle.imageList.getOrNull(0)?.url,
             imageCaption = newsArticle.imageList.getOrNull(0)?.caption,
         )
 
