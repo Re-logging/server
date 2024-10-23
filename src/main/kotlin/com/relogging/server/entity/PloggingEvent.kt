@@ -22,8 +22,6 @@ class PloggingEvent(
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
     val location: String,
-    val participantLimit: Int,
-    val currentParticipants: Int,
     val isVolunteerWork: Boolean,
     val organizerName: String,
     val region: String,

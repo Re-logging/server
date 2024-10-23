@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@Service
+@Service("newsArticleCrawlingService")
 class NewsArticleCrawlingServiceImpl(
     private val newsArticleService: NewsArticleService,
     private val aiService: OpenAiService,
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"),
 ) : CrawlingService {
     @Scheduled(cron = "0 0 3 * * *") // 매일 오전 3시에 작업 수행
-    override fun crawlAndSaveNewsArticles(): Int {
+    override fun crawlAndSave(): Int {
         val newsArticleList = mutableListOf<NewsArticle>()
         newsArticleList.addAll(crawlEconomyNews())
         newsArticleList.addAll(crawlESGEconomy())
@@ -74,7 +74,8 @@ class NewsArticleCrawlingServiceImpl(
             if (title in existingTitles) {
                 continue // 중복 크롤링 방지
             }
-            val searchUrl = baseUrl + rootDoc.select(searchUrlSelector.replace("\$page", "$page")).attr("href")
+            val searchUrl =
+                baseUrl + rootDoc.select(searchUrlSelector.replace("\$page", "$page")).attr("href")
             val doc = Jsoup.connect(searchUrl).get()
             val content = doc.select(contentSelector).joinToString("\n") { it.text() }
             val author = doc.select(authorSelector).text().trim()
