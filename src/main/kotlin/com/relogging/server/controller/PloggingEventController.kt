@@ -35,4 +35,24 @@ class PloggingEventController(
         val response: PloggingEventResponse = this.ploggingEventService.getPloggingEvent(id)
         return ResponseEntity.ok(response)
     }
+
+    @Operation(summary = "다음 플로깅 행사 조회하기")
+    @GetMapping("/{currentId}/next")
+    fun getNextPloggingEvent(
+        @PathVariable currentId: Long,
+    ): ResponseEntity<PloggingEventResponse> {
+        val response: PloggingEventResponse =
+            this.ploggingEventService.getNextPloggingEvent(currentId)
+        return ResponseEntity.ok(response)
+    }
+
+    @Operation(summary = "이전 플로깅 행사 조회하기")
+    @GetMapping("/{currentId}/prev")
+    fun getPrevPloggingEvent(
+        @PathVariable currentId: Long,
+    ): ResponseEntity<PloggingEventResponse> {
+        val response: PloggingEventResponse =
+            this.ploggingEventService.getPrevPloggingEvent(currentId)
+        return ResponseEntity.ok(response)
+    }
 }

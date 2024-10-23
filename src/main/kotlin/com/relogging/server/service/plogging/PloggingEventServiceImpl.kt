@@ -55,6 +55,24 @@ class PloggingEventServiceImpl(
     @Transactional
     override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
+    @Transactional(readOnly = true)
+    override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse =
+        PloggingEventConvertor.toResponse(
+            this.ploggingEventRepository.findFirstByIdGreaterThanOrderByIdAsc(currentId)
+                .orElseThrow {
+                    throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
+                },
+        )
+
+    @Transactional(readOnly = true)
+    override fun getPrevPloggingEvent(currentId: Long): PloggingEventResponse =
+        PloggingEventConvertor.toResponse(
+            this.ploggingEventRepository.findFirstByIdLessThanOrderByIdDesc(currentId)
+                .orElseThrow {
+                    throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
+                },
+        )
+
     private fun getPloggingEventById(id: Long): PloggingEvent =
         this.ploggingEventRepository.findById(id).orElseThrow {
             throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
