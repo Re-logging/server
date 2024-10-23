@@ -11,6 +11,7 @@ data class NewsArticleResponse(
     val author: String?,
     val publishedAt: LocalDate?,
     val hits: Long,
+    val imagePath: String?,
     val imageCaption: String?,
 )
 
