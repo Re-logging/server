@@ -18,4 +18,8 @@ interface PloggingEventService {
     ): PloggingEventResponse
 
     fun deletePloggingEvent(id: Long)
+
+    fun getNextPloggingEvent(currentId: Long): PloggingEventResponse
+
+    fun getPrevPloggingEvent(currentId: Long): PloggingEventResponse
 }
