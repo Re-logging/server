@@ -32,3 +32,6 @@ spring:
 
 image-dir:
   news-article: ${NEWS_ARTICLE_IMAGE_DIR}
+  plogging-event: ${PLOGGING_EVENT_IMAGE_DIR}
+
+webdriver-path: ${WEB_DRIVER_PATH}

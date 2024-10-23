@@ -11,6 +11,7 @@ import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.repository.NewsArticleRepository
 import com.relogging.server.service.image.ImageService
 import com.relogging.server.service.openai.OpenAiService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -23,6 +24,8 @@ class NewsArticleServiceImpl(
     private val newsArticleRepository: NewsArticleRepository,
     private val imageService: ImageService,
     private val openAiService: OpenAiService,
+    @Value("\${image-dir.news-article}")
+    private var imageUploadDir: String,
 ) : NewsArticleService {
     @Transactional
     override fun createNewsArticle(
@@ -30,7 +33,7 @@ class NewsArticleServiceImpl(
         image: MultipartFile,
     ): NewsArticleResponse {
         val newsArticle = NewsArticleConvertor.toEntity(request)
-        val savedFilePath = imageService.saveImageFile(image)
+        val savedFilePath = imageService.saveImageFile(image, imageUploadDir)
         newsArticle.imageList +=
             ImageConvertor.toEntityWithNews(
                 savedFilePath,

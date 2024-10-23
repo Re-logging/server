@@ -10,6 +10,7 @@ import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.repository.PloggingEventRepository
 import com.relogging.server.service.image.ImageService
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -20,6 +21,8 @@ import org.springframework.web.multipart.MultipartFile
 class PloggingEventServiceImpl(
     private val ploggingEventRepository: PloggingEventRepository,
     private val imageService: ImageService,
+    @Value("\${image-dir.plogging-event}")
+    private var imageUploadDir: String,
 ) : PloggingEventService {
     @Transactional(readOnly = true)
     override fun getPloggingEvent(id: Long): PloggingEventResponse = PloggingEventConvertor.toResponse(this.getPloggingEventById(id))
@@ -37,7 +40,7 @@ class PloggingEventServiceImpl(
     ): PloggingEventResponse {
         val ploggingEvent: PloggingEvent = PloggingEventConvertor.toEntity(request)
         if (image != null) {
-            val savedFilePath = this.imageService.saveImageFile(image)
+            val savedFilePath = this.imageService.saveImageFile(image, imageUploadDir)
             ploggingEvent.imageList +=
                 ImageConvertor.toEntityWithPloggingEvent(
                     savedFilePath,
