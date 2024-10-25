@@ -38,7 +38,7 @@ jobs:
       NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
       OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
       PLOGGING_EVENT_IMAGE_DIR: ${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}
-      WEB_DRIVER_PATH: ${{ secrets.WEB_DRIVER_PATH }}
+      FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
       
 
     steps:
@@ -114,6 +114,7 @@ jobs:
           echo "PLOGGING_EVENT_IMAGE_DIR=${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}" >> .env
           echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
           echo "WEB_DRIVER_PATH=${{ secrets.WEB_DRIVER_PATH }}" >> .env
+          echo "FRONT_URL=${{ secrets.DEV_FRONT_URL }} >> .env
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_IMAGE }}
           docker stop ${{ secrets.CONTAINER_NAME }} 
           docker rm ${{ secrets.CONTAINER_NAME }}
