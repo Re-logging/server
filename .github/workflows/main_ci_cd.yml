@@ -129,7 +129,7 @@ jobs:
             echo "NEWS_ARTICLE_IMAGE_DIR=${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}" >> .env
             echo "PLOGGING_EVENT_IMAGE_DIR=${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}" >> .env           
             echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
-            echo "FRONT_URL=${{ secrets.PROD_FRONT_URL }} >> .env
+            echo "FRONT_URL=${{ secrets.PROD_FRONT_URL }}" >> .env
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
             docker stop ${{ secrets.CONTAINER_NAME }}
             docker rm ${{ secrets.CONTAINER_NAME }}
