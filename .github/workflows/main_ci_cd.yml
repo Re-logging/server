@@ -86,14 +86,14 @@ jobs:
     needs: [build, extract-version]
     runs-on: ubuntu-latest
 
-    env:
-      MYSQL_DATABASE: ${{ secrets.PROD_MYSQL_DATABASE }}
-      MYSQL_ROOT_PASSWORD: ${{ secrets.PROD_MYSQL_ROOT_PASSWORD }}
-      DATASOURCE_URL: ${{ secrets.PROD_DATASOURCE_URL }}
-      DATASOURCE_USERNAME: ${{ secrets.PROD_DATASOURCE_USERNAME }}
-      DATASOURCE_PASSWORD: ${{ secrets.PROD_DATASOURCE_PASSWORD }}
-      NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
-      OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
+    # env:
+    #   MYSQL_DATABASE: ${{ secrets.PROD_MYSQL_DATABASE }}
+    #   MYSQL_ROOT_PASSWORD: ${{ secrets.PROD_MYSQL_ROOT_PASSWORD }}
+    #   DATASOURCE_URL: ${{ secrets.PROD_DATASOURCE_URL }}
+    #   DATASOURCE_USERNAME: ${{ secrets.PROD_DATASOURCE_USERNAME }}
+    #   DATASOURCE_PASSWORD: ${{ secrets.PROD_DATASOURCE_PASSWORD }}
+    #   NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
+    #   OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
     
     steps:
       - name: Checkout
