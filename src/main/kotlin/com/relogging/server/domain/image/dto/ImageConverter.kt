@@ -4,7 +4,7 @@ import com.relogging.server.domain.image.entity.Image
 import com.relogging.server.domain.newsArticle.entity.NewsArticle
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 
-object ImageConvertor {
+object ImageConverter {
     fun toEntityWithNews(
         filePath: String,
         caption: String?,
