@@ -46,11 +46,11 @@ class Crew(
 
 enum class RecruitmentType {
     INSTANT_APPROVAL,
-    LEADER_APPROVAL
+    LEADER_APPROVAL,
 }
 
 enum class MeetingFrequency {
     WEEKLY,
     MONTHLY,
-    IRREGULAR
+    IRREGULAR,
 }
