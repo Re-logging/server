@@ -1,12 +1,13 @@
 package com.relogging.server.global.config
 
+import com.relogging.server.oauth.OAuth2UserService
+import com.relogging.server.oauth.OAuthAuthenticationSuccessHandler
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
-import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -17,6 +18,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     @Value("\${cors-allow-url.front}")
     private val frontUrl: String,
+    private val oauth2UserService: OAuth2UserService,
+    private val oAuthAuthenticationSuccessHandler: OAuthAuthenticationSuccessHandler,
 ) {
     @Bean
     @Throws(Exception::class)
@@ -24,11 +27,15 @@ class SecurityConfig(
         http {
             httpBasic { disable() }
             csrf { disable() }
-            cors { configurationSource = corsConfigurationSource() }
-            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+            cors { }
+//            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
 //            authorizeRequests {
 //                authorize("/**", permitAll)
 //            }
+            oauth2Login {
+                userInfoEndpoint { userService = oauth2UserService }
+                authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
+            }
         }
 
         return http.build()
