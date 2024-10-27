@@ -4,7 +4,7 @@ import com.relogging.server.domain.user.entity.SocialType
 
 class GoogleUserInfo(
     private val attributes: Map<String, Any>,
-) : OAuth2UserInfo {
+) : OAuthUserInfo {
     override fun getProviderId(): String {
         return this.attributes["sub"] as String
     }

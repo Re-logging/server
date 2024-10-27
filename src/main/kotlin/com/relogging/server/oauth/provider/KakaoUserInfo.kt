@@ -6,7 +6,7 @@ import com.relogging.server.global.exception.GlobalException
 
 class KakaoUserInfo(
     private val attributes: Map<String, Any>,
-) : OAuth2UserInfo {
+) : OAuthUserInfo {
     override fun getProviderId(): String {
         return this.attributes["id"].toString()
     }

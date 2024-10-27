@@ -2,7 +2,7 @@ package com.relogging.server.oauth.provider
 
 import com.relogging.server.domain.user.entity.SocialType
 
-interface OAuth2UserInfo {
+interface OAuthUserInfo {
     fun getProviderId(): String
 
     fun getProvider(): SocialType

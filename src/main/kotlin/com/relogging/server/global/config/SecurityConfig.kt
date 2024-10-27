@@ -1,7 +1,7 @@
 package com.relogging.server.global.config
 
-import com.relogging.server.oauth.OAuth2UserService
-import com.relogging.server.oauth.OAuthAuthenticationSuccessHandler
+import com.relogging.server.oauth.handler.OAuthAuthenticationSuccessHandler
+import com.relogging.server.oauth.service.PrincipalOAuthUserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -18,7 +18,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     @Value("\${cors-allow-url.front}")
     private val frontUrl: String,
-    private val oauth2UserService: OAuth2UserService,
+    private val principalOAuthUserService: PrincipalOAuthUserService,
     private val oAuthAuthenticationSuccessHandler: OAuthAuthenticationSuccessHandler,
 ) {
     @Bean
@@ -33,7 +33,7 @@ class SecurityConfig(
 //                authorize("/**", permitAll)
 //            }
             oauth2Login {
-                userInfoEndpoint { userService = oauth2UserService }
+                userInfoEndpoint { userService = principalOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
             }
         }
