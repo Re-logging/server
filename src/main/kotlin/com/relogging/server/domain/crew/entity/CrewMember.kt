@@ -25,7 +25,20 @@ class CrewMember(
     val crew: Crew,
     @ManyToOne(fetch = FetchType.LAZY)
     val user: User,
-) : BaseEntity()
+) : BaseEntity() {
+    companion object {
+        fun createCrewLeader(
+            user: User,
+            crew: Crew,
+        ): CrewMember {
+            return CrewMember(
+                role = CrewRole.LEADER,
+                user = user,
+                crew = crew,
+            )
+        }
+    }
+}
 
 enum class CrewRole {
     LEADER,

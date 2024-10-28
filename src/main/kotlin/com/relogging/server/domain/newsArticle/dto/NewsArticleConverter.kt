@@ -3,7 +3,7 @@ package com.relogging.server.domain.newsArticle.dto
 import com.relogging.server.domain.newsArticle.entity.NewsArticle
 import org.springframework.data.domain.Page
 
-object NewsArticleConvertor {
+object NewsArticleConverter {
     fun toEntity(request: NewsArticleRequest): NewsArticle =
         NewsArticle(
             title = request.title!!,

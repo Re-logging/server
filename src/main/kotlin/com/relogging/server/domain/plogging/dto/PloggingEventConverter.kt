@@ -1,9 +1,9 @@
 package com.relogging.server.domain.plogging.dto
 
-import com.relogging.server.domain.image.dto.ImageConvertor
+import com.relogging.server.domain.image.dto.ImageConverter
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 
-object PloggingEventConvertor {
+object PloggingEventConverter {
     fun toListResponse(ploggingEvent: PloggingEvent): PloggingEventListResponse =
         PloggingEventListResponse(
             id = ploggingEvent.id!!,
@@ -11,7 +11,7 @@ object PloggingEventConvertor {
             location = ploggingEvent.location,
             region = ploggingEvent.region,
             hits = ploggingEvent.hits,
-            image = ImageConvertor.toResponse(ploggingEvent.imageList.getOrNull(0)),
+            image = ImageConverter.toResponse(ploggingEvent.imageList.getOrNull(0)),
             startDate = ploggingEvent.startDate,
             endDate = ploggingEvent.endDate,
         )
@@ -33,7 +33,7 @@ object PloggingEventConvertor {
             volunteerScore = ploggingEvent.volunteerScore,
             imageList =
                 ploggingEvent.imageList.mapNotNull { entity ->
-                    ImageConvertor.toResponse(
+                    ImageConverter.toResponse(
                         entity,
                     )
                 },
