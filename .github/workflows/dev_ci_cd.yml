@@ -39,8 +39,9 @@ jobs:
       NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
       OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
       PLOGGING_EVENT_IMAGE_DIR: ${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}
+      CREW_IMAGE_DIR: ${{ secrets.CREW_IMAGE_DIR }}
       FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
-      
+
 
     steps:
     - name: Checkout
@@ -113,6 +114,7 @@ jobs:
           echo "DATASOURCE_PASSWORD=${{ secrets.LOCAL_DATASOURCE_PASSWORD }}" >> .env
           echo "NEWS_ARTICLE_IMAGE_DIR=${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}" >> .env
           echo "PLOGGING_EVENT_IMAGE_DIR=${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}" >> .env
+          echo "CREW_IMAGE_DIR=${{ secrets.CREW_IMAGE_DIR }}" >> .env
           echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
           echo "FRONT_URL=${{ secrets.DEV_FRONT_URL }}" >> .env
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_IMAGE }}
