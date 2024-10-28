@@ -21,7 +21,7 @@ class Crew(
     val id: Long? = null,
     val name: String,
     val description: String,
-    val leaderName: String,
+    var leaderName: String,
     val activityRegion: String,
     val maxMembers: Int,
     val specialNotes: String? = null,
@@ -37,12 +37,14 @@ class Crew(
     @ElementCollection
     @CollectionTable(name = "crew_image_list", joinColumns = [JoinColumn(name = "crew_id")])
     @Column(name = "image_url")
-    val imageList: List<String> = emptyList(),
+    val imageList: MutableList<String> = mutableListOf(),
     @OneToMany(mappedBy = "crew", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val crewApplicationList: List<CrewApplication> = emptyList(),
+    val crewApplicationList: MutableList<CrewApplication> = mutableListOf(),
     @OneToMany(mappedBy = "crew", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val crewMemberList: List<CrewMember> = emptyList(),
-) : BaseEntity()
+    val crewMemberList: MutableList<CrewMember> = mutableListOf(),
+) : BaseEntity() {
+    fun addCrewMember(crewMember: CrewMember) = this.crewMemberList.add(crewMember)
+}
 
 enum class RecruitmentType {
     INSTANT_APPROVAL,
