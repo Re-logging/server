@@ -20,7 +20,7 @@ class SocialAccountServiceImpl(
                 user.id!!,
                 socialType,
                 providerId,
-                user,
+//                user,
             ),
         )
     }

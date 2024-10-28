@@ -12,7 +12,7 @@ class UserServiceImpl(
 ) : UserService {
     @Transactional(readOnly = true)
     override fun findUserByEmail(email: String): User? {
-        return this.userRepository.findByEmail(email).orElseGet(null)
+        return this.userRepository.findByEmail(email).orElse(null)
     }
 
     @Transactional
@@ -21,7 +21,7 @@ class UserServiceImpl(
         email: String,
         nickName: String,
         socialType: SocialType,
-        providerId: String
+        providerId: String,
     ): User {
         return this.userRepository.save(
             User(
@@ -29,8 +29,8 @@ class UserServiceImpl(
                 email = email,
                 nickname = nickName,
                 socialType = socialType,
-                providerId = providerId
-            )
+                providerId = providerId,
+            ),
         )
     }
 }

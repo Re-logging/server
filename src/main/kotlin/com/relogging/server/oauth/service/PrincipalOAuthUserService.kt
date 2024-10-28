@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
 @Service
 class PrincipalOAuthUserService(
     private val userService: UserService,
-    private val socialAccountService: SocialAccountService
+    private val socialAccountService: SocialAccountService,
 ) : DefaultOAuth2UserService() {
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val oAuth2User: OAuth2User = super.loadUser(userRequest)
@@ -33,13 +33,14 @@ class PrincipalOAuthUserService(
         val findUser: User? = this.userService.findUserByEmail(oAuthUserInfo.getEmail())
         if (findUser == null) {
             // 유저가 없으면 유저생성 고고혓
-            val user: User = this.userService.createUserWithEssentialInfo(
-                oAuthUserInfo.getName(),
-                oAuthUserInfo.getEmail(),
-                oAuthUserInfo.getName(),
-                socialType,
-                oAuthUserInfo.getProviderId()
-            )
+            val user: User =
+                this.userService.createUserWithEssentialInfo(
+                    oAuthUserInfo.getName(),
+                    oAuthUserInfo.getEmail(),
+                    oAuthUserInfo.getName(),
+                    socialType,
+                    oAuthUserInfo.getProviderId(),
+                )
         } else if (findUser.socialType != socialType) {
             // 해당 이메일로 가입된 소셜 계정이 존재!!
             throw GlobalException(GlobalErrorCode.OAUTH_DUPLICATED_EMAIL)

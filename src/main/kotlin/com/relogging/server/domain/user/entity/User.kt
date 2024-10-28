@@ -41,7 +41,7 @@ class User(
 //        orphanRemoval = true
 //    )
 //    var socialAccount: SocialAccount,
-    val role: Role = Role.USER
+    val role: Role = Role.USER,
 ) : BaseEntity()
 
 enum class SocialType {
@@ -51,5 +51,5 @@ enum class SocialType {
 
 enum class Role {
     USER,
-    ADMIN
+    ADMIN,
 }
