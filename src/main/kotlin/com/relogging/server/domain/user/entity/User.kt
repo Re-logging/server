@@ -2,19 +2,16 @@ package com.relogging.server.domain.user.entity
 
 import com.relogging.server.domain.crew.entity.CrewApplication
 import com.relogging.server.domain.crew.entity.CrewMember
-import com.relogging.server.domain.socialAccount.entity.SocialAccount
 import com.relogging.server.global.BaseEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
-import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 
 @Entity
@@ -30,22 +27,29 @@ class User(
     val nickname: String,
     val profileImage: String? = null,
     @field:Enumerated(EnumType.STRING)
-//    val socialType: SocialType,
+    val socialType: SocialType,
     val phoneNumber: String? = null,
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val crewApplicationList: List<CrewApplication> = emptyList(),
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val crewMemberList: List<CrewMember> = emptyList(),
-    @OneToOne(
-        mappedBy = "user",
-        cascade = [CascadeType.ALL],
-        fetch = FetchType.LAZY,
-        orphanRemoval = true
-    )
-    val socialInfo: SocialAccount
+    val providerId: String,
+//    @OneToOne(
+//        mappedBy = "user",
+//        cascade = [CascadeType.ALL],
+//        fetch = FetchType.LAZY,
+//        orphanRemoval = true
+//    )
+//    var socialAccount: SocialAccount,
+    val role: Role = Role.USER
 ) : BaseEntity()
 
 enum class SocialType {
     GOOGLE,
     KAKAO,
+}
+
+enum class Role {
+    USER,
+    ADMIN
 }

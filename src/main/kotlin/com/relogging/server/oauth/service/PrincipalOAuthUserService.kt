@@ -1,6 +1,9 @@
 package com.relogging.server.oauth.service
 
+import com.relogging.server.domain.socialAccount.service.SocialAccountService
 import com.relogging.server.domain.user.entity.SocialType
+import com.relogging.server.domain.user.entity.User
+import com.relogging.server.domain.user.service.UserService
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.oauth.provider.GoogleUserInfo
@@ -12,7 +15,10 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 
 @Service
-class PrincipalOAuthUserService : DefaultOAuth2UserService() {
+class PrincipalOAuthUserService(
+    private val userService: UserService,
+    private val socialAccountService: SocialAccountService
+) : DefaultOAuth2UserService() {
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val oAuth2User: OAuth2User = super.loadUser(userRequest)
         println("Attributes: ${oAuth2User.attributes}")
@@ -23,6 +29,21 @@ class PrincipalOAuthUserService : DefaultOAuth2UserService() {
         val oAuthUserInfo: OAuthUserInfo =
             this.getOAuth2UserInfo(socialType, oAuth2User.attributes)
         println("OAuth2UserInfo: $oAuthUserInfo")
+
+        val findUser: User? = this.userService.findUserByEmail(oAuthUserInfo.getEmail())
+        if (findUser == null) {
+            // 유저가 없으면 유저생성 고고혓
+            val user: User = this.userService.createUserWithEssentialInfo(
+                oAuthUserInfo.getName(),
+                oAuthUserInfo.getEmail(),
+                oAuthUserInfo.getName(),
+                socialType,
+                oAuthUserInfo.getProviderId()
+            )
+        } else if (findUser.socialType != socialType) {
+            // 해당 이메일로 가입된 소셜 계정이 존재!!
+            throw GlobalException(GlobalErrorCode.OAUTH_DUPLICATED_EMAIL)
+        }
 
         return oAuth2User
     }

@@ -20,4 +20,12 @@ enum class GlobalErrorCode(
         "OAUTH-002",
         "OAuth 인증 과정에서 예상치 못한 에러가 발생하였습니다.",
     ),
+
+    OAUTH_DUPLICATED_EMAIL(
+        HttpStatus.CONFLICT,
+        "OAUTH-003",
+        "이미 해당 소셜 계정의 이메일로 가입한 이력이 있습니다. 기존에 가입한 소설 계정으로 로그인 해주세요."
+    ),
+
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "유저가 존재하지 않습니다"),
 }
