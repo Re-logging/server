@@ -1,27 +1,48 @@
 package com.relogging.server.oauth.details
 
+import com.relogging.server.domain.user.entity.User
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.core.user.OAuth2User
 
-class OAuthDetails : UserDetails, OAuth2User {
+class OAuthDetails(
+    private val user: User,
+    private val attributes: MutableMap<String, Any>,
+) : UserDetails, OAuth2User {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        TODO("Not yet implemented")
+        return mutableListOf(SimpleGrantedAuthority(user.role.value))
     }
 
     override fun getAttributes(): MutableMap<String, Any> {
-        TODO("Not yet implemented")
+        return this.attributes
     }
 
     override fun getPassword(): String {
-        TODO("Not yet implemented")
+        return ""
     }
 
     override fun getUsername(): String {
-        TODO("Not yet implemented")
+        return this.user.email
     }
 
     override fun getName(): String {
-        TODO("Not yet implemented")
+        return this.user.name
+    }
+
+    override fun isAccountNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isAccountNonLocked(): Boolean {
+        return true
+    }
+
+    override fun isCredentialsNonExpired(): Boolean {
+        return true
+    }
+
+    override fun isEnabled(): Boolean {
+        return true
     }
 }

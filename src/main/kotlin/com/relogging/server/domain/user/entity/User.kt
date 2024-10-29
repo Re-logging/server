@@ -42,7 +42,7 @@ enum class SocialType {
     KAKAO,
 }
 
-enum class Role {
-    USER,
-    ADMIN,
+enum class Role(val value: String) {
+    USER("ROLE_USER"),
+    ADMIN("ROLE_ADMIN"),
 }
