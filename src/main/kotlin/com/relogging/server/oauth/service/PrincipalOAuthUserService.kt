@@ -1,6 +1,5 @@
 package com.relogging.server.oauth.service
 
-import com.relogging.server.domain.socialAccount.service.SocialAccountService
 import com.relogging.server.domain.user.entity.SocialType
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.domain.user.service.UserService
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service
 @Service
 class PrincipalOAuthUserService(
     private val userService: UserService,
-    private val socialAccountService: SocialAccountService,
 ) : DefaultOAuth2UserService() {
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
         val oAuth2User: OAuth2User = super.loadUser(userRequest)

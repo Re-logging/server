@@ -34,13 +34,6 @@ class User(
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val crewMemberList: List<CrewMember> = emptyList(),
     val providerId: String,
-//    @OneToOne(
-//        mappedBy = "user",
-//        cascade = [CascadeType.ALL],
-//        fetch = FetchType.LAZY,
-//        orphanRemoval = true
-//    )
-//    var socialAccount: SocialAccount,
     val role: Role = Role.USER,
 ) : BaseEntity()
 
