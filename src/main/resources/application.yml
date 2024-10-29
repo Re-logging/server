@@ -64,3 +64,8 @@ image-dir:
 
 cors-allow-url:
   front: ${FRONT_URL}
+
+jwt:
+  secret: ${JWT_SECRET}
+  validity-in-seconds: ${VALIDITY_IN_SECONDS}
+  validity-in-seconds-refresh: ${VALIDITY_IN_SECONDS_REFRESH}

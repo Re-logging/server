@@ -1,5 +1,6 @@
 package com.relogging.server.global.config
 
+import com.relogging.server.global.security.jwt.service.JwtService
 import com.relogging.server.global.security.oauth.handler.OAuthAuthenticationSuccessHandler
 import com.relogging.server.global.security.oauth.service.PrincipalOAuthUserService
 import org.springframework.beans.factory.annotation.Value
@@ -20,6 +21,7 @@ class SecurityConfig(
     private val frontUrl: String,
     private val principalOAuthUserService: PrincipalOAuthUserService,
     private val oAuthAuthenticationSuccessHandler: OAuthAuthenticationSuccessHandler,
+    private val jwtService: JwtService
 ) {
     @Bean
     @Throws(Exception::class)
@@ -36,6 +38,7 @@ class SecurityConfig(
                 userInfoEndpoint { userService = principalOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
             }
+            apply { JwtSecurityConfig(jwtService) }
 
         }
 
