@@ -1,4 +1,4 @@
-package com.relogging.server.global.oauth.provider
+package com.relogging.server.global.security.oauth.provider
 
 import com.relogging.server.domain.user.entity.SocialType
 import com.relogging.server.global.exception.GlobalErrorCode

@@ -1,7 +1,7 @@
 package com.relogging.server.global.config
 
-import com.relogging.server.global.oauth.handler.OAuthAuthenticationSuccessHandler
-import com.relogging.server.global.oauth.service.PrincipalOAuthUserService
+import com.relogging.server.global.security.oauth.handler.OAuthAuthenticationSuccessHandler
+import com.relogging.server.global.security.oauth.service.PrincipalOAuthUserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -36,6 +36,7 @@ class SecurityConfig(
                 userInfoEndpoint { userService = principalOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
             }
+
         }
 
         return http.build()

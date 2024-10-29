@@ -1,4 +1,4 @@
-package com.relogging.server.global.oauth.handler
+package com.relogging.server.global.security.oauth.handler
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

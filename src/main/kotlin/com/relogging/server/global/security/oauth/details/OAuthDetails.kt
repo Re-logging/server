@@ -1,4 +1,4 @@
-package com.relogging.server.global.oauth.details
+package com.relogging.server.global.security.oauth.details
 
 import com.relogging.server.domain.user.entity.User
 import org.springframework.security.core.GrantedAuthority
