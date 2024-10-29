@@ -1,8 +1,8 @@
-package com.relogging.server.global.config
+package com.relogging.server.security.config
 
-import com.relogging.server.global.security.jwt.service.JwtService
-import com.relogging.server.global.security.oauth.handler.OAuthAuthenticationSuccessHandler
-import com.relogging.server.global.security.oauth.service.PrincipalOAuthUserService
+import com.relogging.server.security.jwt.service.JwtService
+import com.relogging.server.security.oauth.handler.OAuthAuthenticationSuccessHandler
+import com.relogging.server.security.oauth.service.PrincipalOAuthUserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

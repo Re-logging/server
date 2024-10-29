@@ -58,6 +58,11 @@ spring:
           model: gpt-4o
           temperature: 0.5
 
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
 image-dir:
   news-article: ${NEWS_ARTICLE_IMAGE_DIR}
   plogging-event: ${PLOGGING_EVENT_IMAGE_DIR}

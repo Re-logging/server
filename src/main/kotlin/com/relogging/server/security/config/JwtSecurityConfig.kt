@@ -1,7 +1,7 @@
-package com.relogging.server.global.config
+package com.relogging.server.security.config
 
-import com.relogging.server.global.security.jwt.filter.JwtFilter
-import com.relogging.server.global.security.jwt.service.JwtService
+import com.relogging.server.security.jwt.filter.JwtFilter
+import com.relogging.server.security.jwt.service.JwtService
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

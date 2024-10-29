@@ -1,6 +1,6 @@
-package com.relogging.server.global.security.jwt.filter
+package com.relogging.server.security.jwt.filter
 
-import com.relogging.server.global.security.jwt.service.JwtService
+import com.relogging.server.security.jwt.service.JwtService
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

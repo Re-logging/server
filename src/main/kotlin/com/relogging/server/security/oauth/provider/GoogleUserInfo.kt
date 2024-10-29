@@ -1,4 +1,4 @@
-package com.relogging.server.global.security.oauth.provider
+package com.relogging.server.security.oauth.provider
 
 import com.relogging.server.domain.user.entity.SocialType
 

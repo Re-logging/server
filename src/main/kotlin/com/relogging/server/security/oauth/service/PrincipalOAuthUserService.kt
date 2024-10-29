@@ -1,14 +1,14 @@
-package com.relogging.server.global.security.oauth.service
+package com.relogging.server.security.oauth.service
 
 import com.relogging.server.domain.user.entity.SocialType
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.domain.user.service.UserService
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
-import com.relogging.server.global.security.oauth.details.OAuthDetails
-import com.relogging.server.global.security.oauth.provider.GoogleUserInfo
-import com.relogging.server.global.security.oauth.provider.KakaoUserInfo
-import com.relogging.server.global.security.oauth.provider.OAuthUserInfo
+import com.relogging.server.security.oauth.details.OAuthDetails
+import com.relogging.server.security.oauth.provider.GoogleUserInfo
+import com.relogging.server.security.oauth.provider.KakaoUserInfo
+import com.relogging.server.security.oauth.provider.OAuthUserInfo
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.core.user.OAuth2User

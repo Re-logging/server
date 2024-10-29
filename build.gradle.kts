@@ -45,6 +45,8 @@ dependencies {
     implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
     // OAuth
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    // redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
 }
 
 kotlin {
