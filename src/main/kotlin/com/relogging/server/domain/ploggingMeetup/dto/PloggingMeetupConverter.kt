@@ -1,6 +1,7 @@
 package com.relogging.server.domain.ploggingMeetup.dto
 
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
+import org.springframework.data.domain.Page
 
 object PloggingMeetupConverter {
     fun toEntity(
@@ -41,6 +42,28 @@ object PloggingMeetupConverter {
             registrationLink = entity.registrationLink,
             imageUrl = entity.imageUrl,
             hits = entity.hits,
+        )
+    }
+
+    private fun toSimpleResponse(entity: PloggingMeetup): PloggingMeetupSimpleResponse {
+        return PloggingMeetupSimpleResponse(
+            id = entity.id!!,
+            title = entity.title,
+            location = entity.location,
+            region = entity.region,
+            startDate = entity.startDate,
+            endDate = entity.endDate,
+            imageUrl = entity.imageUrl,
+            activityHours = entity.activityHours,
+            hits = entity.hits,
+        )
+    }
+
+    fun toResponse(entities: Page<PloggingMeetup>): PloggingMeetupListResponse {
+        return PloggingMeetupListResponse(
+            totalElements = entities.totalElements,
+            totalPage = entities.totalPages,
+            ploggingMeetupSimpleResponseList = entities.content.map { toSimpleResponse(it) },
         )
     }
 }

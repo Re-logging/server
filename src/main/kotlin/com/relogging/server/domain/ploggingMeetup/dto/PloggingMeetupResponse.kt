@@ -19,3 +19,21 @@ data class PloggingMeetupResponse(
     val imageUrl: String?,
     val hits: Long,
 )
+
+data class PloggingMeetupSimpleResponse(
+    val id: Long,
+    val title: String,
+    val region: String,
+    val location: String,
+    val startDate: LocalDateTime,
+    val endDate: LocalDateTime,
+    val imageUrl: String?,
+    val activityHours: String,
+    val hits: Long,
+)
+
+data class PloggingMeetupListResponse(
+    val totalPage: Int,
+    val totalElements: Long,
+    val ploggingMeetupSimpleResponseList: List<PloggingMeetupSimpleResponse>,
+)
