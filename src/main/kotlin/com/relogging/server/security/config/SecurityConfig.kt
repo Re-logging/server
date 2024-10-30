@@ -1,8 +1,8 @@
 package com.relogging.server.security.config
 
-import com.relogging.server.security.jwt.service.JwtService
+import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.oauth.handler.OAuthAuthenticationSuccessHandler
-import com.relogging.server.security.oauth.service.PrincipalOAuthUserService
+import com.relogging.server.security.oauth.service.CustomOAuthUserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -19,9 +19,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     @Value("\${cors-allow-url.front}")
     private val frontUrl: String,
-    private val principalOAuthUserService: PrincipalOAuthUserService,
+    private val customOAuthUserService: CustomOAuthUserService,
     private val oAuthAuthenticationSuccessHandler: OAuthAuthenticationSuccessHandler,
-    private val jwtService: JwtService
+    private val tokenProvider: TokenProvider,
 ) {
     @Bean
     @Throws(Exception::class)
@@ -35,11 +35,10 @@ class SecurityConfig(
 //                authorize("/**", permitAll)
 //            }
             oauth2Login {
-                userInfoEndpoint { userService = principalOAuthUserService }
+                userInfoEndpoint { userService = customOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
             }
-            apply { JwtSecurityConfig(jwtService) }
-
+            apply { JwtSecurityConfig(tokenProvider) }
         }
 
         return http.build()

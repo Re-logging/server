@@ -5,17 +5,17 @@ import com.relogging.server.domain.user.entity.User
 import com.relogging.server.domain.user.service.UserService
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
-import com.relogging.server.security.oauth.details.OAuthDetails
 import com.relogging.server.security.oauth.provider.GoogleUserInfo
 import com.relogging.server.security.oauth.provider.KakaoUserInfo
 import com.relogging.server.security.oauth.provider.OAuthUserInfo
+import com.relogging.server.security.principal.details.PrincipalDetails
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Service
 
 @Service
-class PrincipalOAuthUserService(
+class CustomOAuthUserService(
     private val userService: UserService,
 ) : DefaultOAuth2UserService() {
     override fun loadUser(userRequest: OAuth2UserRequest): OAuth2User {
@@ -45,7 +45,7 @@ class PrincipalOAuthUserService(
             throw GlobalException(GlobalErrorCode.OAUTH_DUPLICATED_EMAIL)
         }
 
-        return OAuthDetails(user, oAuth2User.attributes)
+        return PrincipalDetails(user, oAuth2User.attributes)
     }
 
     fun getSocialType(userRequest: OAuth2UserRequest): SocialType {

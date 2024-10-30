@@ -1,4 +1,4 @@
-package com.relogging.server.security.oauth.details
+package com.relogging.server.security.principal.details
 
 import com.relogging.server.domain.user.entity.User
 import org.springframework.security.core.GrantedAuthority
@@ -6,10 +6,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.core.user.OAuth2User
 
-class OAuthDetails(
+class PrincipalDetails(
     private val user: User,
-    private val attributes: MutableMap<String, Any>,
 ) : UserDetails, OAuth2User {
+
+    private lateinit var attributes: MutableMap<String, Any>
+
+    constructor(user: User, attributes: MutableMap<String, Any>) : this(user) {
+        this.attributes = attributes
+    }
+
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return mutableListOf(SimpleGrantedAuthority(user.role.value))
     }

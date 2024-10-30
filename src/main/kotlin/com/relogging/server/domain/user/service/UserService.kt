@@ -6,6 +6,8 @@ import com.relogging.server.domain.user.entity.User
 interface UserService {
     fun findUserByEmail(email: String): User?
 
+    fun getUserById(id: Long): User
+
     fun createUserWithEssentialInfo(
         name: String,
         email: String,

@@ -1,7 +1,7 @@
 package com.relogging.server.security.config
 
 import com.relogging.server.security.jwt.filter.JwtFilter
-import com.relogging.server.security.jwt.service.JwtService
+import com.relogging.server.security.jwt.provider.TokenProvider
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -10,12 +10,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 class JwtSecurityConfig(
-    private val jwtService: JwtService
+    private val tokenProvider: TokenProvider,
 ) : SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity>() {
     override fun configure(builder: HttpSecurity) {
         builder.addFilterBefore(
-            JwtFilter(jwtService),
-            UsernamePasswordAuthenticationFilter::class.java
+            JwtFilter(tokenProvider),
+            UsernamePasswordAuthenticationFilter::class.java,
         )
     }
 }
