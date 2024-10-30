@@ -17,4 +17,7 @@ enum class GlobalErrorCode(
 
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "유저가 존재하지 않습니다"),
+
+    // 플로긍 모임 관련
+    PLOGGING_MEETUP_NOT_FOUND(HttpStatus.NOT_FOUND, "PLOGGING-MEETUP-001", "플로깅 모임이 존재하지 않습니다"),
 }
