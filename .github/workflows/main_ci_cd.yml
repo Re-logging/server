@@ -58,6 +58,7 @@ jobs:
       NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
       OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
       PLOGGING_EVENT_IMAGE_DIR: ${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}
+      PLOGGING_MEETUP_IMAGE_DIR: ${{ secrets.PLOGGING_MEETUP_IMAGE_DIR }}
       CREW_IMAGE_DIR: ${{ secrets.CREW_IMAGE_DIR }}
       FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
 
@@ -131,6 +132,7 @@ jobs:
             echo "DATASOURCE_PASSWORD=${{ secrets.PROD_DATASOURCE_PASSWORD }}" >> .env
             echo "NEWS_ARTICLE_IMAGE_DIR=${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}" >> .env
             echo "PLOGGING_EVENT_IMAGE_DIR=${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}" >> .env
+            echo "PLOGGING_MEETUP_IMAGE_DIR=${{ secrets.PLOGGING_MEETUP_IMAGE_DIR }}" >> .env
             echo "CREW_IMAGE_DIR=${{ secrets.CREW_IMAGE_DIR }}" >> .env
             echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
             echo "FRONT_URL=${{ secrets.PROD_FRONT_URL }}" >> .env
