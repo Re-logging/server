@@ -23,4 +23,24 @@ object PloggingMeetupConverter {
             imageUrl = imageUrl,
         )
     }
+
+    fun toResponse(entity: PloggingMeetup): PloggingMeetupResponse {
+        return PloggingMeetupResponse(
+            id = entity.id!!,
+            title = entity.title,
+            content = entity.content,
+            location = entity.location,
+            region = entity.region,
+            startDate = entity.startDate,
+            endDate = entity.endDate,
+            participantTarget = entity.participationTarget,
+            supportDetails = entity.supportDetails,
+            activityHours = entity.activityHours,
+            contactPerson = entity.contactPerson,
+            contactNumber = entity.contactNumber,
+            registrationLink = entity.registrationLink,
+            imageUrl = entity.imageUrl,
+            hits = entity.hits,
+        )
+    }
 }
