@@ -7,9 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.oauth2.core.user.OAuth2User
 
 class PrincipalDetails(
-    private val user: User,
+    val user: User,
 ) : UserDetails, OAuth2User {
-
     private lateinit var attributes: MutableMap<String, Any>
 
     constructor(user: User, attributes: MutableMap<String, Any>) : this(user) {

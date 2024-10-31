@@ -27,31 +27,31 @@ class TokenProvider(
     @Value("\${jwt.secret}")
     private val secretKey: String,
     @Value("\${jwt.validity-in-seconds}")
-    private val accessExpirationTime: Long,
+    val accessExpirationTime: Long,
     @Value("\${jwt.validity-in-seconds-refresh}")
-    private val refreshExpirationTime: Long,
-    private val principalDetailsService: PrincipalDetailsService
+    val refreshExpirationTime: Long,
+    private val principalDetailsService: PrincipalDetailsService,
 ) {
     private val key: Key by lazy {
         Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secretKey))
     }
 
     fun createAccessToken(
-        userId: String,
+        userId: Long,
         role: Role,
     ): String {
         return this.createToken(userId, role, this.refreshExpirationTime)
     }
 
-    fun creatRefreshToken(
-        userId: String,
+    fun createRefreshToken(
+        userId: Long,
         role: Role,
     ): String {
         return this.createToken(userId, role, this.accessExpirationTime)
     }
 
     private fun createToken(
-        userId: String,
+        userId: Long,
         role: Role,
         expirationTime: Long,
     ): String {
@@ -66,7 +66,7 @@ class TokenProvider(
             .setClaims(claims)
             .setIssuedAt(now)
             .setExpiration(expirationDate)
-            .signWith(this.key, SignatureAlgorithm.ES512)
+            .signWith(this.key, SignatureAlgorithm.HS256)
             .compact()
     }
 
