@@ -1,6 +1,7 @@
 package com.relogging.server.security.config
 
-import com.relogging.server.security.jwt.filter.JwtExceptionFilter
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.relogging.server.security.filter.AuthenticationExceptionFilter
 import com.relogging.server.security.jwt.filter.JwtFilter
 import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.oauth.handler.OAuthAuthenticationSuccessHandler
@@ -26,6 +27,7 @@ class SecurityConfig(
     private val customOAuthUserService: CustomOAuthUserService,
     private val oAuthAuthenticationSuccessHandler: OAuthAuthenticationSuccessHandler,
     private val tokenProvider: TokenProvider,
+    private val objectMapper: ObjectMapper,
 ) {
     @Bean
     @Throws(Exception::class)
@@ -42,7 +44,7 @@ class SecurityConfig(
                 authorize(anyRequest, authenticated)
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
-            addFilterBefore<JwtFilter>(JwtExceptionFilter())
+            addFilterBefore<JwtFilter>(AuthenticationExceptionFilter(objectMapper))
             oauth2Login {
                 userInfoEndpoint { userService = customOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler

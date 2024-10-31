@@ -2,8 +2,8 @@ package com.relogging.server.security.oauth.handler
 
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.redis.service.RefreshTokenService
+import com.relogging.server.security.details.PrincipalDetails
 import com.relogging.server.security.jwt.provider.TokenProvider
-import com.relogging.server.security.principal.details.PrincipalDetails
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

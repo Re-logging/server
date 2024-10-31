@@ -1,8 +1,8 @@
-package com.relogging.server.security.principal.service
+package com.relogging.server.security.service
 
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.domain.user.service.UserService
-import com.relogging.server.security.principal.details.PrincipalDetails
+import com.relogging.server.security.details.PrincipalDetails
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 
