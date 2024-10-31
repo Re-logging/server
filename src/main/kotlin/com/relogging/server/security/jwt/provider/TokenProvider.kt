@@ -3,6 +3,8 @@ package com.relogging.server.security.jwt.provider
 import com.relogging.server.domain.user.entity.Role
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
+import com.relogging.server.global.exception.JwtErrorCode
+import com.relogging.server.global.exception.JwtException
 import com.relogging.server.security.principal.service.PrincipalDetailsService
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.ExpiredJwtException
@@ -83,13 +85,13 @@ class TokenProvider(
             return Jwts.parserBuilder().setSigningKey(this.key).build()
                 .parseClaimsJws(token).body.expiration.after(Date())
         } catch (e: SignatureException) {
-            throw GlobalException(GlobalErrorCode.JWT_INVALID_TOKEN)
+            throw JwtException(JwtErrorCode.JWT_INVALID_TOKEN)
         } catch (e: MalformedJwtException) {
-            throw GlobalException(GlobalErrorCode.JWT_MALFORMED_TOKEN)
+            throw JwtException(JwtErrorCode.JWT_MALFORMED_TOKEN)
         } catch (e: ExpiredJwtException) {
-            throw GlobalException(GlobalErrorCode.JWT_EXPIRED_TOKEN)
+            throw JwtException(JwtErrorCode.JWT_EXPIRED_TOKEN)
         } catch (e: UnsupportedJwtException) {
-            throw GlobalException(GlobalErrorCode.JWT_UNSUPPORTED_TOKEN)
+            throw JwtException(JwtErrorCode.JWT_UNSUPPORTED_TOKEN)
         } catch (e: IllegalArgumentException) {
             throw GlobalException(GlobalErrorCode.INTERNAL_SERVER_ERROR)
         }
