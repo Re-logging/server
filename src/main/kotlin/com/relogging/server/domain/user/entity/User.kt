@@ -33,9 +33,16 @@ class User(
     val crewApplicationList: List<CrewApplication> = emptyList(),
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val crewMemberList: List<CrewMember> = emptyList(),
+    val providerId: String,
+    val role: Role = Role.USER,
 ) : BaseEntity()
 
 enum class SocialType {
     GOOGLE,
     KAKAO,
+}
+
+enum class Role(val value: String) {
+    USER("ROLE_USER"),
+    ADMIN("ROLE_ADMIN"),
 }

@@ -43,6 +43,16 @@ dependencies {
     implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT"))
     implementation("org.springframework.ai:spring-ai-openai")
     implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
+    // OAuth
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    // redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    // JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }
 
 kotlin {
