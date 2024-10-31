@@ -61,6 +61,16 @@ jobs:
       PLOGGING_MEETUP_IMAGE_DIR: ${{ secrets.PLOGGING_MEETUP_IMAGE_DIR }}
       CREW_IMAGE_DIR: ${{ secrets.CREW_IMAGE_DIR }}
       FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
+      GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}
+      KAKAO_CLIENT_ID: ${{ secrets.PROD_KAKAO_CLIENT_ID }}
+      KAKAO_CLIENT_SECRET: ${{ secrets.PROD_KAKAO_CLIENT_SECRET }}
+      KAKAO_REDIRECT_URI: ${{ secrets.PROD_KAKAO_REDIRECT_URI }}
+      JWT_SECRET: ${{ secrets.PROD_JWT_SECRET }}
+      VALIDITY_IN_SECONDS: ${{ secrets.VALIDITY_IN_SECONDS }}
+      VALIDITY_IN_SECONDS_REFRESH: ${{ secrets.VALIDITY_IN_SECONDS_REFRESH }}
+      REDIS_HOST: ${{ secrets.PROD_REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.PROD_REDIS_PORT }}
 
     steps:  
       - name: Checkout
@@ -136,6 +146,17 @@ jobs:
             echo "CREW_IMAGE_DIR=${{ secrets.CREW_IMAGE_DIR }}" >> .env
             echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
             echo "FRONT_URL=${{ secrets.PROD_FRONT_URL }}" >> .env
+            echo "GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}" >> .env
+            echo "GOOGLE_CLIENT_SECRET=${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}" >> .env
+            echo "KAKAO_CLIENT_ID=${{ secrets.PROD_KAKAO_CLIENT_ID }}" >> .env
+            echo "KAKAO_CLIENT_SECRET=${{ secrets.PROD_KAKAO_CLIENT_SECRET }}" >> .env
+            echo "KAKAO_REDIRECT_URI=${{ secrets.PROD_KAKAO_REDIRECT_URI }}" >> .env
+            echo "JWT_SECRET=${{ secrets.PROD_JWT_SECRET }}" >> .env
+            echo "VALIDITY_IN_SECONDS=${{ secrets.VALIDITY_IN_SECONDS }}" >> .env
+            echo "VALIDITY_IN_SECONDS_REFRESH=${{ secrets.VALIDITY_IN_SECONDS_REFRESH }}" >> .env
+            echo "REDIS_HOST=${{ secrets.PROD_REDIS_HOST }}" >> .env
+            echo "REDIS_PORT=${{ secrets.PROD_REDIS_PORT }}" >> .env
+            
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
             docker stop ${{ secrets.CONTAINER_NAME }}
             docker rm ${{ secrets.CONTAINER_NAME }}
