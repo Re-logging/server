@@ -6,6 +6,8 @@ import com.relogging.server.domain.newsArticle.service.NewsArticleService
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
 import com.relogging.server.domain.plogging.service.PloggingEventService
+import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
+import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
 import com.relogging.server.infrastructure.crawling.service.CrawlingService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -31,6 +34,7 @@ class AdminController(
     private val ploggingEventCrawlingService: CrawlingService,
     private val newsArticleService: NewsArticleService,
     private val ploggingEventService: PloggingEventService,
+    private val ploggingMeetupService: PloggingMeetupService,
 ) {
     @Operation(summary = "뉴스 아티클 생성하기", description = "뉴스가 100자 미만이면 AI 요약을 하지 않습니다.")
     @PostMapping("/newsArticles/", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -76,5 +80,14 @@ class AdminController(
     ): ResponseEntity<String> {
         this.ploggingEventService.deletePloggingEvent(id)
         return ResponseEntity.ok("플로깅 행사 삭제에 성공했습니다")
+    }
+
+    @Operation(summary = "플로깅 모임 조회하기", description = "조회수를 증가시키지 않습니다.")
+    @GetMapping("/ploggingMeetup/{id}")
+    fun getPloggingMeetup(
+        @PathVariable id: Long,
+    ): ResponseEntity<PloggingMeetupResponse> {
+        val response = ploggingMeetupService.getMeetup(id)
+        return ResponseEntity.ok(response)
     }
 }

@@ -15,4 +15,6 @@ interface UserService {
         socialType: SocialType,
         providerId: String,
     ): User
+
+    fun getUser(id: Long): User
 }

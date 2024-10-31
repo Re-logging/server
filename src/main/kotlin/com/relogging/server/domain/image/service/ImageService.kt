@@ -5,6 +5,11 @@ import org.springframework.web.multipart.MultipartFile
 interface ImageService {
     fun saveImageFile(
         file: MultipartFile,
-        savePath: String,
+        imageUploadDir: String,
     ): String
+
+    fun saveImageFiles(
+        imageList: List<MultipartFile>,
+        imageUploadDir: String,
+    ): List<String>
 }

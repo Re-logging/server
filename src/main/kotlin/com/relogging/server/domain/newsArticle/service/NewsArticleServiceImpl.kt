@@ -1,8 +1,8 @@
 package com.relogging.server.domain.newsArticle.service
 
-import com.relogging.server.domain.image.dto.ImageConvertor
+import com.relogging.server.domain.image.dto.ImageConverter
 import com.relogging.server.domain.image.service.ImageService
-import com.relogging.server.domain.newsArticle.dto.NewsArticleConvertor
+import com.relogging.server.domain.newsArticle.dto.NewsArticleConverter
 import com.relogging.server.domain.newsArticle.dto.NewsArticleListResponse
 import com.relogging.server.domain.newsArticle.dto.NewsArticleRequest
 import com.relogging.server.domain.newsArticle.dto.NewsArticleResponse
@@ -32,17 +32,17 @@ class NewsArticleServiceImpl(
         request: NewsArticleRequest,
         image: MultipartFile,
     ): NewsArticleResponse {
-        val newsArticle = NewsArticleConvertor.toEntity(request)
+        val newsArticle = NewsArticleConverter.toEntity(request)
         val savedFilePath = imageService.saveImageFile(image, imageUploadDir)
         newsArticle.imageList +=
-            ImageConvertor.toEntityWithNews(
+            ImageConverter.toEntityWithNews(
                 savedFilePath,
                 request.imageCaption,
                 newsArticle,
             )
         newsArticle.aiSummary = openAiService.aiSummary(newsArticle.content)
         val savedArticle = newsArticleRepository.save(newsArticle)
-        return NewsArticleConvertor.toResponse(savedArticle)
+        return NewsArticleConverter.toResponse(savedArticle)
     }
 
     @Transactional
@@ -54,11 +54,11 @@ class NewsArticleServiceImpl(
     override fun findAllTitles(): List<String> = newsArticleRepository.findAllTitles()
 
     @Transactional(readOnly = true)
-    override fun getNewsArticle(id: Long): NewsArticleResponse = NewsArticleConvertor.toResponse(getNewsArticleById(id))
+    override fun getNewsArticle(id: Long): NewsArticleResponse = NewsArticleConverter.toResponse(getNewsArticleById(id))
 
     @Transactional(readOnly = true)
     override fun getPrevNewsArticle(id: Long): NewsArticleResponse =
-        NewsArticleConvertor.toResponse(
+        NewsArticleConverter.toResponse(
             newsArticleRepository.findPrevArticle(id).orElseThrow {
                 throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND)
             },
@@ -66,7 +66,7 @@ class NewsArticleServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getNextNewsArticle(id: Long): NewsArticleResponse =
-        NewsArticleConvertor.toResponse(
+        NewsArticleConverter.toResponse(
             newsArticleRepository.findNextArticle(id).orElseThrow {
                 throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND)
             },
@@ -79,7 +79,7 @@ class NewsArticleServiceImpl(
     ): NewsArticleListResponse {
         val pageable: Pageable = PageRequest.of(page, pageSize)
         val newsArticlePage: Page<NewsArticle> = newsArticleRepository.findAllByOrderByPublishedAtDescIdAsc(pageable)
-        return NewsArticleConvertor.toResponse(newsArticlePage)
+        return NewsArticleConverter.toResponse(newsArticlePage)
     }
 
     @Transactional

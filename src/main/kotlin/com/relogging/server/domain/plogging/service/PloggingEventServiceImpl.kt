@@ -1,8 +1,8 @@
 package com.relogging.server.domain.plogging.service
 
-import com.relogging.server.domain.image.dto.ImageConvertor
+import com.relogging.server.domain.image.dto.ImageConverter
 import com.relogging.server.domain.image.service.ImageService
-import com.relogging.server.domain.plogging.dto.PloggingEventConvertor
+import com.relogging.server.domain.plogging.dto.PloggingEventConverter
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
@@ -25,12 +25,12 @@ class PloggingEventServiceImpl(
     private var imageUploadDir: String,
 ) : PloggingEventService {
     @Transactional(readOnly = true)
-    override fun getPloggingEvent(id: Long): PloggingEventResponse = PloggingEventConvertor.toResponse(this.getPloggingEventById(id))
+    override fun getPloggingEvent(id: Long): PloggingEventResponse = PloggingEventConverter.toResponse(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getPloggingEventList(pageable: Pageable): Page<PloggingEventListResponse> {
         val findEvents: Page<PloggingEvent> = this.ploggingEventRepository.findAll(pageable)
-        return findEvents.map { entity -> PloggingEventConvertor.toListResponse(entity) }
+        return findEvents.map { entity -> PloggingEventConverter.toListResponse(entity) }
     }
 
     @Transactional
@@ -38,18 +38,18 @@ class PloggingEventServiceImpl(
         request: PloggingEventRequest,
         image: MultipartFile?,
     ): PloggingEventResponse {
-        val ploggingEvent: PloggingEvent = PloggingEventConvertor.toEntity(request)
+        val ploggingEvent: PloggingEvent = PloggingEventConverter.toEntity(request)
         if (image != null) {
             val savedFilePath = this.imageService.saveImageFile(image, imageUploadDir)
             ploggingEvent.imageList +=
-                ImageConvertor.toEntityWithPloggingEvent(
+                ImageConverter.toEntityWithPloggingEvent(
                     savedFilePath,
                     request.imageCaption,
                     ploggingEvent,
                 )
         }
         val savedEvent = this.ploggingEventRepository.save(ploggingEvent)
-        return PloggingEventConvertor.toResponse(savedEvent)
+        return PloggingEventConverter.toResponse(savedEvent)
     }
 
     @Transactional
@@ -57,7 +57,7 @@ class PloggingEventServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse =
-        PloggingEventConvertor.toResponse(
+        PloggingEventConverter.toResponse(
             this.ploggingEventRepository.findFirstByIdGreaterThanOrderByIdAsc(currentId)
                 .orElseThrow {
                     throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
@@ -66,7 +66,7 @@ class PloggingEventServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getPrevPloggingEvent(currentId: Long): PloggingEventResponse =
-        PloggingEventConvertor.toResponse(
+        PloggingEventConverter.toResponse(
             this.ploggingEventRepository.findFirstByIdLessThanOrderByIdDesc(currentId)
                 .orElseThrow {
                     throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)

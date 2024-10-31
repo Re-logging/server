@@ -42,4 +42,9 @@ class UserServiceImpl(
             ),
         )
     }
+
+    override fun getUser(id: Long): User =
+        userRepository.findById(id).orElseThrow {
+            throw GlobalException(GlobalErrorCode.USER_NOT_FOUND)
+        }
 }
