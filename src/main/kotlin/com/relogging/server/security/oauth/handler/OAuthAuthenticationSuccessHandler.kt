@@ -28,8 +28,8 @@ class OAuthAuthenticationSuccessHandler(
         val principalDetails: PrincipalDetails = authentication.principal as PrincipalDetails
         val user: User = principalDetails.user
 
-        val accessToken: String = this.tokenProvider.createAccessToken(user.id!!, user.role)
-        val refreshToken: String = this.tokenProvider.createRefreshToken(user.id, user.role)
+        val accessToken: String = this.tokenProvider.createAccessToken(user.id!!)
+        val refreshToken: String = this.tokenProvider.createRefreshToken(user.id)
         this.refreshTokenService.saveRefreshToken(user.id, refreshToken)
 
         val redirectUrl: String =

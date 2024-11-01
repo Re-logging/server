@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service
 class PrincipalDetailsService(
     private val userService: UserService,
 ) {
-    fun loadUser(userId: String): UserDetails {
-        val user: User = this.userService.getUserById(userId.toLong())
+    fun loadUser(userId: Long): UserDetails {
+        val user: User = this.userService.getUserById(userId)
         return PrincipalDetails(user)
     }
 }

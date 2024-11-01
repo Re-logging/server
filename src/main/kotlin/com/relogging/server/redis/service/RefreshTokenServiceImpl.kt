@@ -14,13 +14,23 @@ class RefreshTokenServiceImpl(
     override fun saveRefreshToken(
         userId: Long,
         refreshToken: String,
-    ): RefreshToken {
-        return this.refreshTokenRepository.save(
+    ): RefreshToken =
+        this.refreshTokenRepository.save(
             RefreshToken(
                 userId,
                 refreshToken,
                 refreshExpirationTime,
             ),
         )
+
+    override fun getRefreshToken(userId: Long): RefreshToken? = this.refreshTokenRepository.findById(userId).orElse(null)
+
+    override fun validRefreshToken(
+        userId: Long,
+        refreshTokenValue: String,
+    ): Boolean {
+        val refreshToken: RefreshToken? = this.getRefreshToken(userId)
+
+        return refreshToken != null && refreshToken.refreshToken.equals(refreshTokenValue)
     }
 }

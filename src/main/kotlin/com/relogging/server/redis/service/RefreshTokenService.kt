@@ -7,4 +7,11 @@ interface RefreshTokenService {
         userId: Long,
         refreshToken: String,
     ): RefreshToken
+
+    fun getRefreshToken(userId: Long): RefreshToken?
+
+    fun validRefreshToken(
+        userId: Long,
+        refreshTokenValue: String,
+    ): Boolean
 }

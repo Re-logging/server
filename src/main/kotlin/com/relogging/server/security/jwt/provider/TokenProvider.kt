@@ -1,6 +1,5 @@
 package com.relogging.server.security.jwt.provider
 
-import com.relogging.server.domain.user.entity.Role
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.security.service.PrincipalDetailsService
@@ -36,28 +35,20 @@ class TokenProvider(
         Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.secretKey))
     }
 
-    fun createAccessToken(
-        userId: Long,
-        role: Role,
-    ): String {
-        return this.createToken(userId, role, this.refreshExpirationTime)
+    fun createAccessToken(userId: Long): String {
+        return this.createToken(userId, this.refreshExpirationTime)
     }
 
-    fun createRefreshToken(
-        userId: Long,
-        role: Role,
-    ): String {
-        return this.createToken(userId, role, this.accessExpirationTime)
+    fun createRefreshToken(userId: Long): String {
+        return this.createToken(userId, this.accessExpirationTime)
     }
 
     private fun createToken(
         userId: Long,
-        role: Role,
         expirationTime: Long,
     ): String {
         val claims: Claims = Jwts.claims()
         claims["sub"] = userId
-        claims["role"] = role
 
         val now = Date()
         val expirationDate = Date(now.time + expirationTime)
@@ -95,13 +86,13 @@ class TokenProvider(
         }
     }
 
-    fun getUserId(token: String): String {
+    fun getUserId(token: String): Long {
         return Jwts.parserBuilder().setSigningKey(this.key).build().parseClaimsJws(token)
-            .body.subject
+            .body.subject.toLong()
     }
 
     fun getAuthentication(token: String): Authentication {
-        val userId: String = this.getUserId(token)
+        val userId: Long = this.getUserId(token)
         val userDetails: UserDetails = this.principalDetailsService.loadUser(userId)
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }
