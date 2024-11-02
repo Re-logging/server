@@ -1,5 +1,6 @@
 package com.relogging.server.domain.user.entity
 
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.crew.entity.CrewApplication
 import com.relogging.server.domain.crew.entity.CrewMember
 import com.relogging.server.global.BaseEntity
@@ -30,11 +31,13 @@ class User(
     val socialType: SocialType,
     val phoneNumber: String? = null,
     @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val crewApplicationList: List<CrewApplication> = emptyList(),
+    val crewApplicationList: MutableList<CrewApplication> = mutableListOf(),
     @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-    val crewMemberList: List<CrewMember> = emptyList(),
+    val crewMemberList: MutableList<CrewMember> = mutableListOf(),
     val providerId: String,
     val role: Role = Role.USER,
+    @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    val commentList: MutableList<Comment> = mutableListOf(),
 ) : BaseEntity()
 
 enum class SocialType {
