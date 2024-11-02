@@ -15,15 +15,16 @@ import java.time.LocalDateTime
 
 @Entity
 class CrewMember(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "crew_member_id")
+    @field:Id
+    @field:GeneratedValue(strategy = GenerationType.IDENTITY)
+    @field:Column(name = "crew_member_id")
     val id: Long? = null,
-    @Enumerated(EnumType.STRING)
+    @field:Enumerated(EnumType.STRING)
     val role: CrewRole,
     val joinedAt: LocalDateTime = LocalDateTime.now(),
-    @ManyToOne(fetch = FetchType.LAZY)
+    @field:ManyToOne(fetch = FetchType.LAZY)
     val crew: Crew,
-    @ManyToOne(fetch = FetchType.LAZY)
+    @field:ManyToOne(fetch = FetchType.LAZY)
     val user: User,
 ) : BaseEntity() {
     companion object {

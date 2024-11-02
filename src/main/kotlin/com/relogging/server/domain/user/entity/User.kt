@@ -29,9 +29,9 @@ class User(
     @field:Enumerated(EnumType.STRING)
     val socialType: SocialType,
     val phoneNumber: String? = null,
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val crewApplicationList: List<CrewApplication> = emptyList(),
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val crewMemberList: List<CrewMember> = emptyList(),
     val providerId: String,
     val role: Role = Role.USER,
