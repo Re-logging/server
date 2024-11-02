@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 class PloggingMeetupController(
     private val ploggingMeetupService: PloggingMeetupService,
 ) {
-    @Operation(summary = "플로깅 행사 리스트 조회하기")
+    @Operation(summary = "플로깅 모임 리스트 조회하기")
     @GetMapping("/list")
     fun getPloggingEventList(pageable: Pageable): ResponseEntity<PloggingMeetupListResponse> {
         val response = ploggingMeetupService.getMeetupList(pageable)
