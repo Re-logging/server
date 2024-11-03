@@ -22,7 +22,7 @@ class CrewController(
     private val crewService: CrewService,
 ) {
     @Operation(summary = "크루 생성하기")
-    @PostMapping("/", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createCrew(
         @Valid @RequestPart request: CrewCreateRequest,
         @RequestPart(value = "image", required = false) imageList: List<MultipartFile> = emptyList(),
