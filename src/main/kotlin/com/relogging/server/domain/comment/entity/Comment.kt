@@ -6,6 +6,7 @@ import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.BaseEntity
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -37,7 +38,7 @@ class Comment(
     @field:ManyToOne
     @field:JoinColumn(name = "parent_comment_id")
     var parentComment: Comment? = null,
-    @field:OneToMany(mappedBy = "parentComment")
+    @field:OneToMany(mappedBy = "parentComment", cascade = [CascadeType.ALL], orphanRemoval = true)
     var childComment: MutableList<Comment> = mutableListOf(),
 ) : BaseEntity() {
     fun updateContent(content: String) {
