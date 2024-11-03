@@ -36,7 +36,7 @@ object CommentConverter {
         return comment
     }
 
-    fun toResponse(entity: Comment) =
+    fun toResponse(entity: Comment): CommentResponse =
         CommentResponse(
             id = entity.id!!,
             isDeleted = entity.isDeleted,
@@ -45,5 +45,6 @@ object CommentConverter {
             authorName = entity.user.nickname,
             authorImageUrl = entity.user.profileImage,
             modifiedAt = entity.updateAt,
+            replies = entity.childComment.map { toResponse(it) },
         )
 }

@@ -1,6 +1,7 @@
 package com.relogging.server.domain.plogging.dto
 
 import com.relogging.server.domain.comment.dto.CommentConverter
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.image.dto.ImageConverter
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 
@@ -17,7 +18,10 @@ object PloggingEventConverter {
             endDate = ploggingEvent.endDate,
         )
 
-    fun toResponse(ploggingEvent: PloggingEvent): PloggingEventResponse =
+    fun toResponse(
+        ploggingEvent: PloggingEvent,
+        rootComments: List<Comment>,
+    ): PloggingEventResponse =
         PloggingEventResponse(
             id = ploggingEvent.id!!,
             title = ploggingEvent.title,
@@ -38,7 +42,7 @@ object PloggingEventConverter {
                         entity,
                     )
                 },
-            commentList = ploggingEvent.commentList.map { CommentConverter.toResponse(it) },
+            commentList = rootComments.map { CommentConverter.toResponse(it) },
         )
 
     fun toEntity(request: PloggingEventRequest): PloggingEvent =

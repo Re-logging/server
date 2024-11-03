@@ -10,4 +10,5 @@ data class CommentResponse(
     val authorName: String,
     val authorImageUrl: String?,
     val modifiedAt: LocalDateTime,
+    val replies: List<CommentResponse>,
 )

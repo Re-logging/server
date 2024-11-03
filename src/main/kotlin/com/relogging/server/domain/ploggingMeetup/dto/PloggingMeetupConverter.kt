@@ -1,6 +1,7 @@
 package com.relogging.server.domain.ploggingMeetup.dto
 
 import com.relogging.server.domain.comment.dto.CommentConverter
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import org.springframework.data.domain.Page
 
@@ -26,7 +27,10 @@ object PloggingMeetupConverter {
         )
     }
 
-    fun toResponse(entity: PloggingMeetup): PloggingMeetupResponse {
+    fun toResponse(
+        entity: PloggingMeetup,
+        rootComments: List<Comment>,
+    ): PloggingMeetupResponse {
         return PloggingMeetupResponse(
             id = entity.id!!,
             title = entity.title,
@@ -43,7 +47,7 @@ object PloggingMeetupConverter {
             registrationLink = entity.registrationLink,
             imageUrl = entity.imageUrl,
             hits = entity.hits,
-            commentList = entity.commentList.map { CommentConverter.toResponse(it) },
+            commentList = rootComments.map { CommentConverter.toResponse(it) },
         )
     }
 

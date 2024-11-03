@@ -1,5 +1,6 @@
 package com.relogging.server.domain.plogging.service
 
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.image.dto.ImageConverter
 import com.relogging.server.domain.image.service.ImageService
 import com.relogging.server.domain.plogging.dto.PloggingEventConverter
@@ -25,7 +26,10 @@ class PloggingEventServiceImpl(
     private var imageUploadDir: String,
 ) : PloggingEventService {
     @Transactional(readOnly = true)
-    override fun getPloggingEvent(id: Long): PloggingEventResponse = PloggingEventConverter.toResponse(this.getPloggingEventById(id))
+    override fun getPloggingEvent(id: Long): PloggingEventResponse {
+        val event = this.getPloggingEventById(id)
+        return PloggingEventConverter.toResponse(event, getRootComments(event))
+    }
 
     @Transactional
     override fun getPloggingEventEntity(id: Long): PloggingEvent = this.getPloggingEventById(id)
@@ -52,32 +56,43 @@ class PloggingEventServiceImpl(
                 )
         }
         val savedEvent = this.ploggingEventRepository.save(ploggingEvent)
-        return PloggingEventConverter.toResponse(savedEvent)
+        return PloggingEventConverter.toResponse(savedEvent, getRootComments(savedEvent))
     }
 
     @Transactional
     override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
-    override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse =
-        PloggingEventConverter.toResponse(
-            this.ploggingEventRepository.findFirstByIdGreaterThanOrderByIdAsc(currentId)
-                .orElseThrow {
-                    throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
-                },
+    override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
+        val nextEvent =
+            ploggingEventRepository.findFirstByIdGreaterThanOrderByIdAsc(currentId)
+                .orElseThrow { throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND) }
+        return PloggingEventConverter.toResponse(
+            nextEvent,
+            getRootComments(nextEvent),
         )
+    }
 
     @Transactional(readOnly = true)
-    override fun getPrevPloggingEvent(currentId: Long): PloggingEventResponse =
-        PloggingEventConverter.toResponse(
-            this.ploggingEventRepository.findFirstByIdLessThanOrderByIdDesc(currentId)
+    override fun getPrevPloggingEvent(currentId: Long): PloggingEventResponse {
+        val prevEvent =
+            ploggingEventRepository.findFirstByIdLessThanOrderByIdDesc(currentId)
                 .orElseThrow {
                     throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
-                },
+                }
+        return PloggingEventConverter.toResponse(
+            prevEvent,
+            getRootComments(prevEvent),
         )
+    }
 
     private fun getPloggingEventById(id: Long): PloggingEvent =
         this.ploggingEventRepository.findById(id).orElseThrow {
             throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_NOT_FOUND)
         }
+
+    private fun getRootComments(event: PloggingEvent): List<Comment> =
+        event.commentList
+            .filter { it.parentComment == null }
+            .sortedByDescending { it.createAt }
 }
