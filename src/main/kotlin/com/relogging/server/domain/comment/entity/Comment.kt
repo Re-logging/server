@@ -37,4 +37,8 @@ class Comment(
     var parentComment: Comment? = null,
     @field:OneToMany(mappedBy = "parentComment")
     var childComment: MutableList<Comment> = mutableListOf(),
-) : BaseEntity()
+) : BaseEntity() {
+    fun updateContent(content: String) {
+        this.content = content
+    }
+}

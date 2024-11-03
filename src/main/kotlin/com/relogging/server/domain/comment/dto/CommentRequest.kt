@@ -9,5 +9,5 @@ class CommentCreateRequest(
 
 data class CommentUpdateRequest(
     @field:NotBlank
-    val content: String? = null,
+    val content: String,
 )

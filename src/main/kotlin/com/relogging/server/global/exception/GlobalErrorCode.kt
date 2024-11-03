@@ -39,6 +39,11 @@ enum class GlobalErrorCode(
     // 유저 관련
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER-001", "유저가 존재하지 않습니다"),
 
+    // 댓글 관련
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "COMMENT-001", "댓글이 존재하지 않습니다"),
+    COMMENT_NOT_AUTHORIZED(HttpStatus.NOT_FOUND, "COMMENT-002", "댓글에 대한 권한이 없습니다"),
+    COMMENT_NOT_MATCH(HttpStatus.FORBIDDEN, "COMMENT-003", "댓글과 컨텐츠가 일치하지 않습니다"),
+
     // 플로깅 모임 관련
     PLOGGING_MEETUP_NOT_FOUND(HttpStatus.NOT_FOUND, "PLOGGING-MEETUP-001", "플로깅 모임이 존재하지 않습니다"),
 
