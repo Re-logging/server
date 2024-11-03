@@ -1,5 +1,6 @@
 package com.relogging.server.domain.plogging.dto
 
+import com.relogging.server.domain.comment.dto.CommentConverter
 import com.relogging.server.domain.image.dto.ImageConverter
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 
@@ -37,6 +38,7 @@ object PloggingEventConverter {
                         entity,
                     )
                 },
+            commentList = ploggingEvent.commentList.map { CommentConverter.toResponse(it) },
         )
 
     fun toEntity(request: PloggingEventRequest): PloggingEvent =

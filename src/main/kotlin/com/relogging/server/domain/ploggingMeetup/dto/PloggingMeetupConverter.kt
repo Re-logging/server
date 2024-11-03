@@ -1,5 +1,6 @@
 package com.relogging.server.domain.ploggingMeetup.dto
 
+import com.relogging.server.domain.comment.dto.CommentConverter
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import org.springframework.data.domain.Page
 
@@ -42,6 +43,7 @@ object PloggingMeetupConverter {
             registrationLink = entity.registrationLink,
             imageUrl = entity.imageUrl,
             hits = entity.hits,
+            commentList = entity.commentList.map { CommentConverter.toResponse(it) },
         )
     }
 

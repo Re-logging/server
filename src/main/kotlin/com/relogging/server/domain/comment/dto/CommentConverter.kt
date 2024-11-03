@@ -41,7 +41,7 @@ object CommentConverter {
             id = entity.id!!,
             content = entity.content,
             authorId = entity.user.id!!,
-            authorName = entity.user.name,
+            authorName = entity.user.nickname,
             authorImageUrl = entity.user.profileImage,
             modifiedAt = entity.updateAt,
         )
