@@ -23,4 +23,11 @@ interface PloggingEventCommentService {
         commentId: Long,
         user: User,
     )
+
+    fun createReply(
+        eventId: Long,
+        parentCommentId: Long,
+        request: CommentCreateRequest,
+        user: User,
+    ): Long
 }

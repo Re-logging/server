@@ -55,4 +55,16 @@ class PloggingMeetupCommentController(
         commentService.deleteComment(meetupId, commentId, principalDetails.user)
         return ResponseEntity.ok("댓글 삭제 성공했습니다")
     }
+
+    @Operation(summary = "대댓글 생성하기")
+    @PostMapping("/{commentId}/replies")
+    fun createReply(
+        @PathVariable eventId: Long,
+        @PathVariable commentId: Long,
+        @RequestBody request: CommentCreateRequest,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails,
+    ): ResponseEntity<Long> {
+        val response = commentService.createReply(eventId, commentId, request, principalDetails.user)
+        return ResponseEntity.ok(response)
+    }
 }

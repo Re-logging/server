@@ -19,11 +19,11 @@ class PloggingMeetupCommentServiceImpl(
 ) : PloggingMeetupCommentService {
     @Transactional
     override fun createComment(
-        eventId: Long,
+        meetupId: Long,
         request: CommentCreateRequest,
         user: User,
     ): Long {
-        val ploggingMeetup = ploggingMeetupService.getMeetupEntity(eventId)
+        val ploggingMeetup = ploggingMeetupService.getMeetupEntity(meetupId)
         val comment = CommentConverter.toEntity(ploggingMeetup, request, user)
         return commentRepository.save(comment).id!!
     }
@@ -35,7 +35,7 @@ class PloggingMeetupCommentServiceImpl(
         request: CommentUpdateRequest,
         user: User,
     ): Long {
-        val comment = commentRepository.findById(commentId).orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
+        val comment = getCommentById(commentId)
         checkMeetupCommentMatch(meetupId, comment)
         checkUserAccess(user, comment)
         comment.updateContent(request.content)
@@ -48,11 +48,30 @@ class PloggingMeetupCommentServiceImpl(
         commentId: Long,
         user: User,
     ) {
-        val comment = commentRepository.findById(commentId).orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
+        val comment = getCommentById(commentId)
         checkMeetupCommentMatch(meetupId, comment)
         checkUserAccess(user, comment)
         commentRepository.delete(comment)
     }
+
+    @Transactional
+    override fun createReply(
+        meetupId: Long,
+        parentCommentId: Long,
+        request: CommentCreateRequest,
+        user: User,
+    ): Long {
+        val parentComment = getCommentById(parentCommentId)
+        parentComment.validateReplyDepth()
+        checkMeetupCommentMatch(meetupId, parentComment)
+
+        val reply = CommentConverter.toEntity(parentComment.ploggingMeetup!!, request, user)
+        parentComment.addReply(reply)
+
+        return commentRepository.save(reply).id!!
+    }
+
+    private fun getCommentById(id: Long) = commentRepository.findById(id).orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
 
     private fun checkMeetupCommentMatch(
         meetupId: Long,

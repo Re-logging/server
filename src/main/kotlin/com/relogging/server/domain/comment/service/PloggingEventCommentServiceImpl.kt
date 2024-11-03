@@ -35,7 +35,7 @@ class PloggingEventCommentServiceImpl(
         request: CommentUpdateRequest,
         user: User,
     ): Long {
-        val comment = commentRepository.findById(commentId).orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
+        val comment = getCommentById(commentId)
         checkEventCommentMatch(eventId, comment)
         checkUserAccess(user, comment)
         comment.updateContent(request.content)
@@ -48,11 +48,30 @@ class PloggingEventCommentServiceImpl(
         commentId: Long,
         user: User,
     ) {
-        val comment = commentRepository.findById(commentId).orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
+        val comment = getCommentById(commentId)
         checkEventCommentMatch(eventId, comment)
         checkUserAccess(user, comment)
         commentRepository.delete(comment)
     }
+
+    @Transactional
+    override fun createReply(
+        eventId: Long,
+        parentCommentId: Long,
+        request: CommentCreateRequest,
+        user: User,
+    ): Long {
+        val parentComment = getCommentById(parentCommentId)
+        parentComment.validateReplyDepth()
+        checkEventCommentMatch(eventId, parentComment)
+
+        val reply = CommentConverter.toEntity(parentComment.ploggingEvent!!, request, user)
+        parentComment.addReply(reply)
+
+        return commentRepository.save(reply).id!!
+    }
+
+    private fun getCommentById(id: Long) = commentRepository.findById(id).orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
 
     private fun checkEventCommentMatch(
         eventId: Long,

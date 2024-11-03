@@ -23,4 +23,11 @@ interface PloggingMeetupCommentService {
         commentId: Long,
         user: User,
     )
+
+    fun createReply(
+        meetupId: Long,
+        parentCommentId: Long,
+        request: CommentCreateRequest,
+        user: User,
+    ): Long
 }

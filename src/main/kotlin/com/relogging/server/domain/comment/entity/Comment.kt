@@ -4,6 +4,8 @@ import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.BaseEntity
+import com.relogging.server.global.exception.GlobalErrorCode
+import com.relogging.server.global.exception.GlobalException
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -40,5 +42,16 @@ class Comment(
 ) : BaseEntity() {
     fun updateContent(content: String) {
         this.content = content
+    }
+
+    fun addReply(reply: Comment) {
+        childComment.add(reply)
+        reply.parentComment = this
+    }
+
+    fun validateReplyDepth() {
+        if (parentComment != null) {
+            throw GlobalException(GlobalErrorCode.COMMENT_DEPTH_EXCEEDED)
+        }
     }
 }
