@@ -5,6 +5,7 @@ import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupConverter
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupListResponse
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
+import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.ploggingMeetup.repository.PloggingMeetupRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
@@ -73,4 +74,10 @@ class PloggingMeetupServiceImpl(
         val response = ploggingMeetupRepository.findAll(pageable)
         return PloggingMeetupConverter.toResponse(response)
     }
+
+    @Transactional
+    override fun getMeetupEntity(id: Long): PloggingMeetup =
+        ploggingMeetupRepository.findById(id).orElseThrow {
+            throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
+        }
 }

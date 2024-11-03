@@ -4,7 +4,7 @@ import com.relogging.server.domain.comment.dto.CommentCreateRequest
 import com.relogging.server.domain.comment.dto.CommentUpdateRequest
 import com.relogging.server.domain.user.entity.User
 
-interface CommentService {
+interface PloggingEventCommentService {
     fun createComment(
         eventId: Long,
         request: CommentCreateRequest,

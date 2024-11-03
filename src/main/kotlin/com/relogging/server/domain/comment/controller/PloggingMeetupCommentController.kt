@@ -17,42 +17,42 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/ploggingEvents/{eventId}/comments")
-@Tag(name = "Plogging Event")
-class PloggingEventCommentController(
+@RequestMapping("/api/ploggingMeetups/{meetupId}/comments")
+@Tag(name = "Plogging Meetup")
+class PloggingMeetupCommentController(
     private val commentService: PloggingEventCommentService,
 ) {
     @Operation(summary = "댓글 생성하기")
     @PostMapping
     fun createComment(
-        @PathVariable eventId: Long,
+        @PathVariable meetupId: Long,
         @RequestBody request: CommentCreateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.createComment(eventId, request, principalDetails.user)
+        val response = commentService.createComment(meetupId, request, principalDetails.user)
         return ResponseEntity.ok(response)
     }
 
     @Operation(summary = "댓글 수정하기")
     @PutMapping("/{commentId}")
     fun updateComment(
-        @PathVariable eventId: Long,
+        @PathVariable meetupId: Long,
         @PathVariable commentId: Long,
         @RequestBody request: CommentUpdateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.updateComment(eventId, commentId, request, principalDetails.user)
+        val response = commentService.updateComment(meetupId, commentId, request, principalDetails.user)
         return ResponseEntity.ok(response)
     }
 
     @Operation(summary = "댓글 삭제하기")
     @DeleteMapping("/{commentId}")
     fun deleteComment(
-        @PathVariable eventId: Long,
+        @PathVariable meetupId: Long,
         @PathVariable commentId: Long,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<String> {
-        commentService.deleteComment(eventId, commentId, principalDetails.user)
+        commentService.deleteComment(meetupId, commentId, principalDetails.user)
         return ResponseEntity.ok("댓글 삭제 성공했습니다")
     }
 }

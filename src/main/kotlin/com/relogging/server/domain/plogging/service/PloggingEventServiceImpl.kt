@@ -27,7 +27,7 @@ class PloggingEventServiceImpl(
     @Transactional(readOnly = true)
     override fun getPloggingEvent(id: Long): PloggingEventResponse = PloggingEventConverter.toResponse(this.getPloggingEventById(id))
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun getPloggingEventEntity(id: Long): PloggingEvent = this.getPloggingEventById(id)
 
     @Transactional(readOnly = true)
