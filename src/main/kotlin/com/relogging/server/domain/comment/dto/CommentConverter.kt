@@ -39,7 +39,8 @@ object CommentConverter {
     fun toResponse(entity: Comment) =
         CommentResponse(
             id = entity.id!!,
-            content = entity.content,
+            isDeleted = entity.isDeleted,
+            content = if (entity.isDeleted) "삭제된 댓글입니다" else entity.content,
             authorId = entity.user.id!!,
             authorName = entity.user.nickname,
             authorImageUrl = entity.user.profileImage,

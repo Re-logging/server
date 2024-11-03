@@ -51,7 +51,7 @@ class PloggingMeetupCommentServiceImpl(
         val comment = getCommentById(commentId)
         checkMeetupCommentMatch(meetupId, comment)
         checkUserAccess(user, comment)
-        commentRepository.delete(comment)
+        comment.delete()
     }
 
     @Transactional

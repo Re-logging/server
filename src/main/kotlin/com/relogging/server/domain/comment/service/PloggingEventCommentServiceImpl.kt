@@ -51,7 +51,7 @@ class PloggingEventCommentServiceImpl(
         val comment = getCommentById(commentId)
         checkEventCommentMatch(eventId, comment)
         checkUserAccess(user, comment)
-        commentRepository.delete(comment)
+        comment.delete()
     }
 
     @Transactional
