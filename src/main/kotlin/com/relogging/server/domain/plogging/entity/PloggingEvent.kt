@@ -1,5 +1,6 @@
 package com.relogging.server.domain.plogging.entity
 
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.image.entity.Image
 import com.relogging.server.global.BaseEntity
 import jakarta.persistence.CascadeType
@@ -35,4 +36,6 @@ class PloggingEvent(
     val phoneNumber: String,
     val participationTarget: String,
     val volunteerScore: String,
+    @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL])
+    val commentList: MutableList<Comment> = mutableListOf(),
 ) : BaseEntity()

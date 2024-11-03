@@ -2,6 +2,8 @@ package com.relogging.server.security.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.relogging.server.security.filter.AuthenticationExceptionFilter
+import com.relogging.server.security.handler.JwtAccessDeniedHandler
+import com.relogging.server.security.handler.JwtAuthenticationEntryPoint
 import com.relogging.server.security.jwt.filter.JwtFilter
 import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.oauth.handler.OAuthAuthenticationSuccessHandler
@@ -27,6 +29,8 @@ class SecurityConfig(
     private val customOAuthUserService: CustomOAuthUserService,
     private val oAuthAuthenticationSuccessHandler: OAuthAuthenticationSuccessHandler,
     private val tokenProvider: TokenProvider,
+    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val objectMapper: ObjectMapper,
 ) {
     @Bean
@@ -42,6 +46,10 @@ class SecurityConfig(
                 authorize("/v3/api-docs/**", permitAll)
                 authorize("/swagger-resources/**", permitAll)
                 authorize(anyRequest, authenticated)
+            }
+            exceptionHandling {
+                authenticationEntryPoint = jwtAuthenticationEntryPoint
+                accessDeniedHandler = jwtAccessDeniedHandler
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
             addFilterBefore<JwtFilter>(AuthenticationExceptionFilter(objectMapper))

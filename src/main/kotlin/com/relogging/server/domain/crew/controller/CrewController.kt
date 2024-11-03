@@ -2,9 +2,8 @@ package com.relogging.server.domain.crew.controller
 
 import com.relogging.server.domain.crew.dto.CrewCreateRequest
 import com.relogging.server.domain.crew.service.CrewService
-import com.sun.security.auth.UserPrincipal
+import com.relogging.server.security.details.PrincipalDetails
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.MediaType
@@ -23,13 +22,13 @@ class CrewController(
     private val crewService: CrewService,
 ) {
     @Operation(summary = "크루 생성하기")
-    @PostMapping("/", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createCrew(
         @Valid @RequestPart request: CrewCreateRequest,
         @RequestPart(value = "image", required = false) imageList: List<MultipartFile> = emptyList(),
-        @Parameter(name = "user", hidden = true) @AuthenticationPrincipal userPrincipal: UserPrincipal,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val id = crewService.createCrew(request, imageList, userPrincipal)
+        val id = crewService.createCrew(request, imageList, principalDetails.user)
         return ResponseEntity.ok(id)
     }
 }

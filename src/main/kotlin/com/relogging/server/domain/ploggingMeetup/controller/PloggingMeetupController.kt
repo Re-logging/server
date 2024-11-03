@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/ploggingMeetup")
+@RequestMapping("/api/ploggingMeetups")
 @Tag(name = "Plogging Meetup", description = "플로깅 모임 관련 API")
 class PloggingMeetupController(
     private val ploggingMeetupService: PloggingMeetupService,
 ) {
-    @Operation(summary = "플로깅 행사 리스트 조회하기")
+    @Operation(summary = "플로깅 모임 리스트 조회하기")
     @GetMapping("/list")
     fun getPloggingEventList(pageable: Pageable): ResponseEntity<PloggingMeetupListResponse> {
         val response = ploggingMeetupService.getMeetupList(pageable)
@@ -31,7 +31,7 @@ class PloggingMeetupController(
     }
 
     @Operation(summary = "플로깅 모임 생성하기")
-    @PostMapping("/", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createPloggingMeetup(
         @ModelAttribute @Valid request: PloggingMeetupRequest,
     ): ResponseEntity<Long> {

@@ -1,10 +1,12 @@
 package com.relogging.server.domain.ploggingMeetup.service
 
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.image.service.ImageService
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupConverter
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupListResponse
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
+import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.ploggingMeetup.repository.PloggingMeetupRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
@@ -40,10 +42,7 @@ class PloggingMeetupServiceImpl(
             ploggingMeetupRepository.findById(id).orElseThrow {
                 throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
             }
-        if (increaseHits) {
-            meetup.hits += 1
-        }
-        return PloggingMeetupConverter.toResponse(meetup)
+        return PloggingMeetupConverter.toResponse(meetup, getRootComments(meetup))
     }
 
     @Transactional
@@ -54,7 +53,7 @@ class PloggingMeetupServiceImpl(
                     throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
                 }
         nextMeetup.hits += 1
-        return PloggingMeetupConverter.toResponse(nextMeetup)
+        return PloggingMeetupConverter.toResponse(nextMeetup, getRootComments(nextMeetup))
     }
 
     @Transactional
@@ -65,7 +64,7 @@ class PloggingMeetupServiceImpl(
                     throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
                 }
         prevMeetup.hits += 1
-        return PloggingMeetupConverter.toResponse(prevMeetup)
+        return PloggingMeetupConverter.toResponse(prevMeetup, getRootComments(prevMeetup))
     }
 
     @Transactional(readOnly = true)
@@ -73,4 +72,15 @@ class PloggingMeetupServiceImpl(
         val response = ploggingMeetupRepository.findAll(pageable)
         return PloggingMeetupConverter.toResponse(response)
     }
+
+    @Transactional
+    override fun getMeetupEntity(id: Long): PloggingMeetup =
+        ploggingMeetupRepository.findById(id).orElseThrow {
+            throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
+        }
+
+    private fun getRootComments(meetup: PloggingMeetup): List<Comment> =
+        meetup.commentList
+            .filter { it.parentComment == null }
+            .sortedByDescending { it.createAt }
 }

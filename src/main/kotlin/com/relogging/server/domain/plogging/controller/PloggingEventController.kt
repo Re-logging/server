@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/ploggingEvent")
+@RequestMapping("/api/ploggingEvents")
 @Tag(name = "Plogging Event", description = "플로깅 행사 관련 API")
 class PloggingEventController(
     private val ploggingEventService: PloggingEventService,

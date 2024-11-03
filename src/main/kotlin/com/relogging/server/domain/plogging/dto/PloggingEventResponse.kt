@@ -1,5 +1,6 @@
 package com.relogging.server.domain.plogging.dto
 
+import com.relogging.server.domain.comment.dto.CommentResponse
 import com.relogging.server.domain.image.dto.ImageResponse
 import java.time.LocalDateTime
 
@@ -18,6 +19,7 @@ data class PloggingEventResponse(
     val participationTarget: String,
     val volunteerScore: String,
     val imageList: List<ImageResponse>,
+    val commentList: List<CommentResponse>,
 )
 
 data class PloggingEventListResponse(

@@ -37,7 +37,7 @@ class AdminController(
     private val ploggingMeetupService: PloggingMeetupService,
 ) {
     @Operation(summary = "뉴스 아티클 생성하기", description = "뉴스가 100자 미만이면 AI 요약을 하지 않습니다.")
-    @PostMapping("/newsArticles/", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    @PostMapping("/newsArticles", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createArticle(
         @RequestPart request: @Valid NewsArticleRequest,
         @RequestPart(value = "image") image: MultipartFile,

@@ -16,8 +16,9 @@ import jakarta.persistence.OneToMany
 
 @Entity
 class Crew(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "crew_id")
+    @field:Id
+    @field:GeneratedValue(strategy = GenerationType.IDENTITY)
+    @field:Column(name = "crew_id")
     val id: Long? = null,
     val name: String,
     val description: String,
@@ -34,13 +35,13 @@ class Crew(
     val recruitmentType: RecruitmentType,
     val additionalInfo: String? = null,
     val mainImage: String? = null,
-    @ElementCollection
-    @CollectionTable(name = "crew_image_list", joinColumns = [JoinColumn(name = "crew_id")])
-    @Column(name = "image_url")
+    @field:ElementCollection
+    @field:CollectionTable(name = "crew_image_list", joinColumns = [JoinColumn(name = "crew_id")])
+    @field:Column(name = "image_url")
     val imageList: MutableList<String> = mutableListOf(),
-    @OneToMany(mappedBy = "crew", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @field:OneToMany(mappedBy = "crew", cascade = [CascadeType.ALL], orphanRemoval = true)
     val crewApplicationList: MutableList<CrewApplication> = mutableListOf(),
-    @OneToMany(mappedBy = "crew", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @field:OneToMany(mappedBy = "crew", cascade = [CascadeType.ALL], orphanRemoval = true)
     val crewMemberList: MutableList<CrewMember> = mutableListOf(),
 ) : BaseEntity() {
     fun addCrewMember(crewMember: CrewMember) = this.crewMemberList.add(crewMember)
