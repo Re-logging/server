@@ -28,6 +28,9 @@ class PloggingEventServiceImpl(
     override fun getPloggingEvent(id: Long): PloggingEventResponse = PloggingEventConverter.toResponse(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
+    override fun getPloggingEventEntity(id: Long): PloggingEvent = this.getPloggingEventById(id)
+
+    @Transactional(readOnly = true)
     override fun getPloggingEventList(pageable: Pageable): Page<PloggingEventListResponse> {
         val findEvents: Page<PloggingEvent> = this.ploggingEventRepository.findAll(pageable)
         return findEvents.map { entity -> PloggingEventConverter.toListResponse(entity) }

@@ -3,12 +3,15 @@ package com.relogging.server.domain.plogging.service
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
+import com.relogging.server.domain.plogging.entity.PloggingEvent
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.multipart.MultipartFile
 
 interface PloggingEventService {
     fun getPloggingEvent(id: Long): PloggingEventResponse
+
+    fun getPloggingEventEntity(id: Long): PloggingEvent
 
     fun getPloggingEventList(pageable: Pageable): Page<PloggingEventListResponse>
 
