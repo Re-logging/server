@@ -62,9 +62,9 @@ class SecurityConfig(
             oauth2Login {
                 userInfoEndpoint { userService = customOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
-                authorizationEndpoint {
-                    authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
-                }
+//                authorizationEndpoint {
+//                    authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
+//                }
             }
         }
 
