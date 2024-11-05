@@ -77,3 +77,6 @@ jwt:
   secret: ${JWT_SECRET}
   validity-in-seconds: ${VALIDITY_IN_SECONDS}
   validity-in-seconds-refresh: ${VALIDITY_IN_SECONDS_REFRESH}
+
+server:
+  forward-headers-strategy: framework
