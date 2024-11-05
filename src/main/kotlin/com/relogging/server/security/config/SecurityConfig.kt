@@ -7,6 +7,7 @@ import com.relogging.server.security.handler.JwtAuthenticationEntryPoint
 import com.relogging.server.security.jwt.filter.JwtFilter
 import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.oauth.handler.OAuthAuthenticationSuccessHandler
+import com.relogging.server.security.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository
 import com.relogging.server.security.oauth.service.CustomOAuthUserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -33,6 +34,7 @@ class SecurityConfig(
     private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val objectMapper: ObjectMapper,
+    private val httpCookieOAuth2AuthorizationRequestRepository: HttpCookieOAuth2AuthorizationRequestRepository,
 ) {
     @Bean
     @Throws(Exception::class)
@@ -60,6 +62,9 @@ class SecurityConfig(
             oauth2Login {
                 userInfoEndpoint { userService = customOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
+                authorizationEndpoint {
+                    authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
+                }
             }
         }
 
