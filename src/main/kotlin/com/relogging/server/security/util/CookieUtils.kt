@@ -32,6 +32,7 @@ object CookieUtils {
         cookie.path = "/"
         cookie.isHttpOnly = true
         cookie.maxAge = maxAge
+        cookie.secure = true
         response.addCookie(cookie)
     }
 
