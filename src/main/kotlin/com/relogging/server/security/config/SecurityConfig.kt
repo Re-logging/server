@@ -11,6 +11,7 @@ import com.relogging.server.security.oauth.service.CustomOAuthUserService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
@@ -45,6 +46,10 @@ class SecurityConfig(
                 authorize("/swagger-ui/**", permitAll)
                 authorize("/v3/api-docs/**", permitAll)
                 authorize("/swagger-resources/**", permitAll)
+                authorize("/login/**", permitAll)
+                authorize(HttpMethod.GET, "/api/newsArticles/**", permitAll)
+                authorize(HttpMethod.GET, "/api/ploggingEvents/**", permitAll)
+                authorize(HttpMethod.GET, "/api/ploggingMeetups/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
             exceptionHandling {
