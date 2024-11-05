@@ -63,6 +63,7 @@ jobs:
       FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
       GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}
+      GOOGLE_REDIRECT_URI: ${{ secrets.PROD_GOOGLE_REDIRECT_URI }}
       KAKAO_CLIENT_ID: ${{ secrets.PROD_KAKAO_CLIENT_ID }}
       KAKAO_CLIENT_SECRET: ${{ secrets.PROD_KAKAO_CLIENT_SECRET }}
       KAKAO_REDIRECT_URI: ${{ secrets.PROD_KAKAO_REDIRECT_URI }}
@@ -148,6 +149,7 @@ jobs:
             echo "FRONT_URL=${{ secrets.PROD_FRONT_URL }}" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}" >> .env
             echo "GOOGLE_CLIENT_SECRET=${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}" >> .env
+            echo "GOOGLE_REDIRECT_URI=${{ secrets.PROD_GOOGLE_REDIRECT_URI }}" >> .env
             echo "KAKAO_CLIENT_ID=${{ secrets.PROD_KAKAO_CLIENT_ID }}" >> .env
             echo "KAKAO_CLIENT_SECRET=${{ secrets.PROD_KAKAO_CLIENT_SECRET }}" >> .env
             echo "KAKAO_REDIRECT_URI=${{ secrets.PROD_KAKAO_REDIRECT_URI }}" >> .env
