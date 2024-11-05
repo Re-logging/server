@@ -46,16 +46,15 @@ class SecurityConfig(
                 authorize("/swagger-ui/**", permitAll)
                 authorize("/v3/api-docs/**", permitAll)
                 authorize("/swagger-resources/**", permitAll)
-                authorize("/login/**", permitAll)
                 authorize(HttpMethod.GET, "/api/newsArticles/**", permitAll)
                 authorize(HttpMethod.GET, "/api/ploggingEvents/**", permitAll)
                 authorize(HttpMethod.GET, "/api/ploggingMeetups/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
-            exceptionHandling {
-                authenticationEntryPoint = jwtAuthenticationEntryPoint
-                accessDeniedHandler = jwtAccessDeniedHandler
-            }
+//            exceptionHandling {
+//                authenticationEntryPoint = jwtAuthenticationEntryPoint
+//                accessDeniedHandler = jwtAccessDeniedHandler
+//            }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
             addFilterBefore<JwtFilter>(AuthenticationExceptionFilter(objectMapper))
             oauth2Login {
