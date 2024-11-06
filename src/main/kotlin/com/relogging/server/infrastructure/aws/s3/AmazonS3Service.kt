@@ -31,26 +31,16 @@ class AmazonS3Service(
         objectMetadata.contentLength = file.size
         objectMetadata.contentType = file.contentType
 
-        var uploadFileUrl = ""
+        val inputStream: InputStream = file.inputStream
+        val fileName = UUID.randomUUID().toString() + "_" + file.originalFilename
 
         try {
-            val inputStream: InputStream = file.inputStream
-            val fileName = UUID.randomUUID().toString() + "_" + file.originalFilename
             amazonS3Client.putObject(bucket, fileName, inputStream, objectMetadata)
             amazonS3Client.getUrl(bucket, originalFileName).toString()
         } catch (e: IOException) {
             throw GlobalException(GlobalErrorCode.BAD_REQUEST)
-            e.printStackTrace()
         }
-//        try {
-//            amazonS3.putObject(
-//                new PutObjectRequest(
-//                        amazonConfig.getBucket(), keyName, file.getInputStream(), metadata));
-//        } catch (IOException e) {
-//            log.error("error at AmazonS3Manager uploadFile : {}", (Object) e.getStackTrace());
-//            throw new GlobalException(GlobalErrorCode._BAD_REQUEST);
-//        }
-        return amazonS3Client.getUrl(bucket, originalFileName).toString()
+        return amazonS3Client.getUrl(bucket, fileName).toString()
     }
 
     fun uploadFiles(
