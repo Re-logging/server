@@ -79,4 +79,4 @@ jwt:
   validity-in-seconds-refresh: ${VALIDITY_IN_SECONDS_REFRESH}
 
 server:
-  forward-headers-strategy: framework
+  forward-headers-strategy: native
