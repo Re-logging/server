@@ -8,8 +8,11 @@ enum class GlobalErrorCode(
     val message: String,
 ) {
     // 공통
-    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-001", "서버 에러, 관리자에게 문의 바립니다"),
-    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON-002", "인증 되지 않은 요청입니다."),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON-500", "서버 에러, 관리자에게 문의 바립니다."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON-400", "요청 형식이 잘못되었습니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON-401", "인증 되지 않은 요청입니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "COMMON-403", "접근 권한이 없는 요청입니다"),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "COMMON-404", "요청한 데이터를 찾을 수 없습니다."),
 
     // 뉴스 관련
     NEWS_ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "NEWS-ARTICLE-001", "뉴스 아티클이 존재하지 않습니다"),
