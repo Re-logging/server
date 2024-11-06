@@ -1,7 +1,6 @@
 package com.relogging.server.domain.ploggingMeetup.service
 
 import com.relogging.server.domain.comment.entity.Comment
-import com.relogging.server.domain.image.service.ImageService
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupConverter
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupListResponse
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupRequest
@@ -10,6 +9,7 @@ import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.ploggingMeetup.repository.PloggingMeetupRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
+import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -19,8 +19,8 @@ import org.springframework.web.multipart.MultipartFile
 @Service
 class PloggingMeetupServiceImpl(
     private val ploggingMeetupRepository: PloggingMeetupRepository,
-    private val imageService: ImageService,
-    @Value("\${image-dir.plogging-meetup}")
+    private val amazonS3Service: AmazonS3Service,
+    @Value("\${cloud.aws.s3.path.plogging-meetup}")
     private var imageUploadDir: String,
 ) : PloggingMeetupService {
     @Transactional
@@ -28,7 +28,7 @@ class PloggingMeetupServiceImpl(
         request: PloggingMeetupRequest,
         image: MultipartFile?,
     ): Long {
-        val imageUrl = image?.let { imageService.saveImageFile(it, imageUploadDir) }
+        val imageUrl = image?.let { amazonS3Service.uploadFile(it, imageUploadDir) }
         val ploggingMeetup = PloggingMeetupConverter.toEntity(request, imageUrl)
         return ploggingMeetupRepository.save(ploggingMeetup).id!!
     }

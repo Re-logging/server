@@ -64,12 +64,6 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
-image-dir:
-  news-article: ${NEWS_ARTICLE_IMAGE_DIR}
-  plogging-event: ${PLOGGING_EVENT_IMAGE_DIR}
-  plogging-meetup: ${PLOGGING_MEETUP_IMAGE_DIR}
-  crew: ${CREW_IMAGE_DIR}
-
 cors-allow-url:
   local: ${LOCAL_URL}
   front: ${FRONT_URL}
@@ -81,3 +75,21 @@ jwt:
 
 server:
   forward-headers-strategy: native
+
+cloud:
+  aws:
+    s3:
+      bucket: relogging
+      path:
+        crew: crew
+        user: user
+        plogging-meetup: plogging-meetup
+        plogging-event: plogging-event
+        news-article: news-article
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}

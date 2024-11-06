@@ -1,7 +1,6 @@
 package com.relogging.server.domain.newsArticle.service
 
 import com.relogging.server.domain.image.dto.ImageConverter
-import com.relogging.server.domain.image.service.ImageService
 import com.relogging.server.domain.newsArticle.dto.NewsArticleConverter
 import com.relogging.server.domain.newsArticle.dto.NewsArticleListResponse
 import com.relogging.server.domain.newsArticle.dto.NewsArticleRequest
@@ -10,6 +9,7 @@ import com.relogging.server.domain.newsArticle.entity.NewsArticle
 import com.relogging.server.domain.newsArticle.repository.NewsArticleRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
+import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import com.relogging.server.infrastructure.openai.service.OpenAiService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
@@ -22,9 +22,9 @@ import org.springframework.web.multipart.MultipartFile
 @Service
 class NewsArticleServiceImpl(
     private val newsArticleRepository: NewsArticleRepository,
-    private val imageService: ImageService,
+    private val amazonS3Service: AmazonS3Service,
     private val openAiService: OpenAiService,
-    @Value("\${image-dir.news-article}")
+    @Value("\${cloud.aws.s3.path.news-article}")
     private var imageUploadDir: String,
 ) : NewsArticleService {
     @Transactional
@@ -33,7 +33,7 @@ class NewsArticleServiceImpl(
         image: MultipartFile,
     ): NewsArticleResponse {
         val newsArticle = NewsArticleConverter.toEntity(request)
-        val savedFilePath = imageService.saveImageFile(image, imageUploadDir)
+        val savedFilePath = amazonS3Service.uploadFile(image, imageUploadDir)
         newsArticle.imageList +=
             ImageConverter.toEntityWithNews(
                 savedFilePath,

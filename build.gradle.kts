@@ -51,6 +51,8 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    // google cloud
+    implementation("io.awspring.cloud:spring-cloud-starter-aws:2.3.1")
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 }

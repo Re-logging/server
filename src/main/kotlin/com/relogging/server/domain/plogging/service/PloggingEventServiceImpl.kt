@@ -2,7 +2,6 @@ package com.relogging.server.domain.plogging.service
 
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.image.dto.ImageConverter
-import com.relogging.server.domain.image.service.ImageService
 import com.relogging.server.domain.plogging.dto.PloggingEventConverter
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
@@ -11,6 +10,7 @@ import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
+import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -21,8 +21,8 @@ import org.springframework.web.multipart.MultipartFile
 @Service
 class PloggingEventServiceImpl(
     private val ploggingEventRepository: PloggingEventRepository,
-    private val imageService: ImageService,
-    @Value("\${image-dir.plogging-event}")
+    private val amazonS3Service: AmazonS3Service,
+    @Value("\${cloud.aws.s3.path.plogging-event}")
     private var imageUploadDir: String,
 ) : PloggingEventService {
     @Transactional(readOnly = true)
@@ -47,7 +47,7 @@ class PloggingEventServiceImpl(
     ): PloggingEventResponse {
         val ploggingEvent: PloggingEvent = PloggingEventConverter.toEntity(request)
         if (image != null) {
-            val savedFilePath = this.imageService.saveImageFile(image, imageUploadDir)
+            val savedFilePath = this.amazonS3Service.uploadFile(image, imageUploadDir)
             ploggingEvent.imageList +=
                 ImageConverter.toEntityWithPloggingEvent(
                     savedFilePath,
