@@ -21,6 +21,7 @@ jobs:
       DATASOURCE_PASSWORD: ${{ secrets.LOCAL_DATASOURCE_PASSWORD }}
       OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
       FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
+      LOCAL_URL: ${{ secrets.DEV_LOCAL_URL }}
       GOOGLE_CLIENT_ID: ${{ secrets.DEV_GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.DEV_GOOGLE_CLIENT_SECRET }}
       GOOGLE_REDIRECT_URI: ${{ secrets.DEV_GOOGLE_REDIRECT_URI }}
@@ -98,6 +99,7 @@ jobs:
           echo "DATASOURCE_PASSWORD=${{ secrets.LOCAL_DATASOURCE_PASSWORD }}" >> .env
           echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
           echo "FRONT_URL=${{ secrets.DEV_FRONT_URL }}" >> .env
+          echo "LOCAL_URL=${{ secrets.DEV_LOCAL_URL }}" >> .env
           echo "GOOGLE_CLIENT_ID=${{ secrets.DEV_GOOGLE_CLIENT_ID }}" >> .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.DEV_GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_REDIRECT_URI=${{ secrets.DEV_GOOGLE_REDIRECT_URI }}" >> .env

@@ -13,7 +13,7 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
     companion object {
         const val OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request"
         const val REDIRECT_URI_PARAM_COOKIE_NAME = "redirect_uri"
-        private const val COOKIE_EXPIRE_SECONDS = 180
+        private const val COOKIE_EXPIRE_SECONDS = 600
     }
 
     override fun loadAuthorizationRequest(request: HttpServletRequest): OAuth2AuthorizationRequest? {
@@ -30,7 +30,11 @@ class HttpCookieOAuth2AuthorizationRequestRepository :
         request: HttpServletRequest,
         response: HttpServletResponse?,
     ): OAuth2AuthorizationRequest? {
-        return loadAuthorizationRequest(request)
+        val authRequest = loadAuthorizationRequest(request)
+        if (response != null) {
+            this.removeAuthorizationRequestCookies(request, response)
+        }
+        return authRequest
     }
 
     override fun saveAuthorizationRequest(
