@@ -55,11 +55,7 @@ jobs:
       DATASOURCE_URL: ${{ secrets.LOCAL_DATASOURCE_URL }}
       DATASOURCE_USERNAME: ${{ secrets.LOCAL_DATASOURCE_USERNAME }}
       DATASOURCE_PASSWORD: ${{ secrets.LOCAL_DATASOURCE_PASSWORD }}
-      NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
       OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
-      PLOGGING_EVENT_IMAGE_DIR: ${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}
-      PLOGGING_MEETUP_IMAGE_DIR: ${{ secrets.PLOGGING_MEETUP_IMAGE_DIR }}
-      CREW_IMAGE_DIR: ${{ secrets.CREW_IMAGE_DIR }}
       FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
       GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}
@@ -98,15 +94,6 @@ jobs:
   deploy:
     needs: [build, extract-version]
     runs-on: ubuntu-latest
-
-    # env:
-    #   MYSQL_DATABASE: ${{ secrets.PROD_MYSQL_DATABASE }}
-    #   MYSQL_ROOT_PASSWORD: ${{ secrets.PROD_MYSQL_ROOT_PASSWORD }}
-    #   DATASOURCE_URL: ${{ secrets.PROD_DATASOURCE_URL }}
-    #   DATASOURCE_USERNAME: ${{ secrets.PROD_DATASOURCE_USERNAME }}
-    #   DATASOURCE_PASSWORD: ${{ secrets.PROD_DATASOURCE_PASSWORD }}
-    #   NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
-    #   OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
     
     steps:
       - name: Checkout
@@ -141,10 +128,6 @@ jobs:
             echo "DATASOURCE_URL=${{ secrets.PROD_DATASOURCE_URL }}" >> .env
             echo "DATASOURCE_USERNAME=${{ secrets.PROD_DATASOURCE_USERNAME }}" >> .env
             echo "DATASOURCE_PASSWORD=${{ secrets.PROD_DATASOURCE_PASSWORD }}" >> .env
-            echo "NEWS_ARTICLE_IMAGE_DIR=${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}" >> .env
-            echo "PLOGGING_EVENT_IMAGE_DIR=${{ secrets.PLOGGING_EVENT_IMAGE_DIR }}" >> .env
-            echo "PLOGGING_MEETUP_IMAGE_DIR=${{ secrets.PLOGGING_MEETUP_IMAGE_DIR }}" >> .env
-            echo "CREW_IMAGE_DIR=${{ secrets.CREW_IMAGE_DIR }}" >> .env
             echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
             echo "FRONT_URL=${{ secrets.PROD_FRONT_URL }}" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}" >> .env
