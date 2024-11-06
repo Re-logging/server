@@ -71,6 +71,7 @@ image-dir:
   crew: ${CREW_IMAGE_DIR}
 
 cors-allow-url:
+  local: ${LOCAL_URL}
   front: ${FRONT_URL}
 
 jwt:
