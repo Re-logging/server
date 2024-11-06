@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
@@ -42,7 +43,7 @@ class SecurityConfig(
             httpBasic { disable() }
             csrf { disable() }
             cors { }
-//            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             authorizeRequests {
                 authorize("/swagger-ui/**", permitAll)
                 authorize("/v3/api-docs/**", permitAll)
@@ -61,9 +62,9 @@ class SecurityConfig(
             oauth2Login {
                 userInfoEndpoint { userService = customOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
-//                authorizationEndpoint {
-//                    authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
-//                }
+                authorizationEndpoint {
+                    authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
+                }
             }
         }
 
