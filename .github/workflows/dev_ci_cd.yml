@@ -25,6 +25,7 @@ jobs:
       PLOGGING_MEETUP_IMAGE_DIR: ${{ secrets.PLOGGING_MEETUP_IMAGE_DIR }}
       CREW_IMAGE_DIR: ${{ secrets.CREW_IMAGE_DIR }}
       FRONT_URL: ${{ secrets.DEV_FRONT_URL }}
+      LOCAL_URL: ${{ secrets.DEV_LOCAL_URL }}
       GOOGLE_CLIENT_ID: ${{ secrets.DEV_GOOGLE_CLIENT_ID }}
       GOOGLE_CLIENT_SECRET: ${{ secrets.DEV_GOOGLE_CLIENT_SECRET }}
       GOOGLE_REDIRECT_URI: ${{ secrets.DEV_GOOGLE_REDIRECT_URI }}
@@ -115,6 +116,7 @@ jobs:
           echo "CREW_IMAGE_DIR=${{ secrets.CREW_IMAGE_DIR }}" >> .env
           echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
           echo "FRONT_URL=${{ secrets.DEV_FRONT_URL }}" >> .env
+          echo "LOCAL_URL=${{ secrets.DEV_LOCAL_URL }}" >> .env
           echo "GOOGLE_CLIENT_ID=${{ secrets.DEV_GOOGLE_CLIENT_ID }}" >> .env
           echo "GOOGLE_CLIENT_SECRET=${{ secrets.DEV_GOOGLE_CLIENT_SECRET }}" >> .env
           echo "GOOGLE_REDIRECT_URI=${{ secrets.DEV_GOOGLE_REDIRECT_URI }}" >> .env
