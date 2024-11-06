@@ -32,6 +32,8 @@ jobs:
       VALIDITY_IN_SECONDS_REFRESH: ${{ secrets.VALIDITY_IN_SECONDS_REFRESH }}
       REDIS_HOST: ${{ secrets.DEV_REDIS_HOST }}
       REDIS_PORT: ${{ secrets.DEV_REDIS_PORT }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
 
     steps:
     - name: Checkout
@@ -109,6 +111,8 @@ jobs:
           echo "VALIDITY_IN_SECONDS_REFRESH=${{ secrets.VALIDITY_IN_SECONDS_REFRESH }}" >> .env
           echo "REDIS_HOST=${{ secrets.DEV_REDIS_HOST }}" >> .env
           echo "REDIS_PORT=${{ secrets.DEV_REDIS_PORT }}" >> .env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}" >> .env
           
           docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_DEV_IMAGE }}
           docker stop ${{ secrets.CONTAINER_NAME }} 
