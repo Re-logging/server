@@ -1,11 +1,9 @@
 package com.relogging.server.security.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.relogging.server.security.filter.AuthenticationExceptionFilter
 import com.relogging.server.security.filter.LoggingFilter
 import com.relogging.server.security.handler.JwtAccessDeniedHandler
 import com.relogging.server.security.handler.JwtAuthenticationEntryPoint
-import com.relogging.server.security.jwt.filter.JwtFilter
 import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.oauth.handler.OAuthAuthenticationSuccessHandler
 import com.relogging.server.security.oauth.repository.HttpCookieOAuth2AuthorizationRequestRepository
@@ -18,9 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -60,16 +56,16 @@ class SecurityConfig(
 //                authenticationEntryPoint = jwtAuthenticationEntryPoint
 //                accessDeniedHandler = jwtAccessDeniedHandler
 //            }
-            addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
-            addFilterBefore<JwtFilter>(AuthenticationExceptionFilter(objectMapper))
+//            addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
+//            addFilterBefore<JwtFilter>(AuthenticationExceptionFilter(objectMapper))
             oauth2Login {
                 userInfoEndpoint { userService = customOAuthUserService }
                 authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
-                authorizationEndpoint {
-                    authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
-                }
+//                authorizationEndpoint {
+//                    authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
+//                }
             }
-            addFilterBefore<OAuth2AuthorizationRequestRedirectFilter>(loggingFilter)
+//            addFilterBefore<OAuth2AuthorizationRequestRedirectFilter>(loggingFilter)
         }
 
         return http.build()
