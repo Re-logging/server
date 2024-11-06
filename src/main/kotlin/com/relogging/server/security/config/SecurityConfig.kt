@@ -2,6 +2,7 @@ package com.relogging.server.security.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.relogging.server.security.filter.AuthenticationExceptionFilter
+import com.relogging.server.security.filter.LoggingFilter
 import com.relogging.server.security.handler.JwtAccessDeniedHandler
 import com.relogging.server.security.handler.JwtAuthenticationEntryPoint
 import com.relogging.server.security.jwt.filter.JwtFilter
@@ -17,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
@@ -35,6 +37,7 @@ class SecurityConfig(
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val objectMapper: ObjectMapper,
     private val httpCookieOAuth2AuthorizationRequestRepository: HttpCookieOAuth2AuthorizationRequestRepository,
+    private val loggingFilter: LoggingFilter,
 ) {
     @Bean
     @Throws(Exception::class)
@@ -66,6 +69,7 @@ class SecurityConfig(
                     authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
                 }
             }
+            addFilterBefore<OAuth2AuthorizationRequestRedirectFilter>(loggingFilter)
         }
 
         return http.build()
