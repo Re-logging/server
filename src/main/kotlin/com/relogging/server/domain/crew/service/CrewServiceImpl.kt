@@ -17,7 +17,7 @@ class CrewServiceImpl(
     private val crewRepository: CrewRepository,
     private val userService: UserService,
     private val amazonS3Service: AmazonS3Service,
-    @Value("\${image-dir.crew}")
+    @Value("\${cloud.aws.s3.path.crew}")
     private var imageUploadDir: String,
 ) : CrewService {
     @Transactional
