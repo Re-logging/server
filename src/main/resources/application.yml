@@ -93,3 +93,8 @@ cloud:
     credentials:
       accessKey: ${AWS_ACCESS_KEY_ID}
       secretKey: ${AWS_SECRET_ACCESS_KEY}
+
+1365-api:
+  host: ${1365_API_HOST}
+  path: ${1365_API_PATH}
+  key: ${1365_API_KEY}
