@@ -33,6 +33,7 @@ class OAuthAuthenticationSuccessHandler(
         this.refreshTokenService.saveRefreshToken(user.id, refreshToken)
 
         val state = request.getParameter("state") ?: frontUrl
+        println("state: $state")
         val redirectUrl: String =
             UriComponentsBuilder.fromUriString("$state/oauth/success")
                 .queryParam("accessToken", accessToken)
