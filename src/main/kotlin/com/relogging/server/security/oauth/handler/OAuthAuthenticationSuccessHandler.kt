@@ -33,7 +33,7 @@ class OAuthAuthenticationSuccessHandler(
         this.refreshTokenService.saveRefreshToken(user.id, refreshToken)
 
         val redirectUrl: String =
-            UriComponentsBuilder.fromUriString("http://localhost:3000/oauth/success")
+            UriComponentsBuilder.fromUriString("$frontUrl/oauth/success")
                 .queryParam("accessToken", accessToken)
                 .build()
                 .toUriString()
