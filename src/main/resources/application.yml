@@ -81,11 +81,11 @@ cloud:
     s3:
       bucket: relogging
       path:
-        crew: ${S3_BASE_DIR}/crew
-        user: ${S3_BASE_DIR}/user
-        plogging-meetup: ${S3_BASE_DIR}/plogging-meetup
-        plogging-event: ${S3_BASE_DIR}/plogging-event
-        news-article: ${S3_BASE_DIR}/news-article
+        crew: ${S3_BASE_DIR}/image/crew
+        user: ${S3_BASE_DIR}/image/user
+        plogging-meetup: ${S3_BASE_DIR}/image/plogging-meetup
+        plogging-event: ${S3_BASE_DIR}/image/plogging-event
+        news-article: ${S3_BASE_DIR}/image/news-article
     region:
       static: ap-northeast-2
     stack:
