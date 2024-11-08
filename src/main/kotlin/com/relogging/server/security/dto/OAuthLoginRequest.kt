@@ -9,5 +9,5 @@ data class OAuthLoginRequest(
     @field:NotBlank
     val code: String,
     @field:NotBlank
-    val redirectUri: String
+    val redirectUri: String,
 )

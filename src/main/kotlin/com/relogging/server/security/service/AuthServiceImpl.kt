@@ -22,7 +22,6 @@ class AuthServiceImpl(
     private val refreshTokenService: RefreshTokenService,
     private val userService: UserService,
     private val webClient: WebClient,
-
     @Value("\${oauth.google.client-id}")
     private val googleClientId: String,
     @Value("\${oauth.google.client-secret}")
@@ -35,7 +34,6 @@ class AuthServiceImpl(
     private val googleTokenUri: String,
     @Value("\${oauth.google.user-info-uri}")
     private val googleUserInfoUri: String,
-
     @Value("\${oauth.kakao.client-id}")
     private val kakaoClientId: String,
     @Value("\${oauth.kakao.client-secret}")
@@ -58,26 +56,33 @@ class AuthServiceImpl(
         }
     }
 
-    override fun oAuthLogin(socialType: SocialType, code: String, redirectUri: String): User {
-        val accessToken = when (socialType) {
-            SocialType.GOOGLE -> this.getSocialAccessToken(
-                googleTokenUri,
-                code,
-                googleClientId,
-                googleClientSecret,
-                redirectUri,
-                googleGrantType
-            )
+    override fun oAuthLogin(
+        socialType: SocialType,
+        code: String,
+        redirectUri: String,
+    ): User {
+        val accessToken =
+            when (socialType) {
+                SocialType.GOOGLE ->
+                    this.getSocialAccessToken(
+                        googleTokenUri,
+                        code,
+                        googleClientId,
+                        googleClientSecret,
+                        redirectUri,
+                        googleGrantType,
+                    )
 
-            SocialType.KAKAO -> this.getSocialAccessToken(
-                kakaoTokenUri,
-                code,
-                kakaoClientId,
-                kakaoClientSecret,
-                redirectUri,
-                kakaoGrantType
-            )
-        }
+                SocialType.KAKAO ->
+                    this.getSocialAccessToken(
+                        kakaoTokenUri,
+                        code,
+                        kakaoClientId,
+                        kakaoClientSecret,
+                        redirectUri,
+                        kakaoGrantType,
+                    )
+            }
         val oAuthUserInfo = this.getSocialUserInfo(socialType, accessToken)
 
         var user: User? = this.userService.findUserByEmail(oAuthUserInfo.getEmail())
@@ -105,51 +110,56 @@ class AuthServiceImpl(
         clientId: String,
         clientSecret: String,
         redirectUri: String,
-        grantType: String
+        grantType: String,
     ): String {
-        val response = webClient.post()
-            .uri(tokenUri)
-            .bodyValue(
-                mapOf(
-                    "code" to code,
-                    "client_id" to clientId,
-                    "client_secret" to clientSecret,
-                    "redirect_uri" to redirectUri,
-                    "grant_type" to grantType
+        val response =
+            webClient.post()
+                .uri(tokenUri)
+                .bodyValue(
+                    mapOf(
+                        "code" to code,
+                        "client_id" to clientId,
+                        "client_secret" to clientSecret,
+                        "redirect_uri" to redirectUri,
+                        "grant_type" to grantType,
+                    ),
                 )
-            )
-            .retrieve()
-            .bodyToMono<Map<String, Any>>()
-            .block()
+                .retrieve()
+                .bodyToMono<Map<String, Any>>()
+                .block()
 
         return response?.get("access_token") as String
-
     }
 
-    override fun getSocialUserInfo(socialType: SocialType, accessToken: String): OAuthUserInfo =
+    override fun getSocialUserInfo(
+        socialType: SocialType,
+        accessToken: String,
+    ): OAuthUserInfo =
         when (socialType) {
             SocialType.GOOGLE -> this.getGoogleUserInfo(accessToken)
             SocialType.KAKAO -> this.getKakaoUserInfo(accessToken)
         }
 
     override fun getGoogleUserInfo(accessToken: String): GoogleUserInfo {
-        val response = webClient.get()
-            .uri("$googleUserInfoUri?access_token=$accessToken")
-            .retrieve()
-            .bodyToMono<Map<String, Any>>()
-            .block()
+        val response =
+            webClient.get()
+                .uri("$googleUserInfoUri?access_token=$accessToken")
+                .retrieve()
+                .bodyToMono<Map<String, Any>>()
+                .block()
 
         return GoogleUserInfo(response!!)
     }
 
     override fun getKakaoUserInfo(accessToken: String): KakaoUserInfo {
-        val response = webClient.get()
-            .uri(kakaoUserInfoUri)
-            .header("Authorization", "Bearer $accessToken")
-            .header("Content-type", "${MediaType.APPLICATION_JSON};charset=utf-8")
-            .retrieve()
-            .bodyToMono<Map<String, Any>>()
-            .block()
+        val response =
+            webClient.get()
+                .uri(kakaoUserInfoUri)
+                .header("Authorization", "Bearer $accessToken")
+                .header("Content-type", "${MediaType.APPLICATION_JSON};charset=utf-8")
+                .retrieve()
+                .bodyToMono<Map<String, Any>>()
+                .block()
 
         return KakaoUserInfo(response!!)
     }

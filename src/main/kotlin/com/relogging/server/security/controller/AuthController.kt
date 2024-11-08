@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController
 class AuthController(
     private val authService: AuthService,
     private val tokenProvider: TokenProvider,
-    private val refreshTokenService: RefreshTokenService
+    private val refreshTokenService: RefreshTokenService,
 ) {
     @Operation(summary = "Refresh 토큰 재발급 받기")
     @PostMapping("/reissue")
@@ -39,7 +39,7 @@ class AuthController(
     @PostMapping("/login/google")
     fun oAuthLogin(
         @RequestBody request: OAuthLoginRequest,
-        response: HttpServletResponse
+        response: HttpServletResponse,
     ): ResponseEntity<OAuthLoginResponse> {
         val user: User =
             this.authService.oAuthLogin(request.socialType, request.code, request.redirectUri)
@@ -58,8 +58,8 @@ class AuthController(
         return ResponseEntity.ok(
             OAuthLoginResponse(
                 accessToken,
-                UserResponse(user.name, user.email)
-            )
+                UserResponse(user.name, user.email),
+            ),
         )
     }
 }

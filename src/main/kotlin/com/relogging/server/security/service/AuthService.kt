@@ -9,7 +9,11 @@ import com.relogging.server.security.oauth.provider.OAuthUserInfo
 interface AuthService {
     fun reissue(refreshToken: String): String
 
-    fun oAuthLogin(socialType: SocialType, code: String, redirectUri: String): User
+    fun oAuthLogin(
+        socialType: SocialType,
+        code: String,
+        redirectUri: String,
+    ): User
 
     fun getSocialAccessToken(
         tokenUri: String,
@@ -17,10 +21,13 @@ interface AuthService {
         clientId: String,
         clientSecret: String,
         redirectUri: String,
-        grantType: String
+        grantType: String,
     ): String
 
-    fun getSocialUserInfo(socialType: SocialType, accessToken: String): OAuthUserInfo
+    fun getSocialUserInfo(
+        socialType: SocialType,
+        accessToken: String,
+    ): OAuthUserInfo
 
     fun getGoogleUserInfo(accessToken: String): GoogleUserInfo
 

@@ -45,7 +45,8 @@ class User(
 
 enum class SocialType(val value: String) {
     GOOGLE("GOOGLE"),
-    KAKAO("KAKAO");
+    KAKAO("KAKAO"),
+    ;
 
     companion object {
         private val mapping = entries.associateBy(SocialType::value)
