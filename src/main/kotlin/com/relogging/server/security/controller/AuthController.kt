@@ -2,6 +2,7 @@ package com.relogging.server.security.controller
 
 import com.relogging.server.domain.user.dto.UserResponse
 import com.relogging.server.domain.user.entity.User
+import com.relogging.server.global.util.CookieUtils
 import com.relogging.server.redis.service.RefreshTokenService
 import com.relogging.server.security.dto.OAuthLoginRequest
 import com.relogging.server.security.dto.OAuthLoginResponse
@@ -9,7 +10,6 @@ import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.service.AuthService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CookieValue
@@ -47,12 +47,11 @@ class AuthController(
         val refreshToken: String = this.tokenProvider.createRefreshToken(user.id)
         this.refreshTokenService.saveRefreshToken(user.id, refreshToken)
 
-        val cookie = Cookie("refreshToken", refreshToken)
-        cookie.maxAge = (this.tokenProvider.refreshExpirationTime / 1000).toInt()
-        cookie.isHttpOnly = true
-        cookie.path = "/"
-        cookie.secure = true
-
+        val cookie = CookieUtils.createHttpOnlySecureCookie(
+            "refreshToken",
+            refreshToken,
+            (this.tokenProvider.refreshExpirationTime / 1000).toInt()
+        )
         response.addCookie(cookie)
 
         return ResponseEntity.ok(

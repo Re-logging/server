@@ -1,6 +1,6 @@
 package com.relogging.server.security.oauth.repository
 
-import com.relogging.server.security.util.CookieUtils
+import com.relogging.server.global.util.CookieUtils
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository
