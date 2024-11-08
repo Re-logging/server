@@ -1,9 +1,12 @@
 package com.relogging.server.domain.user.entity
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.crew.entity.CrewApplication
 import com.relogging.server.domain.crew.entity.CrewMember
 import com.relogging.server.global.BaseEntity
+import com.relogging.server.global.exception.GlobalErrorCode
+import com.relogging.server.global.exception.GlobalException
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -40,9 +43,19 @@ class User(
     val commentList: MutableList<Comment> = mutableListOf(),
 ) : BaseEntity()
 
-enum class SocialType {
-    GOOGLE,
-    KAKAO,
+enum class SocialType(val value: String) {
+    GOOGLE("GOOGLE"),
+    KAKAO("KAKAO");
+
+    companion object {
+        private val mapping = entries.associateBy(SocialType::value)
+
+        @JsonCreator
+        @JvmStatic
+        fun fromValue(value: String): SocialType {
+            return mapping[value] ?: throw GlobalException(GlobalErrorCode.BAD_REQUEST)
+        }
+    }
 }
 
 enum class Role(val value: String) {

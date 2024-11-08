@@ -59,13 +59,13 @@ class SecurityConfig(
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
             addFilterBefore<JwtFilter>(AuthenticationExceptionFilter(objectMapper))
-            oauth2Login {
-                userInfoEndpoint { userService = customOAuthUserService }
-                authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
+//            oauth2Login {
+//                userInfoEndpoint { userService = customOAuthUserService }
+//                authenticationSuccessHandler = oAuthAuthenticationSuccessHandler
 //                authorizationEndpoint {
 //                    authorizationRequestRepository = httpCookieOAuth2AuthorizationRequestRepository
 //                }
-            }
+//            }
         }
 
         return http.build()
