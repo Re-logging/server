@@ -55,6 +55,8 @@ dependencies {
     implementation("io.awspring.cloud:spring-cloud-starter-aws:2.3.1")
 
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
 }
 
 kotlin {

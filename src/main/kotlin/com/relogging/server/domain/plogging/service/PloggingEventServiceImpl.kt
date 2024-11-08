@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 
 @Service
 class PloggingEventServiceImpl(
@@ -24,6 +26,13 @@ class PloggingEventServiceImpl(
     private val amazonS3Service: AmazonS3Service,
     @Value("\${cloud.aws.s3.path.plogging-event}")
     private var imageUploadDir: String,
+    private val webClient: WebClient,
+    @Value("\${1365-api.host}")
+    private val apiHost: String,
+    @Value("\${1365-api.path}")
+    private val apiPath: String,
+    @Value("\${1365-api.key}")
+    private val apiKey: String,
 ) : PloggingEventService {
     @Transactional(readOnly = true)
     override fun getPloggingEvent(id: Long): PloggingEventResponse {
@@ -95,4 +104,35 @@ class PloggingEventServiceImpl(
         event.commentList
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
+
+    @Transactional
+    override fun fetchPloggingEvent(): Mono<String> {
+        return this.webClient.get()
+            .uri { uriBuilder ->
+                uriBuilder
+                    .scheme("http")
+                    .host(apiHost)
+                    .path(apiPath)
+                    .queryParam("serviceKey", apiKey)
+                    .queryParam("progrmBgnde", "20230101")
+                    .queryParam("progrmEndde", "20251212")
+                    .queryParam("adultPosblAt", "Y")
+                    .queryParam("yngbgsPosblAt", "Y")
+                    .queryParam("numOfRows", "100")
+                    .queryParam("pageNo", "1")
+                    .queryParam("keyword", "플로깅")
+                    .queryParam("schCateGu", "all")
+                    .queryParam("actBeginTm", "00")
+                    .queryParam("actEndTm", "24")
+                    .queryParam("noticeBgnde", "20230101")
+                    .queryParam("noticeEndde", "20251212")
+                    .build()
+            }
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .onErrorResume { e ->
+                println("Error fetching data: ${e.message}")
+                Mono.empty()
+            }
+    }
 }

@@ -93,3 +93,8 @@ cloud:
     credentials:
       accessKey: ${AWS_ACCESS_KEY_ID}
       secretKey: ${AWS_SECRET_ACCESS_KEY}
+
+1365-api:
+  host: ${VOLUNTEER_API_HOST}
+  path: ${VOLUNTEER_API_PATH}
+  key: ${VOLUNTEER_API_KEY}
