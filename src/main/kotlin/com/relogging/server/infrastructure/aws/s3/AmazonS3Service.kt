@@ -32,7 +32,7 @@ class AmazonS3Service(
         objectMetadata.contentType = file.contentType
 
         val inputStream: InputStream = file.inputStream
-        val fileName = UUID.randomUUID().toString() + "_" + file.originalFilename
+        val fileName = uploadDir + "/" + UUID.randomUUID().toString() + "_" + file.originalFilename
 
         try {
             amazonS3Client.putObject(bucket, fileName, inputStream, objectMetadata)
