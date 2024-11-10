@@ -47,11 +47,12 @@ class AuthController(
         val refreshToken: String = this.tokenProvider.createRefreshToken(user.id)
         this.refreshTokenService.saveRefreshToken(user.id, refreshToken)
 
-        val cookie = CookieUtils.createHttpOnlySecureCookie(
-            "refreshToken",
-            refreshToken,
-            (this.tokenProvider.refreshExpirationTime / 1000).toInt()
-        )
+        val cookie =
+            CookieUtils.createHttpOnlySecureCookie(
+                "refreshToken",
+                refreshToken,
+                (this.tokenProvider.refreshExpirationTime / 1000).toInt(),
+            )
         response.addCookie(cookie)
 
         return ResponseEntity.ok(

@@ -64,7 +64,11 @@ object CookieUtils {
         return cls.cast(SerializationUtils.deserialize(Base64.getUrlDecoder().decode(cookie.value)))
     }
 
-    fun createHttpOnlySecureCookie(name: String, value: String, maxAge: Int): Cookie {
+    fun createHttpOnlySecureCookie(
+        name: String,
+        value: String,
+        maxAge: Int,
+    ): Cookie {
         val cookie = Cookie(name, value)
         cookie.maxAge = maxAge
         cookie.isHttpOnly = true
@@ -74,4 +78,3 @@ object CookieUtils {
         return cookie
     }
 }
-
