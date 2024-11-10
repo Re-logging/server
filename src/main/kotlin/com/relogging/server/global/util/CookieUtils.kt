@@ -1,4 +1,4 @@
-package com.relogging.server.security.util
+package com.relogging.server.global.util
 
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
@@ -62,5 +62,19 @@ object CookieUtils {
         cls: Class<T>,
     ): T {
         return cls.cast(SerializationUtils.deserialize(Base64.getUrlDecoder().decode(cookie.value)))
+    }
+
+    fun createHttpOnlySecureCookie(
+        name: String,
+        value: String,
+        maxAge: Int,
+    ): Cookie {
+        val cookie = Cookie(name, value)
+        cookie.maxAge = maxAge
+        cookie.isHttpOnly = true
+        cookie.path = "/"
+        cookie.secure = true
+
+        return cookie
     }
 }
