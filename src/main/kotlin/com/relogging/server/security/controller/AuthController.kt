@@ -36,7 +36,7 @@ class AuthController(
     }
 
     @Operation(summary = "OAuth 로그인")
-    @PostMapping("/login/google")
+    @PostMapping("/login")
     fun oAuthLogin(
         @RequestBody request: OAuthLoginRequest,
         response: HttpServletResponse,
