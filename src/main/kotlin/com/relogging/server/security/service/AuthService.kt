@@ -16,12 +16,19 @@ interface AuthService {
     ): User
 
     fun getSocialAccessToken(
-        tokenUri: String,
+        socialType: SocialType,
         code: String,
-        clientId: String,
-        clientSecret: String,
         redirectUri: String,
-        grantType: String,
+    ): String
+
+    fun getGoogleAccessToken(
+        code: String,
+        redirectUri: String,
+    ): String
+
+    fun getKakaoAccessToken(
+        code: String,
+        redirectUri: String,
     ): String
 
     fun getSocialUserInfo(

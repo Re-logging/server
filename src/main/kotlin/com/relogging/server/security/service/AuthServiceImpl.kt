@@ -13,6 +13,9 @@ import com.relogging.server.security.oauth.provider.OAuthUserInfo
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 
@@ -61,28 +64,7 @@ class AuthServiceImpl(
         code: String,
         redirectUri: String,
     ): User {
-        val accessToken =
-            when (socialType) {
-                SocialType.GOOGLE ->
-                    this.getSocialAccessToken(
-                        googleTokenUri,
-                        code,
-                        googleClientId,
-                        googleClientSecret,
-                        redirectUri,
-                        googleGrantType,
-                    )
-
-                SocialType.KAKAO ->
-                    this.getSocialAccessToken(
-                        kakaoTokenUri,
-                        code,
-                        kakaoClientId,
-                        kakaoClientSecret,
-                        redirectUri,
-                        kakaoGrantType,
-                    )
-            }
+        val accessToken = this.getSocialAccessToken(socialType, code, redirectUri)
         val oAuthUserInfo = this.getSocialUserInfo(socialType, accessToken)
 
         var user: User? = this.userService.findUserByEmail(oAuthUserInfo.getEmail())
@@ -105,27 +87,69 @@ class AuthServiceImpl(
     }
 
     override fun getSocialAccessToken(
-        tokenUri: String,
+        socialType: SocialType,
         code: String,
-        clientId: String,
-        clientSecret: String,
         redirectUri: String,
-        grantType: String,
+    ): String =
+        when (socialType) {
+            SocialType.GOOGLE -> this.getGoogleAccessToken(code, redirectUri)
+            SocialType.KAKAO -> this.getKakaoAccessToken(code, redirectUri)
+        }
+
+    override fun getKakaoAccessToken(
+        code: String,
+        redirectUri: String,
+    ): String {
+        val params: MultiValueMap<String, String> = LinkedMultiValueMap()
+        params.add("code", code)
+        params.add("client_id", kakaoClientId)
+        params.add("client_secret", kakaoClientSecret)
+        params.add("redirect_uri", redirectUri)
+        params.add("grant_type", kakaoGrantType)
+
+        val response =
+            webClient.post()
+                .uri(kakaoTokenUri)
+                .header(
+                    "Content-type",
+                    "application/x-www-form-urlencoded;charset=utf-8",
+                )
+                .body(
+                    BodyInserters.fromFormData(params),
+                )
+                .retrieve()
+                .bodyToMono<Map<String, Any>>()
+                .onErrorResume {
+                    it.printStackTrace()
+                    throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
+                }
+                .block()
+
+        return response?.get("access_token") as String
+    }
+
+    override fun getGoogleAccessToken(
+        code: String,
+        redirectUri: String,
     ): String {
         val response =
             webClient.post()
-                .uri(tokenUri)
+                .uri(googleTokenUri)
                 .bodyValue(
                     mapOf(
                         "code" to code,
-                        "client_id" to clientId,
-                        "client_secret" to clientSecret,
+                        "client_id" to googleClientId,
+                        "client_secret" to googleClientSecret,
                         "redirect_uri" to redirectUri,
-                        "grant_type" to grantType,
+                        "grant_type" to googleGrantType,
                     ),
                 )
                 .retrieve()
                 .bodyToMono<Map<String, Any>>()
+                .onErrorResume {
+                    it.printStackTrace()
+                    throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
+                }
                 .block()
 
         return response?.get("access_token") as String

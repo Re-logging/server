@@ -1,12 +1,11 @@
 package com.relogging.server.domain.user.entity
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonValue
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.crew.entity.CrewApplication
 import com.relogging.server.domain.crew.entity.CrewMember
 import com.relogging.server.global.BaseEntity
-import com.relogging.server.global.exception.GlobalErrorCode
-import com.relogging.server.global.exception.GlobalException
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -48,13 +47,15 @@ enum class SocialType(val value: String) {
     KAKAO("KAKAO"),
     ;
 
-    companion object {
-        private val mapping = entries.associateBy(SocialType::value)
+    @JsonValue
+    fun toValue(): String = value
 
+    companion object {
         @JsonCreator
         @JvmStatic
         fun fromValue(value: String): SocialType {
-            return mapping[value] ?: throw GlobalException(GlobalErrorCode.BAD_REQUEST)
+            return entries.find { it.value.equals(value, ignoreCase = true) }
+                ?: throw IllegalArgumentException("Unknown enum value: $value")
         }
     }
 }
