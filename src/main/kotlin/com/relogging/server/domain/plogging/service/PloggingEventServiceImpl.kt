@@ -6,6 +6,7 @@ import com.relogging.server.domain.plogging.dto.PloggingEventConverter
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringApiResponse
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
@@ -106,7 +107,7 @@ class PloggingEventServiceImpl(
             .sortedByDescending { it.createAt }
 
     @Transactional
-    override fun fetchPloggingEvent(): Mono<String> {
+    override fun fetchPloggingEvent(): Mono<VolunteeringApiResponse> {
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
@@ -129,10 +130,9 @@ class PloggingEventServiceImpl(
                     .build()
             }
             .retrieve()
-            .bodyToMono(String::class.java)
-            .onErrorResume { e ->
-                println("Error fetching data: ${e.message}")
-                Mono.empty()
+            .bodyToMono(VolunteeringApiResponse::class.java)
+            .onErrorResume {
+                throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
             }
     }
 }

@@ -3,6 +3,7 @@ package com.relogging.server.domain.plogging.service
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringApiResponse
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -27,5 +28,5 @@ interface PloggingEventService {
 
     fun getPrevPloggingEvent(currentId: Long): PloggingEventResponse
 
-    fun fetchPloggingEvent(): Mono<String>
+    fun fetchPloggingEvent(): Mono<VolunteeringApiResponse>
 }

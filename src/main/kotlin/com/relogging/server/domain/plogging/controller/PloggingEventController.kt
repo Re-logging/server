@@ -59,6 +59,9 @@ class PloggingEventController(
     @Operation(summary = "1365 API로 플로깅 정보 가져오기")
     @GetMapping("/1365Api")
     fun fetchPloggingEvents() {
-        this.ploggingEventService.fetchPloggingEvent().subscribe { result -> println(result) }
+        this.ploggingEventService.fetchPloggingEvent().subscribe {
+            if (it.body!!.totalCount!! > 0) {
+            }
+        }
     }
 }

@@ -19,6 +19,11 @@ enum class GlobalErrorCode(
 
     // 지자체 플로깅 관련
     PLOGGING_EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PLOGGING-EVENT-001", "플로깅 이벤트가 존재하지 않습니다"),
+    PLOGGING_EVENT_FETCH_ERROR(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "PLOGGING-EVENT-002",
+        "지자체 플로깅 정보를 가져오던 중 예상치 못한 에러가 발생하였습니다.",
+    ),
 
     // OAuth  관련
     OAUTH_SERVICE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "OAUTH-001", "OAuth 서비스 측에서 에러가 발생했습니다."),
