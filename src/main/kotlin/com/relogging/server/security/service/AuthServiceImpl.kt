@@ -124,6 +124,11 @@ class AuthServiceImpl(
                 .bodyToMono<Map<String, Any>>()
                 .onErrorResume {
                     it.printStackTrace()
+                    println(it.localizedMessage)
+                    println(it.cause)
+                    println(it.message)
+                    println(it.suppressed)
+                    println(it.stackTrace)
                     throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
                 }
                 .block()
@@ -151,6 +156,11 @@ class AuthServiceImpl(
                 .bodyToMono<Map<String, Any>>()
                 .onErrorResume {
                     it.printStackTrace()
+                    println(it.localizedMessage)
+                    println(it.cause)
+                    println(it.message)
+                    println(it.suppressed)
+                    println(it.stackTrace)
                     throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
                 }
                 .block()
