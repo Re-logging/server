@@ -41,6 +41,7 @@ class AuthController(
         @RequestBody request: OAuthLoginRequest,
         response: HttpServletResponse,
     ): ResponseEntity<OAuthLoginResponse> {
+        println("============ 로그인 왔냐? ==============")
         val user: User =
             this.authService.oAuthLogin(request.socialType, request.code, request.redirectUri)
         val accessToken: String = this.tokenProvider.createAccessToken(user.id!!)
