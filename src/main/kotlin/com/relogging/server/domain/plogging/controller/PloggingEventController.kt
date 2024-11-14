@@ -68,4 +68,18 @@ class PloggingEventController(
             }
         }
     }
+
+    @Operation(summary = "1365 API로 플로깅 디테일 정보 가져오기")
+    @GetMapping("/1365Api/{num}")
+    fun fetchPloggingEvent(
+        @PathVariable num: String,
+    ) {
+        this.ploggingEventService.fetchPloggingEvent(num).subscribe { apiResponse ->
+            if (apiResponse.body!!.totalCount!! > 0) {
+                apiResponse.body.items!!.item!!.map { item ->
+                    println(item)
+                }
+            }
+        }
+    }
 }

@@ -6,7 +6,8 @@ import com.relogging.server.domain.plogging.dto.PloggingEventConverter
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
-import com.relogging.server.domain.plogging.dto.VolunteeringApiResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringDetailApiResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringListApiResponse
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
@@ -74,8 +75,7 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) =
-        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -111,7 +111,7 @@ class PloggingEventServiceImpl(
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
 
-    override fun fetchPloggingEventList(): Mono<VolunteeringApiResponse> {
+    override fun fetchPloggingEventList(): Mono<VolunteeringListApiResponse> {
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
@@ -134,13 +134,13 @@ class PloggingEventServiceImpl(
                     .build()
             }
             .retrieve()
-            .bodyToMono(VolunteeringApiResponse::class.java)
+            .bodyToMono(VolunteeringListApiResponse::class.java)
             .onErrorResume {
                 throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
             }
     }
 
-    override fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringApiResponse> {
+    override fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringDetailApiResponse> {
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
@@ -152,7 +152,7 @@ class PloggingEventServiceImpl(
                     .build()
             }
             .retrieve()
-            .bodyToMono(VolunteeringApiResponse::class.java)
+            .bodyToMono(VolunteeringDetailApiResponse::class.java)
             .onErrorResume {
                 throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
             }
