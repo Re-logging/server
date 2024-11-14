@@ -28,5 +28,7 @@ interface PloggingEventService {
 
     fun getPrevPloggingEvent(currentId: Long): PloggingEventResponse
 
-    fun fetchPloggingEvent(): Mono<VolunteeringApiResponse>
+    fun fetchPloggingEventList(): Mono<VolunteeringApiResponse>
+
+    fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringApiResponse>
 }

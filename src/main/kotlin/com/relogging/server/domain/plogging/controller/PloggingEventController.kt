@@ -56,10 +56,10 @@ class PloggingEventController(
         return ResponseEntity.ok(response)
     }
 
-    @Operation(summary = "1365 API로 플로깅 정보 가져오기")
-    @GetMapping("/1365Api")
-    fun fetchPloggingEvents() {
-        this.ploggingEventService.fetchPloggingEvent().subscribe { apiResponse ->
+    @Operation(summary = "1365 API로 플로깅 리스트 정보 가져오기")
+    @GetMapping("/1365Api/list")
+    fun fetchPloggingEventList() {
+        this.ploggingEventService.fetchPloggingEventList().subscribe { apiResponse ->
             if (apiResponse.body!!.totalCount!! > 0) {
                 println(apiResponse.body.totalCount)
                 apiResponse.body.items!!.item!!.map { item ->

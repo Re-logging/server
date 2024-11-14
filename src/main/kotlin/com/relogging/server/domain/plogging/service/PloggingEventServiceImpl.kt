@@ -28,13 +28,17 @@ class PloggingEventServiceImpl(
     @Value("\${cloud.aws.s3.path.plogging-event}")
     private var imageUploadDir: String,
     private val webClient: WebClient,
-    @Value("\${1365-api.host}")
-    private val apiHost: String,
-    @Value("\${1365-api.path}")
-    private val apiPath: String,
     @Value("\${1365-api.key}")
     private val apiKey: String,
 ) : PloggingEventService {
+    companion object {
+        private const val API_HOST = "openapi.1365.go.kr"
+        private const val LIST_API_PATH =
+            "openapi/service/rest/VolunteerPartcptnService/getVltrSearchWordList"
+        private const val DETAIL_API_PATH =
+            "openapi/service/rest/VolunteerPartcptnService/getVltrPartcptnItem"
+    }
+
     @Transactional(readOnly = true)
     override fun getPloggingEvent(id: Long): PloggingEventResponse {
         val event = this.getPloggingEventById(id)
@@ -70,7 +74,8 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) =
+        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -106,14 +111,13 @@ class PloggingEventServiceImpl(
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
 
-    @Transactional
-    override fun fetchPloggingEvent(): Mono<VolunteeringApiResponse> {
+    override fun fetchPloggingEventList(): Mono<VolunteeringApiResponse> {
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
                     .scheme("http")
-                    .host(apiHost)
-                    .path(apiPath)
+                    .host(API_HOST)
+                    .path(LIST_API_PATH)
                     .queryParam("serviceKey", apiKey)
                     .queryParam("progrmBgnde", "20230101")
                     .queryParam("progrmEndde", "20251212")
@@ -127,6 +131,24 @@ class PloggingEventServiceImpl(
                     .queryParam("actEndTm", "24")
                     .queryParam("noticeBgnde", "20230101")
                     .queryParam("noticeEndde", "20251212")
+                    .build()
+            }
+            .retrieve()
+            .bodyToMono(VolunteeringApiResponse::class.java)
+            .onErrorResume {
+                throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
+            }
+    }
+
+    override fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringApiResponse> {
+        return this.webClient.get()
+            .uri { uriBuilder ->
+                uriBuilder
+                    .scheme("http")
+                    .host(API_HOST)
+                    .path(DETAIL_API_PATH)
+                    .queryParam("serviceKey", apiKey)
+                    .queryParam("progrmRegistNo", programNumber)
                     .build()
             }
             .retrieve()

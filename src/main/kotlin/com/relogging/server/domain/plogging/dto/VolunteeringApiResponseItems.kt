@@ -7,5 +7,5 @@ import jakarta.xml.bind.annotation.XmlElement
 @XmlAccessorType(XmlAccessType.FIELD)
 data class VolunteeringApiResponseItems(
     @field:XmlElement(name = "item")
-    val item: List<VolunteeringApiResponseItem>? = null,
+    val item: List<VolunteeringListApiResponseItem>? = null,
 )
