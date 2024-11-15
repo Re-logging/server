@@ -18,6 +18,7 @@ import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -77,7 +78,8 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) =
+        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -184,5 +186,19 @@ class PloggingEventServiceImpl(
     ): PloggingEvent {
         val ploggingEvent = PloggingEventConverter.toEntity(item, url)
         return this.ploggingEventRepository.save(ploggingEvent)
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
+    override fun fetchAndSavePloggingEvent() {
+        this.fetchPloggingEventList().subscribe { apiResponse ->
+            if (apiResponse.body!!.totalCount!! > 0) {
+                println(apiResponse.body.totalCount)
+                apiResponse.body.items!!.item!!.map { item ->
+                    println(item)
+                }
+                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
+            }
+        }
     }
 }

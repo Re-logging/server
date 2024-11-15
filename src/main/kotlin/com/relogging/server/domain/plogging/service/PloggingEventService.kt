@@ -41,4 +41,6 @@ interface PloggingEventService {
         item: VolunteeringDetailApiResponseItem,
         url: String,
     ): PloggingEvent
+
+    fun fetchAndSavePloggingEvent()
 }
