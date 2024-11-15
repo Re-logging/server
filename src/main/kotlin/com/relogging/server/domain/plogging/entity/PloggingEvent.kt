@@ -11,7 +11,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Entity
 @Table(name = "plogging_event")
@@ -21,11 +21,11 @@ class PloggingEvent(
     @field:Column(name = "plogging_event_id")
     val id: Long? = null,
     val title: String,
+    @field:Column(columnDefinition = "TEXT")
     val content: String,
-    val startDate: LocalDateTime,
-    val endDate: LocalDateTime,
+    val startDate: LocalDate,
+    val endDate: LocalDate,
     val location: String,
-    val isVolunteerWork: Boolean,
     val organizerName: String,
     val region: String,
     @field:Column(columnDefinition = "BIGINT DEFAULT 0")
@@ -34,8 +34,11 @@ class PloggingEvent(
     var imageList: List<Image> = ArrayList(),
     val managerName: String,
     val phoneNumber: String,
-    val participationTarget: String,
-    val volunteerScore: String,
+//    val participationTarget: String,
+//    val volunteerScore: String,
     @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL])
     val commentList: MutableList<Comment> = mutableListOf(),
+    @field:Column(unique = true)
+    val programNumber: String,
+    val url: String,
 ) : BaseEntity()

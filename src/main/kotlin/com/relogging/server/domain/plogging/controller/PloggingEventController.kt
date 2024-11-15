@@ -65,6 +65,7 @@ class PloggingEventController(
                 apiResponse.body.items!!.item!!.map { item ->
                     println(item)
                 }
+                this.ploggingEventService.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
             }
         }
     }

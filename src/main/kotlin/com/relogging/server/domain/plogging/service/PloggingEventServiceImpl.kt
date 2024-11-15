@@ -7,7 +7,9 @@ import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
 import com.relogging.server.domain.plogging.dto.VolunteeringDetailApiResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringDetailApiResponseItem
 import com.relogging.server.domain.plogging.dto.VolunteeringListApiResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringListApiResponseItem
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
@@ -156,5 +158,31 @@ class PloggingEventServiceImpl(
             .onErrorResume {
                 throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
             }
+    }
+
+    @Transactional
+    override fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>) {
+        val savedNumberList = this.ploggingEventRepository.findAllProgramNumber()
+        val newItemList =
+            itemList.filterNot {
+                it.programRegistrationNumber in savedNumberList
+            }
+
+        newItemList.forEach { item ->
+            this.fetchPloggingEvent(item.programRegistrationNumber!!).subscribe { res ->
+                if (res.body!!.totalCount == 1) {
+                    this.saveFetchedPloggingEvent(res.body.items!!.item!![0], item.url!!)
+                }
+            }
+        }
+    }
+
+    @Transactional
+    override fun saveFetchedPloggingEvent(
+        item: VolunteeringDetailApiResponseItem,
+        url: String,
+    ): PloggingEvent {
+        val ploggingEvent = PloggingEventConverter.toEntity(item, url)
+        return this.ploggingEventRepository.save(ploggingEvent)
     }
 }

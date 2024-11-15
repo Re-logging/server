@@ -34,8 +34,9 @@ object PloggingEventConverter {
             organizerName = ploggingEvent.organizerName,
             managerName = ploggingEvent.managerName,
             phoneNumber = ploggingEvent.phoneNumber,
-            participationTarget = ploggingEvent.participationTarget,
-            volunteerScore = ploggingEvent.volunteerScore,
+//            participationTarget = ploggingEvent.participationTarget,
+//            volunteerScore = ploggingEvent.volunteerScore,
+            url = ploggingEvent.url,
             imageList =
                 ploggingEvent.imageList.mapNotNull { entity ->
                     ImageConverter.toResponse(
@@ -52,12 +53,31 @@ object PloggingEventConverter {
             startDate = request.startDate,
             endDate = request.endDate,
             location = request.location,
-            isVolunteerWork = request.isVolunteerWork,
             organizerName = request.organizerName,
             region = request.region,
             managerName = request.managerName,
             phoneNumber = request.phoneNumber,
-            participationTarget = request.participationTarget,
-            volunteerScore = request.volunteerScore,
+//            participationTarget = request.participationTarget,
+//            volunteerScore = request.volunteerScore,
+            programNumber = request.programNumber,
+            url = request.url,
+        )
+
+    fun toEntity(
+        item: VolunteeringDetailApiResponseItem,
+        url: String,
+    ): PloggingEvent =
+        PloggingEvent(
+            title = item.programSubject!!,
+            content = item.content!!,
+            startDate = item.programBeginDate!!,
+            endDate = item.programEndDate!!,
+            location = item.actPlace!!,
+            organizerName = item.recruitmentOrganization!!,
+            region = item.registrationOrganization!!,
+            managerName = item.managerName!!,
+            phoneNumber = item.phoneNumber!!,
+            programNumber = item.programRegistrationNumber!!,
+            url = url,
         )
 }
