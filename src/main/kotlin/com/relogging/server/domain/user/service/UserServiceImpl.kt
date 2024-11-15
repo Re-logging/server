@@ -49,7 +49,10 @@ class UserServiceImpl(
         }
 
     @Transactional
-    override fun updateAccountInfo(id: Long, name: String): User {
+    override fun updateAccountInfo(
+        id: Long,
+        name: String,
+    ): User {
         val user = this.getUserById(id)
         user.name = name
 

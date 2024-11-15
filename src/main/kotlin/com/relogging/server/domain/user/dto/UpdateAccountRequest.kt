@@ -4,5 +4,5 @@ import jakarta.validation.constraints.NotBlank
 
 data class UpdateAccountRequest(
     @field:NotBlank
-    val name: String
+    val name: String,
 )

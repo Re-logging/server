@@ -6,6 +6,7 @@ import com.relogging.server.domain.user.dto.UserResponse
 import com.relogging.server.domain.user.service.UserService
 import com.relogging.server.security.details.PrincipalDetails
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
@@ -16,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/user")
+@Tag(name = "User", description = "유저 관련 API")
 class UserController(
-    private val userService: UserService
+    private val userService: UserService,
 ) {
     @Operation(summary = "내 유저 정보 가져오기")
     @GetMapping("/my-info")
@@ -33,7 +35,7 @@ class UserController(
     @PutMapping("/account")
     fun updateMyAccountInfo(
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
-        @RequestBody request: UpdateAccountRequest
+        @RequestBody request: UpdateAccountRequest,
     ): ResponseEntity<UserResponse> {
         val user = this.userService.updateAccountInfo(principalDetails.user.id!!, request.name)
 
