@@ -90,4 +90,32 @@ class AdminController(
         val response = ploggingMeetupService.getMeetup(id)
         return ResponseEntity.ok(response)
     }
+
+    @Operation(summary = "1365 API로 플로깅 리스트 정보 가져오기")
+    @GetMapping("/1365Api/list")
+    fun fetchPloggingEventList() {
+        this.ploggingEventService.fetchPloggingEventList().subscribe { apiResponse ->
+            if (apiResponse.body!!.totalCount!! > 0) {
+                println(apiResponse.body.totalCount)
+                apiResponse.body.items!!.item!!.map { item ->
+                    println(item)
+                }
+                this.ploggingEventService.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
+            }
+        }
+    }
+
+    @Operation(summary = "1365 API로 플로깅 디테일 정보 가져오기")
+    @GetMapping("/1365Api/{num}")
+    fun fetchPloggingEvent(
+        @PathVariable num: String,
+    ) {
+        this.ploggingEventService.fetchPloggingEvent(num).subscribe { apiResponse ->
+            if (apiResponse.body!!.totalCount!! > 0) {
+                apiResponse.body.items!!.item!!.map { item ->
+                    println(item)
+                }
+            }
+        }
+    }
 }

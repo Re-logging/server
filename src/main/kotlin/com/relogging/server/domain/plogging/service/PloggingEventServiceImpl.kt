@@ -6,6 +6,10 @@ import com.relogging.server.domain.plogging.dto.PloggingEventConverter
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringDetailApiResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringDetailApiResponseItem
+import com.relogging.server.domain.plogging.dto.VolunteeringListApiResponse
+import com.relogging.server.domain.plogging.dto.VolunteeringListApiResponseItem
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
@@ -14,6 +18,7 @@ import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -27,13 +32,17 @@ class PloggingEventServiceImpl(
     @Value("\${cloud.aws.s3.path.plogging-event}")
     private var imageUploadDir: String,
     private val webClient: WebClient,
-    @Value("\${1365-api.host}")
-    private val apiHost: String,
-    @Value("\${1365-api.path}")
-    private val apiPath: String,
     @Value("\${1365-api.key}")
     private val apiKey: String,
 ) : PloggingEventService {
+    companion object {
+        private const val API_HOST = "openapi.1365.go.kr"
+        private const val LIST_API_PATH =
+            "openapi/service/rest/VolunteerPartcptnService/getVltrSearchWordList"
+        private const val DETAIL_API_PATH =
+            "openapi/service/rest/VolunteerPartcptnService/getVltrPartcptnItem"
+    }
+
     @Transactional(readOnly = true)
     override fun getPloggingEvent(id: Long): PloggingEventResponse {
         val event = this.getPloggingEventById(id)
@@ -105,14 +114,13 @@ class PloggingEventServiceImpl(
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
 
-    @Transactional
-    override fun fetchPloggingEvent(): Mono<String> {
+    override fun fetchPloggingEventList(): Mono<VolunteeringListApiResponse> {
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
                     .scheme("http")
-                    .host(apiHost)
-                    .path(apiPath)
+                    .host(API_HOST)
+                    .path(LIST_API_PATH)
                     .queryParam("serviceKey", apiKey)
                     .queryParam("progrmBgnde", "20230101")
                     .queryParam("progrmEndde", "20251212")
@@ -129,10 +137,67 @@ class PloggingEventServiceImpl(
                     .build()
             }
             .retrieve()
-            .bodyToMono(String::class.java)
-            .onErrorResume { e ->
-                println("Error fetching data: ${e.message}")
-                Mono.empty()
+            .bodyToMono(VolunteeringListApiResponse::class.java)
+            .onErrorResume {
+                throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
             }
+    }
+
+    override fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringDetailApiResponse> {
+        return this.webClient.get()
+            .uri { uriBuilder ->
+                uriBuilder
+                    .scheme("http")
+                    .host(API_HOST)
+                    .path(DETAIL_API_PATH)
+                    .queryParam("serviceKey", apiKey)
+                    .queryParam("progrmRegistNo", programNumber)
+                    .build()
+            }
+            .retrieve()
+            .bodyToMono(VolunteeringDetailApiResponse::class.java)
+            .onErrorResume {
+                throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
+            }
+    }
+
+    @Transactional
+    override fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>) {
+        val savedNumberList = this.ploggingEventRepository.findAllProgramNumber()
+        val newItemList =
+            itemList.filterNot {
+                it.programRegistrationNumber in savedNumberList
+            }
+
+        newItemList.forEach { item ->
+            this.fetchPloggingEvent(item.programRegistrationNumber!!).subscribe { res ->
+                if (res.body!!.totalCount == 1) {
+                    this.saveFetchedPloggingEvent(res.body.items!!.item!![0], item.url!!)
+                }
+            }
+        }
+    }
+
+    @Transactional
+    override fun saveFetchedPloggingEvent(
+        item: VolunteeringDetailApiResponseItem,
+        url: String,
+    ): PloggingEvent {
+        val ploggingEvent = PloggingEventConverter.toEntity(item, url)
+        return this.ploggingEventRepository.save(ploggingEvent)
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
+    override fun fetchAndSavePloggingEvent() {
+        this.fetchPloggingEventList().subscribe { apiResponse ->
+            if (apiResponse.body!!.totalCount!! > 0) {
+                println(apiResponse.body.totalCount)
+                apiResponse.body.items!!.item!!.map { item ->
+                    println(item)
+                }
+                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
+            }
+        }
     }
 }
