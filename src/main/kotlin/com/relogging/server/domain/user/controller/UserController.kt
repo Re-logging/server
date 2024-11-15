@@ -1,6 +1,7 @@
 package com.relogging.server.domain.user.controller
 
 import com.relogging.server.domain.user.dto.UpdateAccountRequest
+import com.relogging.server.domain.user.dto.UpdateProfileRequest
 import com.relogging.server.domain.user.dto.UserConverter
 import com.relogging.server.domain.user.dto.UserResponse
 import com.relogging.server.domain.user.service.UserService
@@ -10,10 +11,12 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api/user")
@@ -35,9 +38,25 @@ class UserController(
     @PutMapping("/account")
     fun updateMyAccountInfo(
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
-        @RequestBody request: UpdateAccountRequest,
+        @RequestBody @Valid request: UpdateAccountRequest,
     ): ResponseEntity<UserResponse> {
         val user = this.userService.updateAccountInfo(principalDetails.user.id!!, request.name)
+
+        return ResponseEntity.ok(UserConverter.toResponse(user))
+    }
+
+    @Operation(summary = "내 프로필 정보 수정하기")
+    @PutMapping("/progile")
+    fun updateMyProfileInfo(
+        @AuthenticationPrincipal principalDetails: PrincipalDetails,
+        @ModelAttribute @Valid request: UpdateProfileRequest,
+    ): ResponseEntity<UserResponse> {
+        val user =
+            this.userService.updateProfileInfo(
+                principalDetails.user.id!!,
+                request.nickname,
+                request.image,
+            )
 
         return ResponseEntity.ok(UserConverter.toResponse(user))
     }

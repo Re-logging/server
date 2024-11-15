@@ -29,6 +29,13 @@ object ImageConverter {
             ploggingEvent = ploggingEvent,
         )
 
+    fun toEntity(filePath: String): Image =
+        Image(
+            url = filePath,
+            caption = null,
+            orderIndex = 0,
+        )
+
     fun toResponse(image: Image?): ImageResponse? {
         return image?.let {
             ImageResponse(

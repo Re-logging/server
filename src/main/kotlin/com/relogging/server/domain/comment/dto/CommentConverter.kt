@@ -43,7 +43,7 @@ object CommentConverter {
             content = if (entity.isDeleted) "삭제된 댓글입니다" else entity.content,
             authorId = entity.user.id!!,
             authorName = entity.user.nickname,
-            authorImageUrl = entity.user.profileImage,
+            authorImageUrl = entity.user.profileImage?.url,
             modifiedAt = entity.updateAt,
             replies = entity.childComment.map { toResponse(it) },
         )

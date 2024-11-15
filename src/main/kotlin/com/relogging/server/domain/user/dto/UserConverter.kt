@@ -8,6 +8,6 @@ object UserConverter {
             name = user.name,
             email = user.email,
             nickname = user.nickname,
-            image = user.profileImage,
+            image = user.profileImage?.url,
         )
 }
