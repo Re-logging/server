@@ -3,30 +3,17 @@ package com.relogging.server.infrastructure.scraping.service
 import com.relogging.server.domain.image.entity.Image
 import com.relogging.server.domain.newsArticle.entity.NewsArticle
 import com.relogging.server.domain.newsArticle.service.NewsArticleService
-import com.relogging.server.infrastructure.openai.service.OpenAiService
 import org.jsoup.Jsoup
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@Service("newsArticleScrapingService")
-class NewsArticleScrapingServiceImpl(
+@Service
+class NewsArticleNewsArticleScrapingServiceImpl(
     private val newsArticleService: NewsArticleService,
-    private val aiService: OpenAiService,
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"),
-) : ScrapingService {
-    @Scheduled(cron = "0 0 3 * * *") // 매일 오전 3시에 작업 수행
-    override fun scrapNewsArticle(): Int {
-        val newsArticleList = mutableListOf<NewsArticle>()
-        newsArticleList.addAll(scrapEconomyNews())
-        newsArticleList.addAll(scrapESGEconomy())
-        newsArticleList.map { it.aiSummary = aiService.aiSummary(it.content) }
-        newsArticleService.saveNewsArticles(newsArticleList)
-        return newsArticleList.size
-    }
-
-    private fun scrapEconomyNews(): List<NewsArticle> =
+) : NewsArticleScrapingService {
+    override fun scrapEconomyNews(): List<NewsArticle> =
         scrapNewsArticle(
             baseUrl = "https://www.hkbs.co.kr/",
             existingTitles = newsArticleService.findAllTitles().toSet(),
@@ -40,7 +27,7 @@ class NewsArticleScrapingServiceImpl(
             imageCaptionSelector = "article#article-view-content-div img",
         )
 
-    private fun scrapESGEconomy(): List<NewsArticle> =
+    override fun scrapESGEconomy(): List<NewsArticle> =
         scrapNewsArticle(
             baseUrl = "https://www.esgeconomy.com/",
             existingTitles = newsArticleService.findAllTitles().toSet(),
