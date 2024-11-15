@@ -91,7 +91,6 @@ class AdminController(
         return ResponseEntity.ok(response)
     }
 
-
     @Operation(summary = "1365 API로 플로깅 리스트 정보 가져오기")
     @GetMapping("/1365Api/list")
     fun fetchPloggingEventList() {
@@ -119,5 +118,4 @@ class AdminController(
             }
         }
     }
-
 }
