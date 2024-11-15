@@ -47,4 +47,12 @@ class UserServiceImpl(
         userRepository.findById(id).orElseThrow {
             throw GlobalException(GlobalErrorCode.USER_NOT_FOUND)
         }
+
+    @Transactional
+    override fun updateAccountInfo(id: Long, name: String): User {
+        val user = this.getUserById(id)
+        user.name = name
+
+        return user
+    }
 }

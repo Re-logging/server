@@ -17,4 +17,9 @@ interface UserService {
     ): User
 
     fun getUser(id: Long): User
+
+    fun updateAccountInfo(
+        id: Long,
+        name: String,
+    ): User
 }

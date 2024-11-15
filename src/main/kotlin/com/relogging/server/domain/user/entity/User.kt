@@ -24,7 +24,7 @@ class User(
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     @field:Column(name = "user_id")
     val id: Long? = null,
-    val name: String,
+    var name: String,
     @field:Column(unique = true)
     val email: String,
     val nickname: String,
