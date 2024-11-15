@@ -3,7 +3,7 @@ package com.relogging.server.security.controller
 import com.relogging.server.domain.user.dto.UserResponse
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.util.CookieUtils
-import com.relogging.server.redis.service.RefreshTokenService
+import com.relogging.server.infrastructure.redis.service.RefreshTokenService
 import com.relogging.server.security.dto.OAuthLoginRequest
 import com.relogging.server.security.dto.OAuthLoginResponse
 import com.relogging.server.security.jwt.provider.TokenProvider

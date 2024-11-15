@@ -1,4 +1,4 @@
-package com.relogging.server.redis.entity
+package com.relogging.server.infrastructure.redis.entity
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.redis.core.RedisHash

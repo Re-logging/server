@@ -1,7 +1,7 @@
-package com.relogging.server.redis.service
+package com.relogging.server.infrastructure.redis.service
 
-import com.relogging.server.redis.entity.RefreshToken
-import com.relogging.server.redis.repository.RefreshTokenRepository
+import com.relogging.server.infrastructure.redis.entity.RefreshToken
+import com.relogging.server.infrastructure.redis.repository.RefreshTokenRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
