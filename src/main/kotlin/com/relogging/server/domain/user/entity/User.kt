@@ -5,16 +5,19 @@ import com.fasterxml.jackson.annotation.JsonValue
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.crew.entity.CrewApplication
 import com.relogging.server.domain.crew.entity.CrewMember
+import com.relogging.server.domain.image.entity.Image
 import com.relogging.server.global.BaseEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 
 @Entity
@@ -24,11 +27,12 @@ class User(
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     @field:Column(name = "user_id")
     val id: Long? = null,
-    val name: String,
+    var name: String,
     @field:Column(unique = true)
     val email: String,
-    val nickname: String,
-    val profileImage: String? = null,
+    var nickname: String,
+    @field:OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    var profileImage: Image? = null,
     @field:Enumerated(EnumType.STRING)
     val socialType: SocialType,
     val phoneNumber: String? = null,

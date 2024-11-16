@@ -1,6 +1,6 @@
 package com.relogging.server.security.controller
 
-import com.relogging.server.domain.user.dto.UserResponse
+import com.relogging.server.domain.user.dto.UserConverter
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.util.CookieUtils
 import com.relogging.server.infrastructure.redis.service.RefreshTokenService
@@ -42,7 +42,6 @@ class AuthController(
         @RequestBody request: OAuthLoginRequest,
         response: HttpServletResponse,
     ): ResponseEntity<OAuthLoginResponse> {
-        println("============ 로그인 왔냐? ==============")
         val user: User =
             this.authService.oAuthLogin(request.socialType, request.code, request.redirectUri)
         val accessToken: String = this.tokenProvider.createAccessToken(user.id!!)
@@ -60,7 +59,7 @@ class AuthController(
         return ResponseEntity.ok(
             OAuthLoginResponse(
                 accessToken,
-                UserResponse(user.name, user.email),
+                UserConverter.toResponse(user),
             ),
         )
     }
@@ -75,7 +74,7 @@ class AuthController(
         return ResponseEntity.ok(
             OAuthLoginResponse(
                 accessToken,
-                UserResponse(user.name, user.email),
+                UserConverter.toResponse(user),
             ),
         )
     }

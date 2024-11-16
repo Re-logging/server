@@ -2,6 +2,7 @@ package com.relogging.server.domain.user.service
 
 import com.relogging.server.domain.user.entity.SocialType
 import com.relogging.server.domain.user.entity.User
+import org.springframework.web.multipart.MultipartFile
 
 interface UserService {
     fun findUserByEmail(email: String): User?
@@ -17,4 +18,17 @@ interface UserService {
     ): User
 
     fun getUser(id: Long): User
+
+    fun updateAccountInfo(
+        id: Long,
+        name: String,
+    ): User
+
+    fun updateProfileInfo(
+        id: Long,
+        nickname: String,
+        image: MultipartFile?,
+    ): User
+
+    fun deleteUser(id: Long)
 }

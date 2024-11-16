@@ -64,9 +64,6 @@ class AuthServiceImpl(
         code: String,
         redirectUri: String,
     ): User {
-        println("=========================")
-        println("code: $code, redirectUri: $redirectUri")
-        println("=========================")
         val accessToken = this.getSocialAccessToken(socialType, code, redirectUri)
         val oAuthUserInfo = this.getSocialUserInfo(socialType, accessToken)
 

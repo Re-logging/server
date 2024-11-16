@@ -30,13 +30,13 @@ class PloggingEvent(
     val region: String,
     @field:Column(columnDefinition = "BIGINT DEFAULT 0")
     var hits: Long = 0,
-    @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL])
+    @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL], orphanRemoval = true)
     var imageList: List<Image> = ArrayList(),
     val managerName: String,
     val phoneNumber: String,
 //    val participationTarget: String,
 //    val volunteerScore: String,
-    @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL])
+    @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL], orphanRemoval = true)
     val commentList: MutableList<Comment> = mutableListOf(),
     @field:Column(unique = true)
     val programNumber: String,
