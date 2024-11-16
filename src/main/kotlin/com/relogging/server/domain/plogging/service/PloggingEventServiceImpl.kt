@@ -78,7 +78,8 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) =
+        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -114,7 +115,7 @@ class PloggingEventServiceImpl(
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
 
-    override fun fetchPloggingEventList(): Mono<VolunteeringListApiResponse> {
+    override fun fetchPloggingEventList(keyword: String): Mono<VolunteeringListApiResponse> {
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
@@ -128,7 +129,7 @@ class PloggingEventServiceImpl(
                     .queryParam("yngbgsPosblAt", "Y")
                     .queryParam("numOfRows", "100")
                     .queryParam("pageNo", "1")
-                    .queryParam("keyword", "플로깅")
+                    .queryParam("keyword", keyword)
                     .queryParam("schCateGu", "all")
                     .queryParam("actBeginTm", "00")
                     .queryParam("actEndTm", "24")
@@ -190,7 +191,17 @@ class PloggingEventServiceImpl(
     @Transactional
     @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
     override fun fetchAndSavePloggingEvent() {
-        this.fetchPloggingEventList().subscribe { apiResponse ->
+        this.fetchPloggingEventList("플로깅").subscribe { apiResponse ->
+            if (apiResponse.body!!.totalCount!! > 0) {
+                println(apiResponse.body.totalCount)
+                apiResponse.body.items!!.item!!.map { item ->
+                    println(item)
+                }
+                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
+            }
+        }
+
+        this.fetchPloggingEventList("줍깅").subscribe { apiResponse ->
             if (apiResponse.body!!.totalCount!! > 0) {
                 println(apiResponse.body.totalCount)
                 apiResponse.body.items!!.item!!.map { item ->
