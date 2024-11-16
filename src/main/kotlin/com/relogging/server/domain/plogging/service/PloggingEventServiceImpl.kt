@@ -24,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Service
 class PloggingEventServiceImpl(
@@ -78,8 +81,7 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) =
-        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -115,7 +117,11 @@ class PloggingEventServiceImpl(
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
 
-    override fun fetchPloggingEventList(keyword: String): Mono<VolunteeringListApiResponse> {
+    @Transactional
+    override fun fetchPloggingEventList(keyword: String): Mono<Void> {
+        val oneYearAgoStart = this.getOneYearAgoStart()
+        val oneYearLaterEnd = this.getOneYearLaterEnd()
+
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
@@ -123,8 +129,8 @@ class PloggingEventServiceImpl(
                     .host(API_HOST)
                     .path(LIST_API_PATH)
                     .queryParam("serviceKey", apiKey)
-                    .queryParam("progrmBgnde", "20230101")
-                    .queryParam("progrmEndde", "20251212")
+                    .queryParam("progrmBgnde", oneYearAgoStart)
+                    .queryParam("progrmEndde", oneYearLaterEnd)
                     .queryParam("adultPosblAt", "Y")
                     .queryParam("yngbgsPosblAt", "Y")
                     .queryParam("numOfRows", "100")
@@ -133,15 +139,41 @@ class PloggingEventServiceImpl(
                     .queryParam("schCateGu", "all")
                     .queryParam("actBeginTm", "00")
                     .queryParam("actEndTm", "24")
-                    .queryParam("noticeBgnde", "20230101")
-                    .queryParam("noticeEndde", "20251212")
+                    .queryParam("noticeBgnde", oneYearAgoStart)
+                    .queryParam("noticeEndde", oneYearLaterEnd)
                     .build()
             }
             .retrieve()
             .bodyToMono(VolunteeringListApiResponse::class.java)
+            .flatMap { apiResponse ->
+                if (apiResponse.body!!.totalCount!! > 0) {
+                    println(apiResponse.body.totalCount)
+                    apiResponse.body.items!!.item!!.map { item ->
+                        println(item)
+                    }
+                    // 블로킹 작업을 별도의 스레드에서 실행
+                    Mono.fromCallable {
+                        this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
+                    }
+                        .subscribeOn(Schedulers.boundedElastic()) // 블로킹 작업 전용 스레드 풀
+                } else {
+                    Mono.empty()
+                }
+            }
+            .then()
             .onErrorResume {
                 throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
             }
+
+//        response.subscribe { apiResponse ->
+//            if (apiResponse.body!!.totalCount!! > 0) {
+//                println(apiResponse.body.totalCount)
+//                apiResponse.body.items!!.item!!.map { item ->
+//                    println(item)
+//                }
+//                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
+//            }
+//        }
     }
 
     override fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringDetailApiResponse> {
@@ -191,24 +223,47 @@ class PloggingEventServiceImpl(
     @Transactional
     @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
     override fun fetchAndSavePloggingEvent() {
-        this.fetchPloggingEventList("플로깅").subscribe { apiResponse ->
-            if (apiResponse.body!!.totalCount!! > 0) {
-                println(apiResponse.body.totalCount)
-                apiResponse.body.items!!.item!!.map { item ->
-                    println(item)
-                }
-                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
-            }
-        }
+        this.fetchPloggingEventList("플로깅")
+            .then(this.fetchPloggingEventList("줍깅"))
+            .subscribe()
+//        this.fetchPloggingEventList("플로깅").subscribe { apiResponse ->
+//            if (apiResponse.body!!.totalCount!! > 0) {
+//                println(apiResponse.body.totalCount)
+//                apiResponse.body.items!!.item!!.map { item ->
+//                    println(item)
+//                }
+//                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
+//            }
+//        }
+//
+//        this.fetchPloggingEventList("줍깅").subscribe { apiResponse ->
+//            if (apiResponse.body!!.totalCount!! > 0) {
+//                println(apiResponse.body.totalCount)
+//                apiResponse.body.items!!.item!!.map { item ->
+//                    println(item)
+//                }
+//                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
+//            }
+//        }
+    }
 
-        this.fetchPloggingEventList("줍깅").subscribe { apiResponse ->
-            if (apiResponse.body!!.totalCount!! > 0) {
-                println(apiResponse.body.totalCount)
-                apiResponse.body.items!!.item!!.map { item ->
-                    println(item)
-                }
-                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
-            }
-        }
+    private fun getOneYearAgoStart(): String {
+        val currentYear = LocalDate.now().year
+
+        val oneYearAgoStart = LocalDate.of(currentYear - 1, 1, 1)
+
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+        return oneYearAgoStart.format(formatter)
+    }
+
+    private fun getOneYearLaterEnd(): String {
+        val currentYear = LocalDate.now().year
+
+        val oneYearLaterEnd = LocalDate.of(currentYear + 1, 12, 31)
+
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+        return oneYearLaterEnd.format(formatter)
     }
 }
