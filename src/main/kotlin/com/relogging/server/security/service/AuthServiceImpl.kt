@@ -18,6 +18,7 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
+import reactor.core.publisher.Mono
 
 @Service
 class AuthServiceImpl(
@@ -110,6 +111,10 @@ class AuthServiceImpl(
         params.add("redirect_uri", redirectUri)
         params.add("grant_type", kakaoGrantType)
 
+        params.forEach {
+            println(it)
+        }
+
         val response =
             webClient.post()
                 .uri(kakaoTokenUri)
@@ -120,20 +125,31 @@ class AuthServiceImpl(
                 .body(
                     BodyInserters.fromFormData(params),
                 )
-                .retrieve()
-                .bodyToMono<Map<String, Any>>()
-                .onErrorResume {
-                    it.printStackTrace()
-                    println(it.localizedMessage)
-                    println(it.cause)
-                    println(it.message)
-                    println(it.suppressed)
-                    println(it.stackTrace)
-                    throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
+                .exchangeToMono { response ->
+                    if (response.statusCode().is2xxSuccessful) {
+                        response.bodyToMono(String::class.java) // 성공 응답 처리
+                    } else {
+                        response.bodyToMono(String::class.java).flatMap { errorBody ->
+                            Mono.error(RuntimeException("$errorBody"))
+                        }
+                    }
                 }
-                .block()
-
-        return response?.get("access_token") as String
+//                .retrieve()
+//                .bodyToMono<Map<String, Any>>()
+//                .onErrorResume {
+//                    it.printStackTrace()
+//                    println(it.localizedMessage)
+//                    println(it.cause)
+//                    println(it.message)
+//                    println(it.suppressed)
+//                    println(it.stackTrace)
+//                    throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
+//                }
+//                .block()
+//
+//        return response?.get( "access_token")
+        println(response.block())
+        return ""
     }
 
     override fun getGoogleAccessToken(
@@ -152,6 +168,15 @@ class AuthServiceImpl(
                         "grant_type" to googleGrantType,
                     ),
                 )
+//                .exchangeToMono { response ->
+//                    if (response.statusCode().is2xxSuccessful) {
+//                        response.bodyToMono(String::class.java) // 성공 응답 처리
+//                    } else {
+//                        response.bodyToMono(String::class.java).flatMap { errorBody ->
+//                            Mono.error(RuntimeException("$errorBody"))
+//                        }
+//                    }
+//                }
                 .retrieve()
                 .bodyToMono<Map<String, Any>>()
                 .onErrorResume {
@@ -166,6 +191,9 @@ class AuthServiceImpl(
                 .block()
 
         return response?.get("access_token") as String
+
+//        println(response.block())
+//        return ""
     }
 
     override fun getSocialUserInfo(
