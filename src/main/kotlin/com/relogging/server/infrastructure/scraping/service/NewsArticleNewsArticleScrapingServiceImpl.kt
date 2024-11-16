@@ -1,33 +1,20 @@
-package com.relogging.server.infrastructure.crawling.service
+package com.relogging.server.infrastructure.scraping.service
 
 import com.relogging.server.domain.image.entity.Image
 import com.relogging.server.domain.newsArticle.entity.NewsArticle
 import com.relogging.server.domain.newsArticle.service.NewsArticleService
-import com.relogging.server.infrastructure.openai.service.OpenAiService
 import org.jsoup.Jsoup
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@Service("newsArticleCrawlingService")
-class NewsArticleCrawlingServiceImpl(
+@Service
+class NewsArticleNewsArticleScrapingServiceImpl(
     private val newsArticleService: NewsArticleService,
-    private val aiService: OpenAiService,
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"),
-) : CrawlingService {
-    @Scheduled(cron = "0 0 3 * * *") // 매일 오전 3시에 작업 수행
-    override fun crawlAndSave(): Int {
-        val newsArticleList = mutableListOf<NewsArticle>()
-        newsArticleList.addAll(crawlEconomyNews())
-        newsArticleList.addAll(crawlESGEconomy())
-        newsArticleList.map { it.aiSummary = aiService.aiSummary(it.content) }
-        newsArticleService.saveNewsArticles(newsArticleList)
-        return newsArticleList.size
-    }
-
-    private fun crawlEconomyNews(): List<NewsArticle> =
-        crawlNewsArticle(
+) : NewsArticleScrapingService {
+    override fun scrapEconomyNews(): List<NewsArticle> =
+        scrapNewsArticle(
             baseUrl = "https://www.hkbs.co.kr/",
             existingTitles = newsArticleService.findAllTitles().toSet(),
             pageSize = 9,
@@ -40,8 +27,8 @@ class NewsArticleCrawlingServiceImpl(
             imageCaptionSelector = "article#article-view-content-div img",
         )
 
-    private fun crawlESGEconomy(): List<NewsArticle> =
-        crawlNewsArticle(
+    override fun scrapESGEconomy(): List<NewsArticle> =
+        scrapNewsArticle(
             baseUrl = "https://www.esgeconomy.com/",
             existingTitles = newsArticleService.findAllTitles().toSet(),
             pageSize = 12,
@@ -54,7 +41,7 @@ class NewsArticleCrawlingServiceImpl(
             imageCaptionSelector = "#article-view-content-div > div:nth-child(1) > figure > div > img",
         )
 
-    private fun crawlNewsArticle(
+    private fun scrapNewsArticle(
         baseUrl: String,
         existingTitles: Set<String>,
         pageSize: Int,

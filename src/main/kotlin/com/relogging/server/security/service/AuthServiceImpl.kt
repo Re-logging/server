@@ -5,7 +5,7 @@ import com.relogging.server.domain.user.entity.User
 import com.relogging.server.domain.user.service.UserService
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
-import com.relogging.server.redis.service.RefreshTokenService
+import com.relogging.server.infrastructure.redis.service.RefreshTokenService
 import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.oauth.provider.GoogleUserInfo
 import com.relogging.server.security.oauth.provider.KakaoUserInfo
