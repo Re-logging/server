@@ -6,6 +6,7 @@ import com.relogging.server.global.util.CookieUtils
 import com.relogging.server.redis.service.RefreshTokenService
 import com.relogging.server.security.dto.OAuthLoginRequest
 import com.relogging.server.security.dto.OAuthLoginResponse
+import com.relogging.server.security.dto.TempLoginRequest
 import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.service.AuthService
 import io.swagger.v3.oas.annotations.Operation
@@ -56,6 +57,21 @@ class AuthController(
             )
         response.addCookie(cookie)
 
+        return ResponseEntity.ok(
+            OAuthLoginResponse(
+                accessToken,
+                UserResponse(user.name, user.email),
+            ),
+        )
+    }
+
+    @Operation(summary = "임시 토큰 발급")
+    @PostMapping("/temp")
+    fun tempLogin(
+        @RequestBody request: TempLoginRequest,
+    ): ResponseEntity<OAuthLoginResponse> {
+        val user = this.authService.tempLogin(request.name, request.email)
+        val accessToken: String = this.tokenProvider.createAccessToken(user.id!!)
         return ResponseEntity.ok(
             OAuthLoginResponse(
                 accessToken,
