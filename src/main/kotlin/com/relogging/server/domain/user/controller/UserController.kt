@@ -65,7 +65,7 @@ class UserController(
     @Operation(summary = "계정 탈퇴하기")
     @DeleteMapping("/withdrawal")
     fun withdrawal(
-        @AuthenticationPrincipal principalDetails: PrincipalDetails
+        @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Unit> {
         this.userService.deleteUser(principalDetails.user.id!!)
         return ResponseEntity.ok().build()

@@ -30,7 +30,5 @@ interface UserService {
         image: MultipartFile?,
     ): User
 
-    fun deleteUser(
-        id: Long
-    )
+    fun deleteUser(id: Long)
 }
