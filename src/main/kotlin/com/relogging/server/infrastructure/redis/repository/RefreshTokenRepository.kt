@@ -1,6 +1,6 @@
-package com.relogging.server.redis.repository
+package com.relogging.server.infrastructure.redis.repository
 
-import com.relogging.server.redis.entity.RefreshToken
+import com.relogging.server.infrastructure.redis.entity.RefreshToken
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
 

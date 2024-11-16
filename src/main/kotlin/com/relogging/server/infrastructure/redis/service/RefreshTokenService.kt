@@ -1,6 +1,6 @@
-package com.relogging.server.redis.service
+package com.relogging.server.infrastructure.redis.service
 
-import com.relogging.server.redis.entity.RefreshToken
+import com.relogging.server.infrastructure.redis.entity.RefreshToken
 
 interface RefreshTokenService {
     fun saveRefreshToken(

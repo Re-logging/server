@@ -8,11 +8,10 @@ import com.relogging.server.domain.plogging.dto.PloggingEventResponse
 import com.relogging.server.domain.plogging.service.PloggingEventService
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
 import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
-import com.relogging.server.infrastructure.crawling.service.CrawlingService
+import com.relogging.server.infrastructure.scraping.service.NewsArticleScrapingService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -28,10 +27,7 @@ import org.springframework.web.multipart.MultipartFile
 @RequestMapping("/api/admin")
 @Tag(name = "Admin", description = "admin 컨트롤러")
 class AdminController(
-    @Qualifier("newsArticleCrawlingService")
-    private val newsArticleCrawlingService: CrawlingService,
-    @Qualifier("ploggingEventCrawlingService")
-    private val ploggingEventCrawlingService: CrawlingService,
+    private val newsArticleScrapingService: NewsArticleScrapingService,
     private val newsArticleService: NewsArticleService,
     private val ploggingEventService: PloggingEventService,
     private val ploggingMeetupService: PloggingMeetupService,
@@ -58,7 +54,8 @@ class AdminController(
     @Operation(summary = "뉴스 아티클 크롤링하기")
     @PostMapping("/newsArticles/crawl")
     fun startCrawling(): ResponseEntity<String> {
-        val count = newsArticleCrawlingService.crawlAndSave()
+        var count = newsArticleScrapingService.scrapEconomyNews().count()
+        count += newsArticleScrapingService.scrapEconomyNews().count()
         return ResponseEntity.ok("뉴스 아티클 $count 개 크롤링 성공했습니다")
     }
 
