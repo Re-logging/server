@@ -18,7 +18,6 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.core.publisher.Mono
 
 @Service
 class AuthServiceImpl(
@@ -125,31 +124,15 @@ class AuthServiceImpl(
                 .body(
                     BodyInserters.fromFormData(params),
                 )
-                .exchangeToMono { response ->
-                    if (response.statusCode().is2xxSuccessful) {
-                        response.bodyToMono(String::class.java) // 성공 응답 처리
-                    } else {
-                        response.bodyToMono(String::class.java).flatMap { errorBody ->
-                            Mono.error(RuntimeException("$errorBody"))
-                        }
-                    }
+                .retrieve()
+                .bodyToMono<Map<String, Any>>()
+                .onErrorResume {
+                    it.printStackTrace()
+                    throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
                 }
-//                .retrieve()
-//                .bodyToMono<Map<String, Any>>()
-//                .onErrorResume {
-//                    it.printStackTrace()
-//                    println(it.localizedMessage)
-//                    println(it.cause)
-//                    println(it.message)
-//                    println(it.suppressed)
-//                    println(it.stackTrace)
-//                    throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
-//                }
-//                .block()
-//
-//        return response?.get( "access_token")
-        println(response.block())
-        return ""
+                .block()
+
+        return response?.get("access_token") as String
     }
 
     override fun getGoogleAccessToken(
@@ -172,11 +155,6 @@ class AuthServiceImpl(
                 .bodyToMono<Map<String, Any>>()
                 .onErrorResume {
                     it.printStackTrace()
-                    println(it.localizedMessage)
-                    println(it.cause)
-                    println(it.message)
-                    println(it.suppressed)
-                    println(it.stackTrace)
                     throw GlobalException(GlobalErrorCode.UNAUTHORIZED)
                 }
                 .block()
