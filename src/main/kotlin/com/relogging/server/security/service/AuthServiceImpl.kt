@@ -197,4 +197,22 @@ class AuthServiceImpl(
 
         return KakaoUserInfo(response!!)
     }
+
+    override fun tempLogin(
+        name: String,
+        email: String,
+    ): User {
+        var user = this.userService.findUserByEmail(email)
+        if (user == null) {
+            user =
+                this.userService.createUserWithEssentialInfo(
+                    name,
+                    email,
+                    name,
+                    SocialType.GOOGLE,
+                    "asdf",
+                )
+        }
+        return user
+    }
 }

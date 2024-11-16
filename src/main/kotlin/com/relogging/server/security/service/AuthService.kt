@@ -39,4 +39,9 @@ interface AuthService {
     fun getGoogleUserInfo(accessToken: String): GoogleUserInfo
 
     fun getKakaoUserInfo(accessToken: String): KakaoUserInfo
+
+    fun tempLogin(
+        name: String,
+        email: String,
+    ): User
 }
