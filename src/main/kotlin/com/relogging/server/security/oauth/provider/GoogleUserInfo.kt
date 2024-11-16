@@ -6,7 +6,7 @@ class GoogleUserInfo(
     private val attributes: Map<String, Any>,
 ) : OAuthUserInfo {
     override fun getProviderId(): String {
-        return this.attributes["sub"] as String
+        return this.attributes["id"] as String
     }
 
     override fun getProvider(): SocialType {

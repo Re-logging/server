@@ -168,15 +168,6 @@ class AuthServiceImpl(
                         "grant_type" to googleGrantType,
                     ),
                 )
-//                .exchangeToMono { response ->
-//                    if (response.statusCode().is2xxSuccessful) {
-//                        response.bodyToMono(String::class.java) // 성공 응답 처리
-//                    } else {
-//                        response.bodyToMono(String::class.java).flatMap { errorBody ->
-//                            Mono.error(RuntimeException("$errorBody"))
-//                        }
-//                    }
-//                }
                 .retrieve()
                 .bodyToMono<Map<String, Any>>()
                 .onErrorResume {
@@ -191,9 +182,6 @@ class AuthServiceImpl(
                 .block()
 
         return response?.get("access_token") as String
-
-//        println(response.block())
-//        return ""
     }
 
     override fun getSocialUserInfo(
