@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PutMapping
@@ -46,7 +47,7 @@ class UserController(
     }
 
     @Operation(summary = "내 프로필 정보 수정하기")
-    @PutMapping("/progile")
+    @PutMapping("/profile")
     fun updateMyProfileInfo(
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
         @ModelAttribute @Valid request: UpdateProfileRequest,
@@ -59,5 +60,14 @@ class UserController(
             )
 
         return ResponseEntity.ok(UserConverter.toResponse(user))
+    }
+
+    @Operation(summary = "계정 탈퇴하기")
+    @DeleteMapping("/withdrawal")
+    fun withdrawal(
+        @AuthenticationPrincipal principalDetails: PrincipalDetails
+    ): ResponseEntity<Unit> {
+        this.userService.deleteUser(principalDetails.user.id!!)
+        return ResponseEntity.ok().build()
     }
 }

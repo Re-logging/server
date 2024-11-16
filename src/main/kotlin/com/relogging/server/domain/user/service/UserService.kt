@@ -29,4 +29,8 @@ interface UserService {
         nickname: String,
         image: MultipartFile?,
     ): User
+
+    fun deleteUser(
+        id: Long
+    )
 }

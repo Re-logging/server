@@ -74,7 +74,7 @@ class AuthController(
         return ResponseEntity.ok(
             OAuthLoginResponse(
                 accessToken,
-                UserResponse(user.name, user.email),
+                UserConverter.toResponse(user),
             ),
         )
     }

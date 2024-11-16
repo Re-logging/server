@@ -83,4 +83,8 @@ class UserServiceImpl(
 
         return user
     }
+
+    override fun deleteUser(id: Long) {
+        this.userRepository.deleteById(id)
+    }
 }
