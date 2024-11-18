@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Mono
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -187,7 +188,7 @@ class PloggingEventServiceImpl(
 //        }
     }
 
-    override fun fetchPloggingEvent(programNumber: String): VolunteeringDetailApiResponse? {
+    override fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringDetailApiResponse> {
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
@@ -203,7 +204,6 @@ class PloggingEventServiceImpl(
             .onErrorResume {
                 throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
             }
-            .block()
     }
 
     @Transactional
@@ -215,15 +215,15 @@ class PloggingEventServiceImpl(
             }
 
         newItemList.forEach { item ->
-            val detailItem = this.fetchPloggingEvent(item.programRegistrationNumber!!)
-            if (detailItem != null && detailItem.body!!.totalCount == 1) {
-                this.saveFetchedPloggingEvent(detailItem.body.items!!.item!![0], item.url!!)
-            }
-//            this.fetchPloggingEvent(item.programRegistrationNumber!!).subscribe { res ->
-//                if (res.body!!.totalCount == 1) {
-//                    this.saveFetchedPloggingEvent(res.body.items!!.item!![0], item.url!!)
-//                }
+//            val detailItem = this.fetchPloggingEvent(item.programRegistrationNumber!!)
+//            if (detailItem != null && detailItem.body!!.totalCount == 1) {
+//                this.saveFetchedPloggingEvent(detailItem.body.items!!.item!![0], item.url!!)
 //            }
+            this.fetchPloggingEvent(item.programRegistrationNumber!!).subscribe { res ->
+                if (res.body!!.totalCount == 1) {
+                    this.saveFetchedPloggingEvent(res.body.items!!.item!![0], item.url!!)
+                }
+            }
         }
     }
 

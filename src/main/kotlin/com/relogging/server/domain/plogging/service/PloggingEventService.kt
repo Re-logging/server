@@ -10,6 +10,7 @@ import com.relogging.server.domain.plogging.entity.PloggingEvent
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.web.multipart.MultipartFile
+import reactor.core.publisher.Mono
 
 interface PloggingEventService {
     fun getPloggingEvent(id: Long): PloggingEventResponse
@@ -31,7 +32,7 @@ interface PloggingEventService {
 
     fun fetchPloggingEventList(keyword: String)
 
-    fun fetchPloggingEvent(programNumber: String): VolunteeringDetailApiResponse?
+    fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringDetailApiResponse>
 
     fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>)
 
