@@ -81,7 +81,8 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) =
+        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -226,25 +227,13 @@ class PloggingEventServiceImpl(
         this.fetchPloggingEventList("플로깅")
             .then(this.fetchPloggingEventList("줍깅"))
             .subscribe()
-//        this.fetchPloggingEventList("플로깅").subscribe { apiResponse ->
-//            if (apiResponse.body!!.totalCount!! > 0) {
-//                println(apiResponse.body.totalCount)
-//                apiResponse.body.items!!.item!!.map { item ->
-//                    println(item)
-//                }
-//                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
-//            }
-//        }
-//
-//        this.fetchPloggingEventList("줍깅").subscribe { apiResponse ->
-//            if (apiResponse.body!!.totalCount!! > 0) {
-//                println(apiResponse.body.totalCount)
-//                apiResponse.body.items!!.item!!.map { item ->
-//                    println(item)
-//                }
-//                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
-//            }
-//        }
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 40 3 * * *") // 매일 오전 3시 40분에 작업 수행
+    override fun deleteExpiredPloggingEvents() {
+        val today = LocalDate.now()
+        this.ploggingEventRepository.deleteAllByNoticeEndDateBefore(today)
     }
 
     private fun getOneYearAgoStart(): String {

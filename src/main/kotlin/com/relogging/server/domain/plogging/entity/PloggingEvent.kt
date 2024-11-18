@@ -25,6 +25,7 @@ class PloggingEvent(
     val content: String,
     val startDate: LocalDate,
     val endDate: LocalDate,
+    val noticeEndDate: LocalDate,
     val location: String,
     val organizerName: String,
     val region: String,

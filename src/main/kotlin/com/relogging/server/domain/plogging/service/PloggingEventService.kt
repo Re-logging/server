@@ -42,4 +42,6 @@ interface PloggingEventService {
     ): PloggingEvent
 
     fun fetchAndSavePloggingEvent()
+
+    fun deleteExpiredPloggingEvents()
 }

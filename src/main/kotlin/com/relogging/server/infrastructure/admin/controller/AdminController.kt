@@ -109,4 +109,10 @@ class AdminController(
             }
         }
     }
+
+    @Operation(summary = "모집기한 넘은 데이터 삭제")
+    @DeleteMapping("/ploggingEvents")
+    fun deleteExpiredPloggingEvents() {
+        this.ploggingEventService.deleteExpiredPloggingEvents()
+    }
 }

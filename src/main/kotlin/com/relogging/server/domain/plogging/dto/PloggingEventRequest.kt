@@ -25,4 +25,5 @@ data class PloggingEventRequest(
     val imageCaption: String? = "",
     val programNumber: String,
     val url: String,
+    val noticeEndDate: LocalDate,
 )
