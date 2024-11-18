@@ -91,9 +91,12 @@ class AdminController(
     @Operation(summary = "1365 API로 플로깅 리스트 정보 가져오기")
     @GetMapping("/1365Api/list")
     fun fetchPloggingEventList() {
+//        this.ploggingEventService.fetchPloggingEventList("플로깅")
+//            .then(this.ploggingEventService.fetchPloggingEventList("줍깅"))
+//            .subscribe()
+
         this.ploggingEventService.fetchPloggingEventList("플로깅")
-            .then(this.ploggingEventService.fetchPloggingEventList("줍깅"))
-            .subscribe()
+        this.ploggingEventService.fetchPloggingEventList("줍깅")
     }
 
     @Operation(summary = "1365 API로 플로깅 디테일 정보 가져오기")
