@@ -94,23 +94,13 @@ class AdminController(
 //        this.ploggingEventService.fetchPloggingEventList("플로깅")
 //            .then(this.ploggingEventService.fetchPloggingEventList("줍깅"))
 //            .subscribe()
+        val startTime = System.currentTimeMillis()
 
         this.ploggingEventService.fetchPloggingEventList("플로깅")
         this.ploggingEventService.fetchPloggingEventList("줍깅")
-    }
 
-    @Operation(summary = "1365 API로 플로깅 디테일 정보 가져오기")
-    @GetMapping("/1365Api/{num}")
-    fun fetchPloggingEvent(
-        @PathVariable num: String,
-    ) {
-        this.ploggingEventService.fetchPloggingEvent(num).subscribe { apiResponse ->
-            if (apiResponse.body!!.totalCount!! > 0) {
-                apiResponse.body.items!!.item!!.map { item ->
-                    println(item)
-                }
-            }
-        }
+        val stopTime = System.currentTimeMillis()
+        println("running time: ${stopTime - startTime}")
     }
 
     @Operation(summary = "모집기한 넘은 데이터 삭제")
