@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -35,7 +34,7 @@ class PloggingMeetupController(
     @Operation(summary = "플로깅 모임 생성하기")
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createPloggingMeetup(
-        @ModelAttribute @Valid request: PloggingMeetupRequest,
+        @RequestPart @Valid request: PloggingMeetupRequest,
         @RequestPart(value = "image", required = false) image: MultipartFile?,
     ): ResponseEntity<Long> {
         val id = ploggingMeetupService.createMeetup(request, image)
