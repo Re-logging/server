@@ -55,10 +55,10 @@ class SecurityConfig(
                 authorize(HttpMethod.POST, "/api/auth/temp", permitAll)
                 authorize(anyRequest, authenticated)
             }
-//            exceptionHandling {
-//                authenticationEntryPoint = jwtAuthenticationEntryPoint
-//                accessDeniedHandler = jwtAccessDeniedHandler
-//            }
+            exceptionHandling {
+                authenticationEntryPoint = jwtAuthenticationEntryPoint
+                accessDeniedHandler = jwtAccessDeniedHandler
+            }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(JwtFilter(tokenProvider))
             addFilterBefore<JwtFilter>(AuthenticationExceptionFilter(objectMapper))
 //            oauth2Login {
