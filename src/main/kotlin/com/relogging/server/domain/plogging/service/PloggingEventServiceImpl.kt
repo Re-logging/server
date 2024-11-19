@@ -149,18 +149,16 @@ class PloggingEventServiceImpl(
             .bodyToMono(VolunteeringListApiResponse::class.java)
             .flatMap { response ->
                 if ((response.body?.totalCount ?: 0) > 0) {
-                    println("키워드 [$keyword] 총 ${response.body!!.totalCount!!}건 처리 중")
-                    val items = response.body.items?.item ?: emptyList()
+                    val items = response.body!!.items?.item ?: emptyList()
 
                     // 새 데이터를 필터링하고 저장
                     saveFetchedPloggingEventList(items)
                 } else {
-                    println("키워드 [$keyword] 처리할 데이터가 없습니다.")
                     Mono.empty<Void>()
                 }
             }
             .onErrorResume { error ->
-                println("키워드 [$keyword] 호출 중 에러 발생: $error")
+                throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
                 Mono.empty()
             }
     }
@@ -224,10 +222,6 @@ class PloggingEventServiceImpl(
     override fun fetchAndSavePloggingEvent() {
         this.fetchPloggingEventList("플로깅")
             .then(this.fetchPloggingEventList("줍깅"))
-            .subscribe(
-                { println("모든 작업 완료") },
-                { error -> println("작업 중 에러 발생: $error") },
-            )
     }
 
     @Transactional
