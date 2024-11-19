@@ -82,8 +82,7 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) =
-        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -222,6 +221,7 @@ class PloggingEventServiceImpl(
     override fun fetchAndSavePloggingEvent() {
         this.fetchPloggingEventList("플로깅")
             .then(this.fetchPloggingEventList("줍깅"))
+            .subscribe()
     }
 
     @Transactional

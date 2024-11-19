@@ -98,7 +98,7 @@ class AdminController(
             .doOnTerminate {
                 val stopTime = System.currentTimeMillis()
                 println("모든 작업 완료. 실행 시간: ${stopTime - startTime} ms")
-            }
+            }.subscribe()
     }
 
     @Operation(summary = "모집기한 넘은 데이터 삭제")
