@@ -117,7 +117,7 @@ jobs:
             echo "VALIDITY_IN_SECONDS_REFRESH=${{ secrets.VALIDITY_IN_SECONDS_REFRESH }}" >> .env
             echo "REDIS_HOST=${{ secrets.DEV_REDIS_HOST }}" >> .env
             echo "REDIS_PORT=${{ secrets.DEV_REDIS_PORT }}" >> .env
-            echo "AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}" >> .env
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.DEV_AWS_ACCESS_KEY_ID }}" >> .env
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}" >> .env
             echo "VOLUNTEER_API_HOST=${{ secrets.VOLUNTEER_API_HOST }}" >> .env
             echo "VOLUNTEER_API_PATH=${{ secrets.VOLUNTEER_API_PATH }}" >> .env
