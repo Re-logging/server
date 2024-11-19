@@ -29,5 +29,4 @@ class PloggingMeetupRequest(
     @field:NotBlank
     val contactNumber: String,
     val registrationLink: String?,
-    val image: MultipartFile?,
 )
