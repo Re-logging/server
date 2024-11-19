@@ -97,10 +97,18 @@ class AdminController(
         val startTime = System.currentTimeMillis()
 
         this.ploggingEventService.fetchPloggingEventList("플로깅")
-        this.ploggingEventService.fetchPloggingEventList("줍깅")
+            .then(this.ploggingEventService.fetchPloggingEventList("줍깅"))
+            .doOnTerminate {
+                val stopTime = System.currentTimeMillis()
+                println("모든 작업 완료. 실행 시간: ${stopTime - startTime} ms")
+            }
+            .subscribe(
+                { println("모든 작업 완료") },
+                { error -> println("작업 중 에러 발생: $error") },
+            )
 
-        val stopTime = System.currentTimeMillis()
-        println("running time: ${stopTime - startTime}")
+//        val stopTime = System.currentTimeMillis()
+//        println("running time: ${stopTime - startTime}")
     }
 
     @Operation(summary = "모집기한 넘은 데이터 삭제")

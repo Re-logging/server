@@ -23,7 +23,9 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -80,7 +82,8 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) =
+        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -117,75 +120,49 @@ class PloggingEventServiceImpl(
             .sortedByDescending { it.createAt }
 
     @Transactional
-    override fun fetchPloggingEventList(keyword: String) {
+    override fun fetchPloggingEventList(keyword: String): Mono<Void> {
         val oneYearAgoStart = this.getOneYearAgoStart()
         val oneYearLaterEnd = this.getOneYearLaterEnd()
 
-        val response =
-            this.webClient.get()
-                .uri { uriBuilder ->
-                    uriBuilder
-                        .scheme("http")
-                        .host(API_HOST)
-                        .path(LIST_API_PATH)
-                        .queryParam("serviceKey", apiKey)
-                        .queryParam("progrmBgnde", oneYearAgoStart)
-                        .queryParam("progrmEndde", oneYearLaterEnd)
-                        .queryParam("adultPosblAt", "Y")
-                        .queryParam("yngbgsPosblAt", "Y")
-                        .queryParam("numOfRows", "100")
-                        .queryParam("pageNo", "1")
-                        .queryParam("keyword", keyword)
-                        .queryParam("schCateGu", "all")
-                        .queryParam("actBeginTm", "00")
-                        .queryParam("actEndTm", "24")
-                        .queryParam("noticeBgnde", oneYearAgoStart)
-                        .queryParam("noticeEndde", oneYearLaterEnd)
-                        .build()
+        return this.webClient.get()
+            .uri { uriBuilder ->
+                uriBuilder
+                    .scheme("http")
+                    .host(API_HOST)
+                    .path(LIST_API_PATH)
+                    .queryParam("serviceKey", apiKey)
+                    .queryParam("progrmBgnde", oneYearAgoStart)
+                    .queryParam("progrmEndde", oneYearLaterEnd)
+                    .queryParam("adultPosblAt", "Y")
+                    .queryParam("yngbgsPosblAt", "Y")
+                    .queryParam("numOfRows", "100")
+                    .queryParam("pageNo", "1")
+                    .queryParam("keyword", keyword)
+                    .queryParam("schCateGu", "all")
+                    .queryParam("actBeginTm", "00")
+                    .queryParam("actEndTm", "24")
+                    .queryParam("noticeBgnde", oneYearAgoStart)
+                    .queryParam("noticeEndde", oneYearLaterEnd)
+                    .build()
+            }
+            .retrieve()
+            .bodyToMono(VolunteeringListApiResponse::class.java)
+            .flatMap { response ->
+                if ((response.body?.totalCount ?: 0) > 0) {
+                    println("키워드 [$keyword] 총 ${response.body!!.totalCount!!}건 처리 중")
+                    val items = response.body.items?.item ?: emptyList()
+
+                    // 새 데이터를 필터링하고 저장
+                    saveFetchedPloggingEventList(items)
+                } else {
+                    println("키워드 [$keyword] 처리할 데이터가 없습니다.")
+                    Mono.empty<Void>()
                 }
-                .retrieve()
-                .bodyToMono(VolunteeringListApiResponse::class.java)
-                .onErrorResume {
-                    throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
-                }
-                .block()
-
-        if (response == null) {
-            throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
-        }
-
-        val totalCount = response.body!!.totalCount!!
-        if (totalCount > 0) {
-            println(totalCount)
-            val items = response.body.items!!.item!!
-            items.forEach { println(it) }
-            this.saveFetchedPloggingEventList(items)
-        }
-
-//            .publishOn(Schedulers.boundedElastic())
-//            .doOnNext { apiResponse ->
-//                val totalCount = apiResponse.body!!.totalCount!!
-//                if (totalCount > 0) {
-//                    println(totalCount)
-//                    val items = apiResponse.body.items?.item ?: emptyList()
-//                    items.forEach { println(it) }
-//                    this.saveFetchedPloggingEventList(items)
-//                }
-//            }
-//            .then()
-//            .onErrorResume {
-//                throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
-//            }
-
-//        response.subscribe { apiResponse ->
-//            if (apiResponse.body!!.totalCount!! > 0) {
-//                println(apiResponse.body.totalCount)
-//                apiResponse.body.items!!.item!!.map { item ->
-//                    println(item)
-//                }
-//                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
-//            }
-//        }
+            }
+            .onErrorResume { error ->
+                println("키워드 [$keyword] 호출 중 에러 발생: $error")
+                Mono.empty()
+            }
     }
 
     override fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringDetailApiResponse> {
@@ -207,43 +184,50 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>) {
-        val savedNumberList = this.ploggingEventRepository.findAllProgramNumber()
-        val newItemList =
-            itemList.filterNot {
-                it.programRegistrationNumber in savedNumberList
-            }
-
-        newItemList.forEach { item ->
-//            val detailItem = this.fetchPloggingEvent(item.programRegistrationNumber!!)
-//            if (detailItem != null && detailItem.body!!.totalCount == 1) {
-//                this.saveFetchedPloggingEvent(detailItem.body.items!!.item!![0], item.url!!)
-//            }
-            this.fetchPloggingEvent(item.programRegistrationNumber!!).subscribe { res ->
-                if (res.body!!.totalCount == 1) {
-                    this.saveFetchedPloggingEvent(res.body.items!!.item!![0], item.url!!)
-                }
-            }
+    override fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>): Mono<Void> {
+        return Mono.fromCallable {
+            // 블로킹 호출 처리
+            this.ploggingEventRepository.findAllProgramNumber()
         }
+            .subscribeOn(Schedulers.boundedElastic()) // 블로킹 작업 실행을 위한 스레드 풀 설정
+            .map { savedNumberList ->
+                itemList.filterNot { it.programRegistrationNumber in savedNumberList }
+            }
+            .flatMapMany { newItemList -> Flux.fromIterable(newItemList) }
+            .flatMap { item ->
+                this.fetchPloggingEvent(item.programRegistrationNumber!!)
+                    .flatMap { res ->
+                        if (res.body!!.totalCount == 1) {
+                            this.saveFetchedPloggingEvent(res.body.items!!.item!![0], item.url!!)
+                        } else {
+                            Mono.empty()
+                        }
+                    }
+            }
+            .then()
     }
 
     @Transactional
     override fun saveFetchedPloggingEvent(
         item: VolunteeringDetailApiResponseItem,
         url: String,
-    ): PloggingEvent {
-        val ploggingEvent = PloggingEventConverter.toEntity(item, url)
-        return this.ploggingEventRepository.save(ploggingEvent)
+    ): Mono<PloggingEvent> {
+        return Mono.fromCallable {
+            val ploggingEvent = PloggingEventConverter.toEntity(item, url)
+            this.ploggingEventRepository.save(ploggingEvent)
+        }
+            .subscribeOn(Schedulers.boundedElastic()) // 블로킹 작업 처리
     }
 
     @Transactional
     @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
     override fun fetchAndSavePloggingEvent() {
         this.fetchPloggingEventList("플로깅")
-        this.fetchPloggingEventList("줍깅")
-
-//            .then(this.fetchPloggingEventList("줍깅"))
-//            .subscribe()
+            .then(this.fetchPloggingEventList("줍깅"))
+            .subscribe(
+                { println("모든 작업 완료") },
+                { error -> println("작업 중 에러 발생: $error") },
+            )
     }
 
     @Transactional

@@ -30,16 +30,16 @@ interface PloggingEventService {
 
     fun getPrevPloggingEvent(currentId: Long): PloggingEventResponse
 
-    fun fetchPloggingEventList(keyword: String)
+    fun fetchPloggingEventList(keyword: String): Mono<Void>
 
     fun fetchPloggingEvent(programNumber: String): Mono<VolunteeringDetailApiResponse>
 
-    fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>)
+    fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>): Mono<Void>
 
     fun saveFetchedPloggingEvent(
         item: VolunteeringDetailApiResponseItem,
         url: String,
-    ): PloggingEvent
+    ): Mono<PloggingEvent>
 
     fun fetchAndSavePloggingEvent()
 
