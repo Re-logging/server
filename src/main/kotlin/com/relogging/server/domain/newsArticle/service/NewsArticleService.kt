@@ -16,7 +16,10 @@ interface NewsArticleService {
 
     fun findAllTitles(): List<String>
 
-    fun getNewsArticle(id: Long): NewsArticleResponse
+    fun getNewsArticle(
+        id: Long,
+        increaseHits: Boolean = false,
+    ): NewsArticleResponse
 
     fun getPrevNewsArticle(id: Long): NewsArticleResponse
 

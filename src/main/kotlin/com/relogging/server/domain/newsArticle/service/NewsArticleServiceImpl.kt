@@ -53,8 +53,17 @@ class NewsArticleServiceImpl(
     @Transactional(readOnly = true)
     override fun findAllTitles(): List<String> = newsArticleRepository.findAllTitles()
 
-    @Transactional(readOnly = true)
-    override fun getNewsArticle(id: Long): NewsArticleResponse = NewsArticleConverter.toResponse(getNewsArticleById(id))
+    @Transactional
+    override fun getNewsArticle(
+        id: Long,
+        increaseHits: Boolean,
+    ): NewsArticleResponse {
+        val newsArticle = getNewsArticleById(id)
+        if (increaseHits) {
+            newsArticle.hits++
+        }
+        return NewsArticleConverter.toResponse(newsArticle)
+    }
 
     @Transactional(readOnly = true)
     override fun getPrevNewsArticle(id: Long): NewsArticleResponse =
