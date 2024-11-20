@@ -2,7 +2,6 @@ package com.relogging.server.domain.ploggingMeetup.dto
 
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
-import org.springframework.web.multipart.MultipartFile
 import java.time.LocalDateTime
 
 class PloggingMeetupRequest(
@@ -29,5 +28,4 @@ class PloggingMeetupRequest(
     @field:NotBlank
     val contactNumber: String,
     val registrationLink: String?,
-    val image: MultipartFile?,
 )
