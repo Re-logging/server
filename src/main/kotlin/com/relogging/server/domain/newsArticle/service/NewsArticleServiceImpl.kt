@@ -53,24 +53,37 @@ class NewsArticleServiceImpl(
     @Transactional(readOnly = true)
     override fun findAllTitles(): List<String> = newsArticleRepository.findAllTitles()
 
-    @Transactional(readOnly = true)
-    override fun getNewsArticle(id: Long): NewsArticleResponse = NewsArticleConverter.toResponse(getNewsArticleById(id))
+    @Transactional
+    override fun getNewsArticle(
+        id: Long,
+        increaseHits: Boolean,
+    ): NewsArticleResponse {
+        val newsArticle = getNewsArticleById(id)
+        if (increaseHits) {
+            newsArticle.hits++
+        }
+        return NewsArticleConverter.toResponse(newsArticle)
+    }
 
-    @Transactional(readOnly = true)
-    override fun getPrevNewsArticle(id: Long): NewsArticleResponse =
-        NewsArticleConverter.toResponse(
+    @Transactional
+    override fun getPrevNewsArticle(id: Long): NewsArticleResponse {
+        val newsArticle =
             newsArticleRepository.findPrevArticle(id).orElseThrow {
                 throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND)
-            },
-        )
+            }
+        newsArticle.hits++
+        return NewsArticleConverter.toResponse(newsArticle)
+    }
 
-    @Transactional(readOnly = true)
-    override fun getNextNewsArticle(id: Long): NewsArticleResponse =
-        NewsArticleConverter.toResponse(
+    @Transactional
+    override fun getNextNewsArticle(id: Long): NewsArticleResponse {
+        val newsArticle =
             newsArticleRepository.findNextArticle(id).orElseThrow {
                 throw GlobalException(GlobalErrorCode.NEWS_ARTICLE_NOT_FOUND)
-            },
-        )
+            }
+        newsArticle.hits++
+        return NewsArticleConverter.toResponse(newsArticle)
+    }
 
     @Transactional(readOnly = true)
     override fun getNewsArticlePage(
