@@ -42,6 +42,9 @@ class PloggingMeetupServiceImpl(
             ploggingMeetupRepository.findById(id).orElseThrow {
                 throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
             }
+        if (increaseHits) {
+            meetup.hits++
+        }
         return PloggingMeetupConverter.toResponse(meetup, getRootComments(meetup))
     }
 

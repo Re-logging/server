@@ -4,5 +4,5 @@ import com.relogging.server.domain.user.dto.UserResponse
 
 data class OAuthLoginResponse(
     val accessToken: String,
-    val userResponse: UserResponse,
+    val userResponse: UserResponse?,
 )

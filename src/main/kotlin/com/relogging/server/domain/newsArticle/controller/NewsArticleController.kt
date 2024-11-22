@@ -23,7 +23,7 @@ class NewsArticleController(
     fun getNewsArticle(
         @PathVariable id: Long,
     ): ResponseEntity<NewsArticleResponse> {
-        val response: NewsArticleResponse = newsArticleService.getNewsArticle(id)
+        val response = newsArticleService.getNewsArticle(id, true)
         return ResponseEntity.ok(response)
     }
 
@@ -32,7 +32,7 @@ class NewsArticleController(
     fun getPrevNewsArticle(
         @PathVariable id: Long,
     ): ResponseEntity<NewsArticleResponse> {
-        val response: NewsArticleResponse = newsArticleService.getPrevNewsArticle(id)
+        val response = newsArticleService.getPrevNewsArticle(id)
         return ResponseEntity.ok(response)
     }
 
@@ -41,7 +41,7 @@ class NewsArticleController(
     fun getNextNewsArticle(
         @PathVariable id: Long,
     ): ResponseEntity<NewsArticleResponse> {
-        val response: NewsArticleResponse = newsArticleService.getNextNewsArticle(id)
+        val response = newsArticleService.getNextNewsArticle(id)
         return ResponseEntity.ok(response)
     }
 
@@ -51,7 +51,7 @@ class NewsArticleController(
         @RequestParam(defaultValue = "0", required = false) page: Int,
         @RequestParam(defaultValue = "9", required = false) pageSize: Int,
     ): ResponseEntity<NewsArticleListResponse> {
-        val response: NewsArticleListResponse = newsArticleService.getNewsArticlePage(page, pageSize)
+        val response = newsArticleService.getNewsArticlePage(page, pageSize)
         return ResponseEntity.ok(response)
     }
 }

@@ -31,9 +31,9 @@ class AuthController(
     @PostMapping("/reissue")
     fun reissue(
         @CookieValue(value = "refreshToken", required = true) refreshToken: String,
-    ): ResponseEntity<String> {
+    ): ResponseEntity<OAuthLoginResponse> {
         val accessToken: String = this.authService.reissue(refreshToken)
-        return ResponseEntity.ok(accessToken)
+        return ResponseEntity.ok(OAuthLoginResponse(accessToken, null))
     }
 
     @Operation(summary = "OAuth 로그인")
