@@ -53,6 +53,7 @@ class SecurityConfig(
                 authorize(HttpMethod.GET, "/api/ploggingMeetups/**", permitAll)
                 authorize(HttpMethod.POST, "/api/auth/login", permitAll)
                 authorize(HttpMethod.POST, "/api/auth/temp", permitAll)
+                authorize(HttpMethod.POST, "/api/auth/reissue", permitAll)
                 authorize(anyRequest, authenticated)
             }
             exceptionHandling {
