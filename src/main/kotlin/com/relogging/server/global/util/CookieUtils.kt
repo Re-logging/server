@@ -78,7 +78,7 @@ object CookieUtils {
         cookie.isHttpOnly = true
         cookie.path = "/"
         cookie.secure = true
-        cookie.domain = ".$mainDomain"
+        cookie.domain = mainDomain
 
         return cookie
     }
