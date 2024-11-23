@@ -32,6 +32,8 @@ class AuthController(
     fun reissue(
         @CookieValue(value = "refreshToken", required = true) refreshToken: String,
     ): ResponseEntity<OAuthLoginResponse> {
+        println("================== reissue ==================")
+        println(refreshToken)
         val accessToken: String = this.authService.reissue(refreshToken)
         return ResponseEntity.ok(OAuthLoginResponse(accessToken, null))
     }
