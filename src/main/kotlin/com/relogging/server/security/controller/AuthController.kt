@@ -34,6 +34,7 @@ class AuthController(
     ): ResponseEntity<OAuthLoginResponse> {
         println("================== reissue ==================")
         println(refreshToken)
+        this.tokenProvider.validateToken(refreshToken)
         val accessToken: String = this.authService.reissue(refreshToken)
         return ResponseEntity.ok(OAuthLoginResponse(accessToken, null))
     }
