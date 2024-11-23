@@ -65,16 +65,30 @@ object CookieUtils {
     }
 
     fun createHttpOnlySecureCookie(
+        request: HttpServletRequest,
         name: String,
         value: String,
         maxAge: Int,
     ): Cookie {
+        val host = request.serverName
+        val mainDomain = this.extractMainDomain(host)
+
         val cookie = Cookie(name, value)
         cookie.maxAge = maxAge
         cookie.isHttpOnly = true
         cookie.path = "/"
         cookie.secure = true
+        cookie.domain = ".$mainDomain"
 
         return cookie
+    }
+
+    private fun extractMainDomain(host: String): String {
+        val parts = host.split(".")
+        return if (parts.size >= 2) {
+            parts.takeLast(2).joinToString(".")
+        } else {
+            host
+        }
     }
 }
