@@ -11,6 +11,7 @@ import com.relogging.server.security.jwt.provider.TokenProvider
 import com.relogging.server.security.service.AuthService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CookieValue
@@ -32,6 +33,9 @@ class AuthController(
     fun reissue(
         @CookieValue(value = "refreshToken", required = true) refreshToken: String,
     ): ResponseEntity<OAuthLoginResponse> {
+        println("================== reissue ==================")
+        println(refreshToken)
+        this.tokenProvider.validateToken(refreshToken)
         val accessToken: String = this.authService.reissue(refreshToken)
         return ResponseEntity.ok(OAuthLoginResponse(accessToken, null))
     }
@@ -40,7 +44,8 @@ class AuthController(
     @PostMapping("/login")
     fun oAuthLogin(
         @RequestBody request: OAuthLoginRequest,
-        response: HttpServletResponse,
+        httpRequest: HttpServletRequest,
+        httpResponse: HttpServletResponse,
     ): ResponseEntity<OAuthLoginResponse> {
         val user: User =
             this.authService.oAuthLogin(request.socialType, request.code, request.redirectUri)
@@ -50,11 +55,12 @@ class AuthController(
 
         val cookie =
             CookieUtils.createHttpOnlySecureCookie(
+                httpRequest,
                 "refreshToken",
                 refreshToken,
                 (this.tokenProvider.refreshExpirationTime / 1000).toInt(),
             )
-        response.addCookie(cookie)
+        httpResponse.addCookie(cookie)
 
         return ResponseEntity.ok(
             OAuthLoginResponse(
