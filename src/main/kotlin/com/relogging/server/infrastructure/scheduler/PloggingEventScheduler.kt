@@ -10,8 +10,7 @@ class PloggingEventScheduler(
     private val ploggingEventService: PloggingEventService,
 ) {
     @Transactional
-//    @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
-    @Scheduled(cron = "*/30 * * * * *") // 매일 오전 3시 30분에 작업 수행
+    @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
     fun fetchAndSavePloggingEvent() {
         this.ploggingEventService.fetchPloggingEventList("플로깅")
             .then(this.ploggingEventService.fetchPloggingEventList("줍깅"))
