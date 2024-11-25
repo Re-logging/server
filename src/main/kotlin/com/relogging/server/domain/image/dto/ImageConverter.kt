@@ -21,11 +21,12 @@ object ImageConverter {
         filePath: String,
         caption: String?,
         ploggingEvent: PloggingEvent,
+        orderIndex: Int,
     ): Image =
         Image(
             url = filePath,
             caption = caption,
-            orderIndex = 0,
+            orderIndex = orderIndex,
             ploggingEvent = ploggingEvent,
         )
 

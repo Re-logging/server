@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OrderBy
 import jakarta.persistence.Table
 import java.time.LocalDate
 
@@ -32,6 +33,7 @@ class PloggingEvent(
     @field:Column(columnDefinition = "BIGINT DEFAULT 0")
     var hits: Long = 0,
     @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @field:OrderBy("orderIndex ASC")
     var imageList: List<Image> = ArrayList(),
     val managerName: String,
     val phoneNumber: String,

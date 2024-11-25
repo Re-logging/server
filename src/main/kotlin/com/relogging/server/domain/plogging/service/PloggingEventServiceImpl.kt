@@ -76,6 +76,7 @@ class PloggingEventServiceImpl(
                     savedFilePath,
                     request.imageCaption,
                     ploggingEvent,
+                    0,
                 )
         }
         val savedEvent = this.ploggingEventRepository.save(ploggingEvent)
@@ -213,7 +214,14 @@ class PloggingEventServiceImpl(
             val imageUrls = this.ploggingEventScrapingService.scrapingPloggingEventImage(url)
             val ploggingEvent = PloggingEventConverter.toEntity(item, url)
             ploggingEvent.imageList =
-                imageUrls.map { ImageConverter.toEntityWithPloggingEvent(it, null, ploggingEvent) }
+                imageUrls.mapIndexed { index, s ->
+                    ImageConverter.toEntityWithPloggingEvent(
+                        s,
+                        null,
+                        ploggingEvent,
+                        index,
+                    )
+                }
             this.ploggingEventRepository.save(ploggingEvent)
         }
             .subscribeOn(Schedulers.boundedElastic()) // 블로킹 작업 처리
