@@ -41,7 +41,5 @@ interface PloggingEventService {
         url: String,
     ): Mono<PloggingEvent>
 
-    fun fetchAndSavePloggingEvent()
-
     fun deleteExpiredPloggingEvents()
 }

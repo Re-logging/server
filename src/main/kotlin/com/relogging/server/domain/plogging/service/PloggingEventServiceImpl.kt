@@ -15,10 +15,10 @@ import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
+import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -38,6 +38,7 @@ class PloggingEventServiceImpl(
     private val webClient: WebClient,
     @Value("\${1365-api.key}")
     private val apiKey: String,
+    private val ploggingEventScrapingService: PloggingEventScrapingService,
 ) : PloggingEventService {
     companion object {
         private const val API_HOST = "openapi.1365.go.kr"
@@ -82,8 +83,7 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) =
-        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -135,7 +135,7 @@ class PloggingEventServiceImpl(
                     .queryParam("progrmEndde", oneYearLaterEnd)
                     .queryParam("adultPosblAt", "Y")
                     .queryParam("yngbgsPosblAt", "Y")
-                    .queryParam("numOfRows", "100")
+                    .queryParam("numOfRows", "1000")
                     .queryParam("pageNo", "1")
                     .queryParam("keyword", keyword)
                     .queryParam("schCateGu", "all")
@@ -210,22 +210,16 @@ class PloggingEventServiceImpl(
         url: String,
     ): Mono<PloggingEvent> {
         return Mono.fromCallable {
+            val imageUrls = this.ploggingEventScrapingService.scrapingPloggingEventImage(url)
             val ploggingEvent = PloggingEventConverter.toEntity(item, url)
+            ploggingEvent.imageList =
+                imageUrls.map { ImageConverter.toEntityWithPloggingEvent(it, null, ploggingEvent) }
             this.ploggingEventRepository.save(ploggingEvent)
         }
             .subscribeOn(Schedulers.boundedElastic()) // 블로킹 작업 처리
     }
 
     @Transactional
-    @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
-    override fun fetchAndSavePloggingEvent() {
-        this.fetchPloggingEventList("플로깅")
-            .then(this.fetchPloggingEventList("줍깅"))
-            .subscribe()
-    }
-
-    @Transactional
-    @Scheduled(cron = "0 40 3 * * *") // 매일 오전 3시 40분에 작업 수행
     override fun deleteExpiredPloggingEvents() {
         val today = LocalDate.now()
         this.ploggingEventRepository.deleteAllByNoticeEndDateBefore(today)

@@ -9,6 +9,7 @@ import com.relogging.server.domain.plogging.service.PloggingEventService
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
 import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
 import com.relogging.server.infrastructure.scraping.service.NewsArticleScrapingService
+import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -31,6 +32,7 @@ class AdminController(
     private val newsArticleService: NewsArticleService,
     private val ploggingEventService: PloggingEventService,
     private val ploggingMeetupService: PloggingMeetupService,
+    private val ploggingEventScrapingService: PloggingEventScrapingService,
 ) {
     @Operation(summary = "뉴스 아티클 생성하기", description = "뉴스가 100자 미만이면 AI 요약을 하지 않습니다.")
     @PostMapping("/newsArticles", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -105,5 +107,13 @@ class AdminController(
     @DeleteMapping("/ploggingEvents")
     fun deleteExpiredPloggingEvents() {
         this.ploggingEventService.deleteExpiredPloggingEvents()
+    }
+
+    @Operation(summary = "플로깅 행사 이미지 스크래필 테스트")
+    @GetMapping("ploggingEventImage")
+    fun ploggingEventImage() {
+        this.ploggingEventScrapingService.scrapingPloggingEventImage(
+            "https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=3217081",
+        )
     }
 }
