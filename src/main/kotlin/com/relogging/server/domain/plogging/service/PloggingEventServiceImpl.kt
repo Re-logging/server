@@ -15,15 +15,19 @@ import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
+import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Service
 class PloggingEventServiceImpl(
@@ -34,6 +38,7 @@ class PloggingEventServiceImpl(
     private val webClient: WebClient,
     @Value("\${1365-api.key}")
     private val apiKey: String,
+    private val ploggingEventScrapingService: PloggingEventScrapingService,
 ) : PloggingEventService {
     companion object {
         private const val API_HOST = "openapi.1365.go.kr"
@@ -114,7 +119,11 @@ class PloggingEventServiceImpl(
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
 
-    override fun fetchPloggingEventList(): Mono<VolunteeringListApiResponse> {
+    @Transactional
+    override fun fetchPloggingEventList(keyword: String): Mono<Void> {
+        val oneYearAgoStart = this.getOneYearAgoStart()
+        val oneYearLaterEnd = this.getOneYearLaterEnd()
+
         return this.webClient.get()
             .uri { uriBuilder ->
                 uriBuilder
@@ -122,23 +131,33 @@ class PloggingEventServiceImpl(
                     .host(API_HOST)
                     .path(LIST_API_PATH)
                     .queryParam("serviceKey", apiKey)
-                    .queryParam("progrmBgnde", "20230101")
-                    .queryParam("progrmEndde", "20251212")
+                    .queryParam("progrmBgnde", oneYearAgoStart)
+                    .queryParam("progrmEndde", oneYearLaterEnd)
                     .queryParam("adultPosblAt", "Y")
                     .queryParam("yngbgsPosblAt", "Y")
-                    .queryParam("numOfRows", "100")
+                    .queryParam("numOfRows", "1000")
                     .queryParam("pageNo", "1")
-                    .queryParam("keyword", "플로깅")
+                    .queryParam("keyword", keyword)
                     .queryParam("schCateGu", "all")
                     .queryParam("actBeginTm", "00")
                     .queryParam("actEndTm", "24")
-                    .queryParam("noticeBgnde", "20230101")
-                    .queryParam("noticeEndde", "20251212")
+                    .queryParam("noticeBgnde", oneYearAgoStart)
+                    .queryParam("noticeEndde", oneYearLaterEnd)
                     .build()
             }
             .retrieve()
             .bodyToMono(VolunteeringListApiResponse::class.java)
-            .onErrorResume {
+            .flatMap { response ->
+                if ((response.body?.totalCount ?: 0) > 0) {
+                    val items = response.body!!.items?.item ?: emptyList()
+
+                    // 새 데이터를 필터링하고 저장
+                    saveFetchedPloggingEventList(items)
+                } else {
+                    Mono.empty<Void>()
+                }
+            }
+            .onErrorResume { error ->
                 throw GlobalException(GlobalErrorCode.PLOGGING_EVENT_FETCH_ERROR)
             }
     }
@@ -162,42 +181,67 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>) {
-        val savedNumberList = this.ploggingEventRepository.findAllProgramNumber()
-        val newItemList =
-            itemList.filterNot {
-                it.programRegistrationNumber in savedNumberList
-            }
-
-        newItemList.forEach { item ->
-            this.fetchPloggingEvent(item.programRegistrationNumber!!).subscribe { res ->
-                if (res.body!!.totalCount == 1) {
-                    this.saveFetchedPloggingEvent(res.body.items!!.item!![0], item.url!!)
-                }
-            }
+    override fun saveFetchedPloggingEventList(itemList: List<VolunteeringListApiResponseItem>): Mono<Void> {
+        return Mono.fromCallable {
+            // 블로킹 호출 처리
+            this.ploggingEventRepository.findAllProgramNumber()
         }
+            .subscribeOn(Schedulers.boundedElastic()) // 블로킹 작업 실행을 위한 스레드 풀 설정
+            .map { savedNumberList ->
+                itemList.filterNot { it.programRegistrationNumber in savedNumberList }
+            }
+            .flatMapMany { newItemList -> Flux.fromIterable(newItemList) }
+            .flatMap { item ->
+                this.fetchPloggingEvent(item.programRegistrationNumber!!)
+                    .flatMap { res ->
+                        if (res.body!!.totalCount == 1) {
+                            this.saveFetchedPloggingEvent(res.body.items!!.item!![0], item.url!!)
+                        } else {
+                            Mono.empty()
+                        }
+                    }
+            }
+            .then()
     }
 
     @Transactional
     override fun saveFetchedPloggingEvent(
         item: VolunteeringDetailApiResponseItem,
         url: String,
-    ): PloggingEvent {
-        val ploggingEvent = PloggingEventConverter.toEntity(item, url)
-        return this.ploggingEventRepository.save(ploggingEvent)
+    ): Mono<PloggingEvent> {
+        return Mono.fromCallable {
+            val imageUrls = this.ploggingEventScrapingService.scrapingPloggingEventImage(url)
+            val ploggingEvent = PloggingEventConverter.toEntity(item, url)
+            ploggingEvent.imageList =
+                imageUrls.map { ImageConverter.toEntityWithPloggingEvent(it, null, ploggingEvent) }
+            this.ploggingEventRepository.save(ploggingEvent)
+        }
+            .subscribeOn(Schedulers.boundedElastic()) // 블로킹 작업 처리
     }
 
     @Transactional
-    @Scheduled(cron = "0 30 3 * * *") // 매일 오전 3시 30분에 작업 수행
-    override fun fetchAndSavePloggingEvent() {
-        this.fetchPloggingEventList().subscribe { apiResponse ->
-            if (apiResponse.body!!.totalCount!! > 0) {
-                println(apiResponse.body.totalCount)
-                apiResponse.body.items!!.item!!.map { item ->
-                    println(item)
-                }
-                this.saveFetchedPloggingEventList(apiResponse.body.items.item!!)
-            }
-        }
+    override fun deleteExpiredPloggingEvents() {
+        val today = LocalDate.now()
+        this.ploggingEventRepository.deleteAllByNoticeEndDateBefore(today)
+    }
+
+    private fun getOneYearAgoStart(): String {
+        val currentYear = LocalDate.now().year
+
+        val oneYearAgoStart = LocalDate.of(currentYear - 1, 1, 1)
+
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+        return oneYearAgoStart.format(formatter)
+    }
+
+    private fun getOneYearLaterEnd(): String {
+        val currentYear = LocalDate.now().year
+
+        val oneYearLaterEnd = LocalDate.of(currentYear + 1, 12, 31)
+
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+
+        return oneYearLaterEnd.format(formatter)
     }
 }

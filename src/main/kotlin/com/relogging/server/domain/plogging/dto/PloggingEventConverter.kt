@@ -52,6 +52,7 @@ object PloggingEventConverter {
             content = request.content,
             startDate = request.startDate,
             endDate = request.endDate,
+            noticeEndDate = request.noticeEndDate,
             location = request.location,
             organizerName = request.organizerName,
             region = request.region,
@@ -79,5 +80,6 @@ object PloggingEventConverter {
             phoneNumber = item.phoneNumber!!,
             programNumber = item.programRegistrationNumber!!,
             url = url,
+            noticeEndDate = item.noticeEndDate!!,
         )
 }
