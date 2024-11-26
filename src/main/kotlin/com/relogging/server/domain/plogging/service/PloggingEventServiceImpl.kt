@@ -84,7 +84,8 @@ class PloggingEventServiceImpl(
     }
 
     @Transactional
-    override fun deletePloggingEvent(id: Long) = this.ploggingEventRepository.delete(this.getPloggingEventById(id))
+    override fun deletePloggingEvent(id: Long) =
+        this.ploggingEventRepository.delete(this.getPloggingEventById(id))
 
     @Transactional(readOnly = true)
     override fun getNextPloggingEvent(currentId: Long): PloggingEventResponse {
@@ -231,6 +232,11 @@ class PloggingEventServiceImpl(
     override fun deleteExpiredPloggingEvents() {
         val today = LocalDate.now()
         this.ploggingEventRepository.deleteAllByNoticeEndDateBefore(today)
+    }
+
+    @Transactional
+    override fun increasingHits(id: Long) {
+        this.ploggingEventRepository.increasingHits(id)
     }
 
     private fun getOneYearAgoStart(): String {
