@@ -42,4 +42,6 @@ interface PloggingEventService {
     ): Mono<PloggingEvent>
 
     fun deleteExpiredPloggingEvents()
+
+    fun increasingHits(id: Long)
 }

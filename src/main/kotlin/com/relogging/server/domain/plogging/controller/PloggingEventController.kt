@@ -33,6 +33,7 @@ class PloggingEventController(
         @PathVariable id: Long,
     ): ResponseEntity<PloggingEventResponse> {
         val response: PloggingEventResponse = this.ploggingEventService.getPloggingEvent(id)
+        this.ploggingEventService.increasingHits(response.id)
         return ResponseEntity.ok(response)
     }
 
@@ -43,6 +44,7 @@ class PloggingEventController(
     ): ResponseEntity<PloggingEventResponse> {
         val response: PloggingEventResponse =
             this.ploggingEventService.getNextPloggingEvent(currentId)
+        this.ploggingEventService.increasingHits(response.id)
         return ResponseEntity.ok(response)
     }
 
@@ -53,6 +55,7 @@ class PloggingEventController(
     ): ResponseEntity<PloggingEventResponse> {
         val response: PloggingEventResponse =
             this.ploggingEventService.getPrevPloggingEvent(currentId)
+        this.ploggingEventService.increasingHits(response.id)
         return ResponseEntity.ok(response)
     }
 }
