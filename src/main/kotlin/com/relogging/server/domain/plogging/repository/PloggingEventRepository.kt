@@ -8,7 +8,6 @@ import org.springframework.data.repository.query.Param
 import java.time.LocalDate
 import java.util.Optional
 
-
 interface PloggingEventRepository : JpaRepository<PloggingEvent, Long> {
     fun findFirstByIdGreaterThanOrderByIdAsc(id: Long): Optional<PloggingEvent>
 
@@ -21,5 +20,7 @@ interface PloggingEventRepository : JpaRepository<PloggingEvent, Long> {
 
     @Modifying
     @Query("update PloggingEvent p set p.hits = p.hits + 1 where p.id = :id")
-    fun increasingHits(@Param("id") id: Long?): Int
+    fun increasingHits(
+        @Param("id") id: Long?,
+    ): Int
 }
