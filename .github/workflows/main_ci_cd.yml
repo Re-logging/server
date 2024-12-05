@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [ "main" ]
     types: [ "closed" ]
+  workflow_dispatch:
+
 
 permissions:
   contents: read
@@ -53,43 +55,52 @@ jobs:
       DATASOURCE_URL: ${{ secrets.LOCAL_DATASOURCE_URL }}
       DATASOURCE_USERNAME: ${{ secrets.LOCAL_DATASOURCE_USERNAME }}
       DATASOURCE_PASSWORD: ${{ secrets.LOCAL_DATASOURCE_PASSWORD }}
-      NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
       OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
-    
-    steps:  
+      FRONT_URL: ${{ secrets.PROD_FRONT_URL }}
+      LOCAL_URL: ${{ secrets.PROD_LOCAL_URL }}
+      GOOGLE_CLIENT_ID: ${{ secrets.PROD_GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}
+      GOOGLE_REDIRECT_URI: ${{ secrets.PROD_GOOGLE_REDIRECT_URI }}
+      KAKAO_CLIENT_ID: ${{ secrets.PROD_KAKAO_CLIENT_ID }}
+      KAKAO_CLIENT_SECRET: ${{ secrets.PROD_KAKAO_CLIENT_SECRET }}
+      KAKAO_REDIRECT_URI: ${{ secrets.PROD_KAKAO_REDIRECT_URI }}
+      JWT_SECRET: ${{ secrets.PROD_JWT_SECRET }}
+      VALIDITY_IN_SECONDS: ${{ secrets.VALIDITY_IN_SECONDS }}
+      VALIDITY_IN_SECONDS_REFRESH: ${{ secrets.VALIDITY_IN_SECONDS_REFRESH }}
+      REDIS_HOST: ${{ secrets.PROD_REDIS_HOST }}
+      REDIS_PORT: ${{ secrets.PROD_REDIS_PORT }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.PROD_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}
+      VOLUNTEER_API_HOST: ${{ secrets.VOLUNTEER_API_HOST }}
+      VOLUNTEER_API_PATH: ${{ secrets.VOLUNTEER_API_PATH }}
+      VOLUNTEER_API_KEY: ${{ secrets.VOLUNTEER_API_KEY }}
+      S3_BASE_DIR: prod
+
+    steps:
       - name: Checkout
-        uses: actions/checkout@v4    
-      
+        uses: actions/checkout@v4
+
       - name: Setup JDK 21
         uses: actions/setup-java@v4.4.0
         with:
           java-version: '21'
           distribution: 'temurin'
-  
+
       - name: Setup Docker
         run: docker compose up -d
-  
+
       - name: Grant execute permission
         run: chmod +x ./gradlew
-  
+
       - name: Build with Gradle
         run: ./gradlew clean build -x test
-  
+
       - name: Test with Gradle
         run: ./gradlew test
 
   deploy:
-    needs: [build, extract-version]
+    needs: [ build, extract-version ]
     runs-on: ubuntu-latest
-
-    env:
-      MYSQL_DATABASE: ${{ secrets.PROD_MYSQL_DATABASE }}
-      MYSQL_ROOT_PASSWORD: ${{ secrets.PROD_MYSQL_ROOT_PASSWORD }}
-      DATASOURCE_URL: ${{ secrets.PROD_DATASOURCE_URL }}
-      DATASOURCE_USERNAME: ${{ secrets.PROD_DATASOURCE_USERNAME }}
-      DATASOURCE_PASSWORD: ${{ secrets.PROD_DATASOURCE_PASSWORD }}
-      NEWS_ARTICLE_IMAGE_DIR: ${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}
-      OPEN_AI_KEY: ${{ secrets.LOCAL_OPEN_AI_KEY }}
     
     steps:
       - name: Checkout
@@ -100,14 +111,14 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-  
+
       - name: Docker build & push
         run: |
           ./gradlew bootjar
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }} .
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
-  
+
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -124,8 +135,27 @@ jobs:
             echo "DATASOURCE_URL=${{ secrets.PROD_DATASOURCE_URL }}" >> .env
             echo "DATASOURCE_USERNAME=${{ secrets.PROD_DATASOURCE_USERNAME }}" >> .env
             echo "DATASOURCE_PASSWORD=${{ secrets.PROD_DATASOURCE_PASSWORD }}" >> .env
-            echo "NEWS_ARTICLE_IMAGE_DIR=${{ secrets.LOCAL_NEWS_ARTICLE_IMAGE_DIR }}" >> .env
             echo "OPEN_AI_KEY=${{ secrets.LOCAL_OPEN_AI_KEY }}" >> .env
+            echo "FRONT_URL=${{ secrets.PROD_FRONT_URL }}" >> .env
+            echo "LOCAL_URL=${{ secrets.PROD_LOCAL_URL }}" >> .env
+            echo "GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}" >> .env
+            echo "GOOGLE_CLIENT_SECRET=${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}" >> .env
+            echo "GOOGLE_REDIRECT_URI=${{ secrets.PROD_GOOGLE_REDIRECT_URI }}" >> .env
+            echo "KAKAO_CLIENT_ID=${{ secrets.PROD_KAKAO_CLIENT_ID }}" >> .env
+            echo "KAKAO_CLIENT_SECRET=${{ secrets.PROD_KAKAO_CLIENT_SECRET }}" >> .env
+            echo "KAKAO_REDIRECT_URI=${{ secrets.PROD_KAKAO_REDIRECT_URI }}" >> .env
+            echo "JWT_SECRET=${{ secrets.PROD_JWT_SECRET }}" >> .env
+            echo "VALIDITY_IN_SECONDS=${{ secrets.VALIDITY_IN_SECONDS }}" >> .env
+            echo "VALIDITY_IN_SECONDS_REFRESH=${{ secrets.VALIDITY_IN_SECONDS_REFRESH }}" >> .env
+            echo "REDIS_HOST=${{ secrets.PROD_REDIS_HOST }}" >> .env
+            echo "REDIS_PORT=${{ secrets.PROD_REDIS_PORT }}" >> .env
+            echo "AWS_ACCESS_KEY_ID=${{ secrets.PROD_AWS_ACCESS_KEY_ID }}" >> .env
+            echo "AWS_SECRET_ACCESS_KEY=${{ secrets.PROD_AWS_SECRET_ACCESS_KEY }}" >> .env
+            echo "VOLUNTEER_API_HOST=${{ secrets.VOLUNTEER_API_HOST }}" >> .env
+            echo "VOLUNTEER_API_PATH=${{ secrets.VOLUNTEER_API_PATH }}" >> .env
+            echo "VOLUNTEER_API_KEY=${{ secrets.VOLUNTEER_API_KEY }}" >> .env
+            echo "S3_BASE_DIR=prod" >> .env
+            
             docker pull ${{ secrets.DOCKER_USERNAME }}/${{ secrets.PROD_DOCKER_IMAGE }}:${{ needs.extract-version.outputs.version }}
             docker stop ${{ secrets.CONTAINER_NAME }}
             docker rm ${{ secrets.CONTAINER_NAME }}
@@ -134,13 +164,13 @@ jobs:
             docker image prune -f
 
   create-release:
-    needs: [deploy, extract-version]
+    needs: [ deploy, extract-version ]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - name: create release
         uses: ncipollo/release-action@v1.13.0
-        with: 
+        with:
           tag: ${{ needs.extract-version.outputs.version }}
           name: ${{ needs.extract-version.outputs.version }}
