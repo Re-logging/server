@@ -9,6 +9,7 @@ import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.ploggingMeetup.repository.PloggingMeetupRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
+import com.relogging.server.global.util.RandomImage
 import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Pageable
@@ -28,7 +29,7 @@ class PloggingMeetupServiceImpl(
         request: PloggingMeetupRequest,
         image: MultipartFile?,
     ): Long {
-        val imageUrl = image?.let { amazonS3Service.uploadFile(it, imageUploadDir) }
+        val imageUrl = image?.let { amazonS3Service.uploadFile(it, imageUploadDir) } ?: RandomImage.getUrl()
         val ploggingMeetup = PloggingMeetupConverter.toEntity(request, imageUrl)
         return ploggingMeetupRepository.save(ploggingMeetup).id!!
     }
