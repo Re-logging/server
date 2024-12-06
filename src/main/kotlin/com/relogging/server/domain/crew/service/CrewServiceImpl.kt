@@ -6,6 +6,7 @@ import com.relogging.server.domain.crew.entity.CrewMember
 import com.relogging.server.domain.crew.repository.CrewRepository
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.domain.user.service.UserService
+import com.relogging.server.global.util.RandomImage
 import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -27,7 +28,7 @@ class CrewServiceImpl(
         user: User,
     ): Long {
         val imagePathList = amazonS3Service.uploadFiles(imageList, imageUploadDir)
-        val crew = CrewConverter.toEntity(request, imagePathList, user.name)
+        val crew = CrewConverter.toEntity(request, imagePathList.ifEmpty { listOf(RandomImage.getUrl()) }, user.name)
         val crewLeader = CrewMember.createCrewLeader(user = user, crew = crew)
         crew.addCrewMember(crewLeader)
         return crewRepository.save(crew).id!!

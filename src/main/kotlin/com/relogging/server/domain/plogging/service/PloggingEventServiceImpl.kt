@@ -14,6 +14,7 @@ import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
+import com.relogging.server.global.util.RandomImage
 import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import org.springframework.beans.factory.annotation.Value
@@ -69,16 +70,15 @@ class PloggingEventServiceImpl(
         image: MultipartFile?,
     ): PloggingEventResponse {
         val ploggingEvent: PloggingEvent = PloggingEventConverter.toEntity(request)
-        if (image != null) {
-            val savedFilePath = this.amazonS3Service.uploadFile(image, imageUploadDir)
-            ploggingEvent.imageList +=
-                ImageConverter.toEntityWithPloggingEvent(
-                    savedFilePath,
-                    request.imageCaption,
-                    ploggingEvent,
-                    0,
-                )
-        }
+        val imageUrl = image?.let { amazonS3Service.uploadFile(it, imageUploadDir) } ?: RandomImage.getUrl()
+
+        ploggingEvent.imageList +=
+            ImageConverter.toEntityWithPloggingEvent(
+                imageUrl,
+                request.imageCaption,
+                ploggingEvent,
+                0,
+            )
         val savedEvent = this.ploggingEventRepository.save(ploggingEvent)
         return PloggingEventConverter.toResponse(savedEvent, getRootComments(savedEvent))
     }
