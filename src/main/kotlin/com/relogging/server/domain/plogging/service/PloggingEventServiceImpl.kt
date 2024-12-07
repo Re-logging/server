@@ -211,8 +211,9 @@ class PloggingEventServiceImpl(
         url: String,
     ): Mono<PloggingEvent> {
         return Mono.fromCallable {
-            val imageUrls = this.ploggingEventScrapingService.scrapingPloggingEventImage(url)
-                .ifEmpty { listOf(RandomImage.getUrl()) }
+            val imageUrls =
+                this.ploggingEventScrapingService.scrapingPloggingEventImage(url)
+                    .ifEmpty { listOf(RandomImage.getUrl()) }
             val ploggingEvent = PloggingEventConverter.toEntity(item, url)
             ploggingEvent.imageList =
                 imageUrls.mapIndexed { index, s ->
