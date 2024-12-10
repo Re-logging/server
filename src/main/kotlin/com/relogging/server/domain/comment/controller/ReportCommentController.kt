@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 class ReportCommentController(
     private val reportCommentService: ReportCommentService,
 ) {
-    @Operation(summary = "댓글 생성하기")
+    @Operation(summary = "댓글 신고하기")
     @PostMapping
     fun reportComment(
         @PathVariable commentId: Long,
