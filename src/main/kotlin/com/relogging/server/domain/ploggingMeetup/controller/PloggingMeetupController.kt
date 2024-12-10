@@ -34,8 +34,8 @@ class PloggingMeetupController(
         @RequestParam(defaultValue = "0", required = false) page: Int,
         @RequestParam(defaultValue = "9", required = false) pageSize: Int,
         @RequestParam(required = false) region: String?,
-        @RequestParam(required = false, defaultValue = "false") isOpen: Boolean,
-        @RequestParam(required = false) sortBy: PloggingMeetupSortType?,
+        @RequestParam(required = false, defaultValue = "false") isOpen: Boolean?,
+        @RequestParam(required = false, defaultValue = "END_DATE") sortBy: PloggingMeetupSortType?,
         @RequestParam(required = false, defaultValue = "DESC") sortDirection: Sort.Direction,
     ): ResponseEntity<PloggingMeetupListResponse> {
         val response =
