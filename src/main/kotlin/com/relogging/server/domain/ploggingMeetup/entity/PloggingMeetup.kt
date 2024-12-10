@@ -26,7 +26,7 @@ class PloggingMeetup(
     val location: String,
     val activityHours: String,
     val region: String,
-    var imageUrl: String,
+    var imageUrl: String?,
     val contactPerson: String,
     val contactNumber: String,
     val participationTarget: String,

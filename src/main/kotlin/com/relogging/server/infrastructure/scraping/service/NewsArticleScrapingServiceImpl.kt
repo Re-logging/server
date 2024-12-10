@@ -3,14 +3,13 @@ package com.relogging.server.infrastructure.scraping.service
 import com.relogging.server.domain.image.entity.Image
 import com.relogging.server.domain.newsArticle.entity.NewsArticle
 import com.relogging.server.domain.newsArticle.service.NewsArticleService
-import com.relogging.server.global.util.RandomImage
 import org.jsoup.Jsoup
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Service
-class NewsArticleNewsArticleScrapingServiceImpl(
+class NewsArticleScrapingServiceImpl(
     private val newsArticleService: NewsArticleService,
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"),
 ) : NewsArticleScrapingService {
@@ -84,10 +83,7 @@ class NewsArticleNewsArticleScrapingServiceImpl(
                     publishedAt = publishedAt,
                     aiSummary = null,
                 )
-            var imageUrl = doc.select(imageSelector).attr("src").trim()
-            if (imageUrl.isBlank()) {
-                imageUrl = RandomImage.getUrl()
-            }
+            val imageUrl = doc.select(imageSelector).attr("src").trim()
             val imageCaption = doc.select(imageCaptionSelector).attr("alt").trim()
             if (imageUrl.isNotEmpty()) {
                 val image =
