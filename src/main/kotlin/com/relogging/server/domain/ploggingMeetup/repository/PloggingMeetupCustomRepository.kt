@@ -9,7 +9,7 @@ import org.springframework.data.domain.Sort
 interface PloggingMeetupCustomRepository {
     fun findPloggingMeetups(
         region: String?,
-        isClosed: Boolean?,
+        isOpen: Boolean?,
         pageable: Pageable,
         sortBy: PloggingMeetupSortType?,
         sortDirection: Sort.Direction,

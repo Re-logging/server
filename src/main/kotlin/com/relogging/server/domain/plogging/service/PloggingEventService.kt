@@ -1,5 +1,6 @@
 package com.relogging.server.domain.plogging.service
 
+import com.relogging.server.domain.plogging.PloggingEventSortType
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
 import com.relogging.server.domain.plogging.dto.PloggingEventResponse
@@ -8,7 +9,7 @@ import com.relogging.server.domain.plogging.dto.VolunteeringDetailApiResponseIte
 import com.relogging.server.domain.plogging.dto.VolunteeringListApiResponseItem
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.web.multipart.MultipartFile
 import reactor.core.publisher.Mono
 
@@ -17,7 +18,14 @@ interface PloggingEventService {
 
     fun getPloggingEventEntity(id: Long): PloggingEvent
 
-    fun getPloggingEventList(pageable: Pageable): Page<PloggingEventListResponse>
+    fun getPloggingEventList(
+        page: Int,
+        pageSize: Int,
+        region: String?,
+        isOpen: Boolean?,
+        sortBy: PloggingEventSortType?,
+        sortDirection: Sort.Direction,
+    ): Page<PloggingEventListResponse>
 
     fun createPloggingEvent(
         request: PloggingEventRequest,

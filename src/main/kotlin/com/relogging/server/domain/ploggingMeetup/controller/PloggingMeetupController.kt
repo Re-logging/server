@@ -34,7 +34,7 @@ class PloggingMeetupController(
         @RequestParam(defaultValue = "0", required = false) page: Int,
         @RequestParam(defaultValue = "9", required = false) pageSize: Int,
         @RequestParam(required = false) region: String?,
-        @RequestParam(required = false) isClosed: Boolean?,
+        @RequestParam(required = false, defaultValue = "false") isOpen: Boolean,
         @RequestParam(required = false) sortBy: PloggingMeetupSortType?,
         @RequestParam(required = false, defaultValue = "DESC") sortDirection: Sort.Direction,
     ): ResponseEntity<PloggingMeetupListResponse> {
@@ -43,7 +43,7 @@ class PloggingMeetupController(
                 page = page,
                 pageSize = pageSize,
                 region = region,
-                isClosed = isClosed,
+                isOpen = isOpen,
                 sortBy = sortBy,
                 sortDirection = sortDirection,
             )

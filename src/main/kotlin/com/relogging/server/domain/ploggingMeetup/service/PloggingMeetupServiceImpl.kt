@@ -78,7 +78,7 @@ class PloggingMeetupServiceImpl(
         page: Int,
         pageSize: Int,
         region: String?,
-        isClosed: Boolean?,
+        isOpen: Boolean?,
         sortBy: PloggingMeetupSortType?,
         sortDirection: Sort.Direction,
     ): PloggingMeetupListResponse {
@@ -86,7 +86,7 @@ class PloggingMeetupServiceImpl(
         val meetups =
             ploggingMeetupRepository.findPloggingMeetups(
                 region = region,
-                isClosed = isClosed,
+                isOpen = isOpen,
                 pageable = pageable,
                 sortBy = sortBy,
                 sortDirection = sortDirection,

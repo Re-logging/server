@@ -29,7 +29,7 @@ interface PloggingMeetupService {
         page: Int,
         pageSize: Int,
         region: String?,
-        isClosed: Boolean?,
+        isOpen: Boolean?,
         sortBy: PloggingMeetupSortType?,
         sortDirection: Sort.Direction,
     ): PloggingMeetupListResponse

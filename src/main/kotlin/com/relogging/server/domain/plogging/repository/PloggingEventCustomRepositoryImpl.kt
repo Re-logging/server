@@ -1,69 +1,68 @@
-package com.relogging.server.domain.ploggingMeetup.repository
+package com.relogging.server.domain.plogging.repository
 
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.relogging.server.domain.ploggingMeetup.PloggingMeetupSortType
-import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
-import com.relogging.server.domain.ploggingMeetup.entity.QPloggingMeetup
+import com.relogging.server.domain.plogging.PloggingEventSortType
+import com.relogging.server.domain.plogging.entity.PloggingEvent
+import com.relogging.server.domain.plogging.entity.QPloggingEvent
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
-import java.time.LocalDateTime
+import java.time.LocalDate
 
-class PloggingMeetupCustomRepositoryImpl(
+class PloggingEventCustomRepositoryImpl(
     private val queryFactory: JPAQueryFactory,
-) : PloggingMeetupCustomRepository {
-    override fun findPloggingMeetups(
+) : PloggingEventCustomRepository {
+    override fun findPloggingEvents(
         region: String?,
         isOpen: Boolean?,
         pageable: Pageable,
-        sortBy: PloggingMeetupSortType?,
+        sortBy: PloggingEventSortType?,
         sortDirection: Sort.Direction,
-    ): Page<PloggingMeetup> {
-        val meetup = QPloggingMeetup.ploggingMeetup
-        val now = LocalDateTime.now()
+    ): Page<PloggingEvent> {
+        val event = QPloggingEvent.ploggingEvent
+        val now = LocalDate.now()
 
         val query =
             queryFactory
-                .selectFrom(meetup)
-                .leftJoin(meetup.host).fetchJoin()
+                .selectFrom(event)
                 .where(
-                    containsRegion(meetup, region),
-                    filterByOpenStatus(meetup, isOpen, now),
+                    containsRegion(event, region),
+                    filterByOpenStatus(event, isOpen, now),
                 )
 
         val totalCount =
             queryFactory
-                .select(meetup.count())
-                .from(meetup)
+                .select(event.count())
+                .from(event)
                 .where(
-                    containsRegion(meetup, region),
-                    filterByOpenStatus(meetup, isOpen, now),
+                    containsRegion(event, region),
+                    filterByOpenStatus(event, isOpen, now),
                 )
                 .fetchOne() ?: 0L
 
         val orderSpecifier =
             when (sortBy) {
-                PloggingMeetupSortType.START_DATE ->
+                PloggingEventSortType.START_DATE ->
                     if (sortDirection == Sort.Direction.ASC) {
-                        meetup.startDate.asc()
+                        event.startDate.asc()
                     } else {
-                        meetup.startDate.desc()
+                        event.startDate.desc()
                     }
-                PloggingMeetupSortType.END_DATE ->
+                PloggingEventSortType.END_DATE ->
                     if (sortDirection == Sort.Direction.ASC) {
-                        meetup.endDate.asc()
+                        event.endDate.asc()
                     } else {
-                        meetup.endDate.desc()
+                        event.endDate.desc()
                     }
-                PloggingMeetupSortType.HITS ->
+                PloggingEventSortType.HITS ->
                     if (sortDirection == Sort.Direction.ASC) {
-                        meetup.hits.asc()
+                        event.hits.asc()
                     } else {
-                        meetup.hits.desc()
+                        event.hits.desc()
                     }
-                null -> meetup.startDate.desc()
+                null -> event.startDate.desc()
             }
 
         val results =
@@ -77,20 +76,20 @@ class PloggingMeetupCustomRepositoryImpl(
     }
 
     private fun containsRegion(
-        meetup: QPloggingMeetup,
+        event: QPloggingEvent,
         region: String?,
     ): BooleanExpression? {
-        return region?.let { meetup.region.contains(it) }
+        return region?.let { event.region.contains(it) }
     }
 
     private fun filterByOpenStatus(
-        meetup: QPloggingMeetup,
+        event: QPloggingEvent,
         isOpen: Boolean?,
-        now: LocalDateTime,
+        now: LocalDate,
     ): BooleanExpression? {
         return isOpen?.let {
             if (it) {
-                meetup.endDate.goe(now)
+                event.endDate.goe(now)
             } else {
                 null
             }
