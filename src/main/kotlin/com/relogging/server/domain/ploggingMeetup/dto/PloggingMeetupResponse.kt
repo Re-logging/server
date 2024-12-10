@@ -17,7 +17,7 @@ data class PloggingMeetupResponse(
     val contactPerson: String,
     val contactNumber: String,
     val registrationLink: String?,
-    val imageUrl: String,
+    val imageUrl: String?,
     val hits: Long,
     val commentList: List<CommentResponse>,
 )
@@ -29,7 +29,7 @@ data class PloggingMeetupSimpleResponse(
     val location: String,
     val startDate: LocalDateTime,
     val endDate: LocalDateTime,
-    val imageUrl: String,
+    val imageUrl: String?,
     val activityHours: String,
     val hits: Long,
 )

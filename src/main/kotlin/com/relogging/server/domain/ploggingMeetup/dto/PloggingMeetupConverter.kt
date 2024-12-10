@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page
 object PloggingMeetupConverter {
     fun toEntity(
         request: PloggingMeetupRequest,
-        imageUrl: String,
+        imageUrl: String?,
     ): PloggingMeetup {
         return PloggingMeetup(
             title = request.title,
