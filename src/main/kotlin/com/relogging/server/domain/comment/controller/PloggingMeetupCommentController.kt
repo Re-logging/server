@@ -2,7 +2,7 @@ package com.relogging.server.domain.comment.controller
 
 import com.relogging.server.domain.comment.dto.CommentCreateRequest
 import com.relogging.server.domain.comment.dto.CommentUpdateRequest
-import com.relogging.server.domain.comment.service.PloggingEventCommentService
+import com.relogging.server.domain.comment.service.PloggingMeetupCommentService
 import com.relogging.server.security.details.PrincipalDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/ploggingMeetups/{meetupId}/comments")
 @Tag(name = "Plogging Meetup")
 class PloggingMeetupCommentController(
-    private val commentService: PloggingEventCommentService,
+    private val commentService: PloggingMeetupCommentService,
 ) {
     @Operation(summary = "댓글 생성하기")
     @PostMapping
@@ -59,12 +59,12 @@ class PloggingMeetupCommentController(
     @Operation(summary = "대댓글 생성하기")
     @PostMapping("/{commentId}/replies")
     fun createReply(
-        @PathVariable eventId: Long,
+        @PathVariable meetupId: Long,
         @PathVariable commentId: Long,
         @RequestBody request: CommentCreateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.createReply(eventId, commentId, request, principalDetails.user)
+        val response = commentService.createReply(meetupId, commentId, request, principalDetails.user)
         return ResponseEntity.ok(response)
     }
 }
