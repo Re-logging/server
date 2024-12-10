@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
     id("com.diffplug.spotless") version "6.23.3"
     kotlin("plugin.jpa") version "1.9.25"
+    kotlin("kapt") version "1.9.21"
 }
 
 group = "com.relogging"
@@ -60,6 +61,12 @@ dependencies {
 
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.4")
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.2")
+
+    // Querydsl
+    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+    kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+    kapt("jakarta.annotation:jakarta.annotation-api")
+    kapt("jakarta.persistence:jakarta.persistence-api")
 }
 
 kotlin {
@@ -75,6 +82,10 @@ tasks.withType<Test> {
 tasks.named("compileKotlin") {
     dependsOn("spotlessApply")
 }
+
+//tasks.withType<JavaCompile> {
+//    options.generatedSourceOutputDirectory.set(file("src/main/generated"))
+//}
 
 spotless {
     kotlin {

@@ -1,17 +1,20 @@
 package com.relogging.server.domain.ploggingMeetup.service
 
 import com.relogging.server.domain.comment.entity.Comment
+import com.relogging.server.domain.ploggingMeetup.PloggingMeetupSortType
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupConverter
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupListResponse
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.ploggingMeetup.repository.PloggingMeetupRepository
+import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -27,9 +30,10 @@ class PloggingMeetupServiceImpl(
     override fun createMeetup(
         request: PloggingMeetupRequest,
         image: MultipartFile?,
+        user: User,
     ): Long {
         val imageUrl = image?.let { amazonS3Service.uploadFile(it, imageUploadDir) }
-        val ploggingMeetup = PloggingMeetupConverter.toEntity(request, imageUrl)
+        val ploggingMeetup = PloggingMeetupConverter.toEntity(request, imageUrl, user)
         return ploggingMeetupRepository.save(ploggingMeetup).id!!
     }
 
@@ -70,10 +74,24 @@ class PloggingMeetupServiceImpl(
         return PloggingMeetupConverter.toResponse(prevMeetup, getRootComments(prevMeetup))
     }
 
-    @Transactional(readOnly = true)
-    override fun getMeetupList(pageable: Pageable): PloggingMeetupListResponse {
-        val response = ploggingMeetupRepository.findAll(pageable)
-        return PloggingMeetupConverter.toResponse(response)
+    override fun getMeetupList(
+        page: Int,
+        pageSize: Int,
+        region: String?,
+        isClosed: Boolean?,
+        sortBy: PloggingMeetupSortType?,
+        sortDirection: Sort.Direction,
+    ): PloggingMeetupListResponse {
+        val pageable = PageRequest.of(page, pageSize)
+        val meetups =
+            ploggingMeetupRepository.findPloggingMeetups(
+                region = region,
+                isClosed = isClosed,
+                pageable = pageable,
+                sortBy = sortBy,
+                sortDirection = sortDirection,
+            )
+        return PloggingMeetupConverter.toResponse(meetups)
     }
 
     @Transactional
