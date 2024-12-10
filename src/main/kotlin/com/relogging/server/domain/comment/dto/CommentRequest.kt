@@ -7,7 +7,12 @@ class CommentCreateRequest(
     val content: String,
 )
 
-data class CommentUpdateRequest(
+class CommentUpdateRequest(
     @field:NotBlank
     val content: String,
+)
+
+class ReportCommentRequest(
+    @field:NotBlank
+    val reason: String,
 )

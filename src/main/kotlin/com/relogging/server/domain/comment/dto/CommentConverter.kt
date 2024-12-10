@@ -1,6 +1,7 @@
 package com.relogging.server.domain.comment.dto
 
 import com.relogging.server.domain.comment.entity.Comment
+import com.relogging.server.domain.comment.entity.Report
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.user.entity.User
@@ -46,5 +47,16 @@ object CommentConverter {
             authorImageUrl = entity.user.profileImage?.url,
             modifiedAt = entity.updateAt,
             replies = entity.childComment.map { toResponse(it) },
+        )
+
+    fun toReport(
+        request: ReportCommentRequest,
+        comment: Comment,
+        user: User,
+    ): Report =
+        Report(
+            reason = request.reason,
+            user = user,
+            comment = comment,
         )
 }
