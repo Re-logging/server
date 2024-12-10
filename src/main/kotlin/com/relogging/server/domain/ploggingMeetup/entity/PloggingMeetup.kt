@@ -1,13 +1,16 @@
 package com.relogging.server.domain.ploggingMeetup.entity
 
 import com.relogging.server.domain.comment.entity.Comment
+import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.BaseEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import java.time.LocalDateTime
@@ -33,6 +36,8 @@ class PloggingMeetup(
     val supportDetails: String,
     val registrationLink: String,
     var hits: Long = 0,
+    @field:ManyToOne(fetch = FetchType.LAZY)
+    val host: User,
     @field:OneToMany(mappedBy = "ploggingMeetup", cascade = [CascadeType.ALL])
     val commentList: MutableList<Comment> = mutableListOf(),
 ) : BaseEntity()

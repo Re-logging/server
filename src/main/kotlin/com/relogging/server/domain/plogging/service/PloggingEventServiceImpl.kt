@@ -2,6 +2,7 @@ package com.relogging.server.domain.plogging.service
 
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.image.dto.ImageConverter
+import com.relogging.server.domain.plogging.PloggingEventSortType
 import com.relogging.server.domain.plogging.dto.PloggingEventConverter
 import com.relogging.server.domain.plogging.dto.PloggingEventListResponse
 import com.relogging.server.domain.plogging.dto.PloggingEventRequest
@@ -18,7 +19,8 @@ import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
 import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -58,9 +60,24 @@ class PloggingEventServiceImpl(
     override fun getPloggingEventEntity(id: Long): PloggingEvent = this.getPloggingEventById(id)
 
     @Transactional(readOnly = true)
-    override fun getPloggingEventList(pageable: Pageable): Page<PloggingEventListResponse> {
-        val findEvents: Page<PloggingEvent> = this.ploggingEventRepository.findAll(pageable)
-        return findEvents.map { entity -> PloggingEventConverter.toListResponse(entity) }
+    override fun getPloggingEventList(
+        page: Int,
+        pageSize: Int,
+        region: String?,
+        isOpen: Boolean?,
+        sortBy: PloggingEventSortType?,
+        sortDirection: Sort.Direction,
+    ): Page<PloggingEventListResponse> {
+        val pageable = PageRequest.of(page, pageSize)
+        val events =
+            ploggingEventRepository.findPloggingEvents(
+                region = region,
+                isOpen = isOpen,
+                pageable = pageable,
+                sortBy = sortBy,
+                sortDirection = sortDirection,
+            )
+        return events.map { entity -> PloggingEventConverter.toListResponse(entity) }
     }
 
     @Transactional
