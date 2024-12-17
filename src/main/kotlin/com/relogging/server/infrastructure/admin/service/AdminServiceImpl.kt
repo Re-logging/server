@@ -118,6 +118,7 @@ class AdminServiceImpl(
         return adminRepository.findAll()
     }
 
+    @Transactional
     override fun deleteById(id: Long) {
         val admin = findById(id)
         adminRepository.delete(admin)
