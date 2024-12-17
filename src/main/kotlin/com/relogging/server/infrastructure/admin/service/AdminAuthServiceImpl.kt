@@ -86,7 +86,33 @@ class AdminAuthServiceImpl(
         }
     }
 
+    @Transactional
     override fun kakaoTokenRefresh(admin: Admin) {
-        TODO("Not yet implemented")
+        val tokens = refreshKakaoTokens(admin.refreshToken)
+        admin.updateTokens(tokens)
+    }
+
+    private fun refreshKakaoTokens(refreshToken: String): KakaoTokenResponse {
+        val url = "https://kauth.kakao.com/oauth/token"
+
+        val formData =
+            LinkedMultiValueMap<String, String>().apply {
+                add("grant_type", "refresh_token")
+                add("client_id", clientId)
+                add("refresh_token", refreshToken)
+                add("client_secret", clientSecret)
+            }
+
+        val response =
+            webClient
+                .post()
+                .uri(url)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .bodyValue(formData)
+                .retrieve()
+                .bodyToMono<KakaoTokenResponse>()
+                .block() ?: throw RuntimeException("Failed to refresh Kakao tokens")
+
+        return response
     }
 }

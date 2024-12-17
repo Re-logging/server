@@ -8,6 +8,6 @@ data class KakaoTokenResponse(
     val tokenType: String,
     val accessToken: String,
     val expiresIn: Int,
-    val refreshToken: String,
-    val refreshTokenExpiresIn: Int,
+    val refreshToken: String? = null,
+    val refreshTokenExpiresIn: Int? = null,
 )

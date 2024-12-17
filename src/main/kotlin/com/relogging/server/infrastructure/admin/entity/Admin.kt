@@ -24,7 +24,7 @@ class Admin(
     fun updateTokens(tokens: KakaoTokenResponse) {
         this.accessToken = tokens.accessToken
         this.expiresIn = tokens.expiresIn
-        this.refreshToken = tokens.refreshToken
-        this.refreshTokenExpiresIn = tokens.refreshTokenExpiresIn
+        tokens.refreshToken?.let { this.refreshToken = it }
+        tokens.refreshTokenExpiresIn?.let { this.refreshTokenExpiresIn = tokens.refreshTokenExpiresIn }
     }
 }

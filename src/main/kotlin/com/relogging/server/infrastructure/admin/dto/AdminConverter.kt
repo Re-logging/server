@@ -12,8 +12,8 @@ object AdminConverter {
             kakaoId = kakaoId,
             accessToken = tokens.accessToken,
             expiresIn = tokens.expiresIn,
-            refreshToken = tokens.refreshToken,
-            refreshTokenExpiresIn = tokens.refreshTokenExpiresIn,
+            refreshToken = tokens.refreshToken!!,
+            refreshTokenExpiresIn = tokens.refreshTokenExpiresIn!!,
         )
     }
 }

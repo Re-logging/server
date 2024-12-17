@@ -129,7 +129,7 @@ class AdminController(
 
     @Operation(summary = "관리자 카카오 로그인")
     @PostMapping("/kakao/login")
-    fun adminKakaoLogin(
+    fun kakaoLogin(
         @RequestBody request: AdminRequest,
     ): ResponseEntity<String> {
         return when (adminAuthService.kakaoLogin(request)) {
@@ -139,7 +139,15 @@ class AdminController(
         }
     }
 
-    @Operation(summary = "모든 관리자에게 카카오 나에게 보내기 발송", description = "모든 관리자에게 카카오 나에게 보내기로 메시지를 보냅니다.")
+    @Operation(summary = "관리자 카카오 토큰 리프레시")
+    @PostMapping("/kakao/token/refresh")
+    fun kakaoTokenRefresh(): ResponseEntity<String> {
+        val admin = adminService.findById(1)
+        adminAuthService.kakaoTokenRefresh(admin)
+        return ResponseEntity.ok("성공했습니다")
+    }
+
+    @Operation(summary = "모든 관리자에게 카카오 나에게 보내기로 메세지 발송", description = "모든 관리자에게 카카오 나에게 보내기로 메시지를 보냅니다.")
     @PostMapping("/kakao/send/memo")
     fun adminKakaoSendMemo(message: String): ResponseEntity<String> {
         val adminList = adminService.findAll()
@@ -149,7 +157,7 @@ class AdminController(
 
     @Operation(summary = "관리자 삭제하기")
     @DeleteMapping("/{id}")
-    fun adminDelete(
+    fun delete(
         @PathVariable id: Long,
     ): ResponseEntity<String> {
         adminService.deleteById(id)
