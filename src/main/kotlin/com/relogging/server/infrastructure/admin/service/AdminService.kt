@@ -9,4 +9,6 @@ interface AdminService {
     fun findById(id: Long): Admin
 
     fun findAll(): List<Admin>
+
+    fun deleteById(id: Long)
 }

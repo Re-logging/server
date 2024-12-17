@@ -117,6 +117,11 @@ class AdminServiceImpl(
     override fun findAll(): List<Admin> {
         return adminRepository.findAll()
     }
+
+    override fun deleteById(id: Long) {
+        val admin = findById(id)
+        adminRepository.delete(admin)
+    }
 }
 
 private data class KakaoTokens(

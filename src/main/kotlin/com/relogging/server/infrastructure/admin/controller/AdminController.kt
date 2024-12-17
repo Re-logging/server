@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admins")
 @Tag(name = "Admin", description = "admin 컨트롤러")
 class AdminController(
     private val newsArticleScrapingService: NewsArticleScrapingService,
@@ -142,6 +142,13 @@ class AdminController(
     fun adminKakaoSendMemo(message: String): ResponseEntity<String> {
         val adminList = adminService.findAll()
         adminList.map { kakaoMessageService.sendMemo(it.accessToken, message) }
+        return ResponseEntity.ok("성공했습니다")
+    }
+
+    @Operation(summary = "관리자 삭제하기")
+    @DeleteMapping("/{id}")
+    fun adminDelete(@PathVariable id: Long): ResponseEntity<String> {
+        adminService.deleteById(id)
         return ResponseEntity.ok("성공했습니다")
     }
 }
