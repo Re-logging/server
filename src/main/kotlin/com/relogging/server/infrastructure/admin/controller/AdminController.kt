@@ -11,6 +11,7 @@ import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.infrastructure.admin.dto.AdminRequest
+import com.relogging.server.infrastructure.admin.service.AdminAuthService
 import com.relogging.server.infrastructure.admin.service.AdminService
 import com.relogging.server.infrastructure.kakao.service.KakaoMessageService
 import com.relogging.server.infrastructure.scraping.service.NewsArticleScrapingService
@@ -40,6 +41,7 @@ class AdminController(
     private val ploggingMeetupService: PloggingMeetupService,
     private val ploggingEventScrapingService: PloggingEventScrapingService,
     private val adminService: AdminService,
+    private val adminAuthService: AdminAuthService,
     private val kakaoMessageService: KakaoMessageService,
 ) {
     @Operation(summary = "뉴스 아티클 생성하기", description = "뉴스가 100자 미만이면 AI 요약을 하지 않습니다.")
@@ -130,7 +132,7 @@ class AdminController(
     fun adminKakaoLogin(
         @RequestBody request: AdminRequest,
     ): ResponseEntity<String> {
-        when (adminService.adminKakaoLogin(request)) {
+        when (adminAuthService.kakaoLogin(request)) {
             "sign-in" -> return ResponseEntity.ok("관리자 회원가입 성공")
             "update" -> return ResponseEntity.ok("관리자 로그인 성공")
             else -> throw GlobalException(GlobalErrorCode.INTERNAL_SERVER_ERROR)
@@ -147,7 +149,9 @@ class AdminController(
 
     @Operation(summary = "관리자 삭제하기")
     @DeleteMapping("/{id}")
-    fun adminDelete(@PathVariable id: Long): ResponseEntity<String> {
+    fun adminDelete(
+        @PathVariable id: Long,
+    ): ResponseEntity<String> {
         adminService.deleteById(id)
         return ResponseEntity.ok("성공했습니다")
     }

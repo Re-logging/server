@@ -46,10 +46,10 @@ class KakaoMessageServiceImpl(
                 objectType = "text",
                 text = message,
                 link =
-                KakaoLinkTemplate(
-                    webUrl = "https://www.re-logging.com/",
-                    mobileWebUrl = "https://www.re-logging.com/",
-                ),
+                    KakaoLinkTemplate(
+                        webUrl = "https://www.re-logging.com/",
+                        mobileWebUrl = "https://www.re-logging.com/",
+                    ),
             )
         return objectMapper.writeValueAsString(template)
     }
