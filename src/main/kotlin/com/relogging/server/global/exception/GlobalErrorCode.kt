@@ -59,7 +59,6 @@ enum class GlobalErrorCode(
     // 어드민 관련
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN-001", "관리자가 존재하지 않습니다"),
 
-
     // Refresh Token 관련
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "REFRESH_TOKEN-001", "해당 아이디로 저장된 토큰이 없습니다."),
 }
