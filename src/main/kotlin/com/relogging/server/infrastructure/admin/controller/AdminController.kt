@@ -132,19 +132,19 @@ class AdminController(
     fun adminKakaoLogin(
         @RequestBody request: AdminRequest,
     ): ResponseEntity<String> {
-        when (adminAuthService.kakaoLogin(request)) {
-            "sign-in" -> return ResponseEntity.ok("관리자 회원가입 성공")
-            "update" -> return ResponseEntity.ok("관리자 로그인 성공")
+        return when (adminAuthService.kakaoLogin(request)) {
+            "sign-in" -> ResponseEntity.ok("관리자 회원가입 성공")
+            "update" -> ResponseEntity.ok("관리자 로그인 성공")
             else -> throw GlobalException(GlobalErrorCode.INTERNAL_SERVER_ERROR)
         }
     }
 
-    @Operation(summary = "모든 관리자 카카오 나에게 보내기", description = "모든 관리자에게 카카오 나에게 보내기로 메시지를 보냅니다.")
+    @Operation(summary = "모든 관리자에게 카카오 나에게 보내기 발송", description = "모든 관리자에게 카카오 나에게 보내기로 메시지를 보냅니다.")
     @PostMapping("/kakao/send/memo")
     fun adminKakaoSendMemo(message: String): ResponseEntity<String> {
         val adminList = adminService.findAll()
         adminList.map { kakaoMessageService.sendMemo(it.accessToken, message) }
-        return ResponseEntity.ok("성공했습니다")
+        return ResponseEntity.ok(adminList.map { it.id }.joinToString(", "))
     }
 
     @Operation(summary = "관리자 삭제하기")

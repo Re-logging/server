@@ -1,8 +1,10 @@
 package com.relogging.server.infrastructure.admin.service
 
+import com.relogging.server.infrastructure.admin.dto.AdminConverter
 import com.relogging.server.infrastructure.admin.dto.AdminRequest
 import com.relogging.server.infrastructure.admin.entity.Admin
 import com.relogging.server.infrastructure.admin.repository.AdminRepository
+import com.relogging.server.infrastructure.kakao.dto.KakaoTokenResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
@@ -24,17 +26,12 @@ class AdminAuthServiceImpl(
 ) : AdminAuthService {
     @Transactional
     override fun kakaoLogin(request: AdminRequest): String {
-        // 1. 카카오 서버로부터 토큰 발급받기
         val tokens = getKakaoTokens(request.code)
-
-        // 2. 카카오 액세스 토큰으로 사용자 정보 가져오기
         val kakaoId = getKakaoAdminInfo(tokens.accessToken)
-
-        // 3. DB에 토큰 정보 저장/업데이트
         return saveOrUpdateAdminTokens(kakaoId, tokens)
     }
 
-    private fun getKakaoTokens(code: String): KakaoTokens {
+    private fun getKakaoTokens(code: String): KakaoTokenResponse {
         val url = "https://kauth.kakao.com/oauth/token"
 
         val formData =
@@ -53,15 +50,10 @@ class AdminAuthServiceImpl(
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .bodyValue(formData)
                 .retrieve()
-                .bodyToMono<Map<String, Any>>()
+                .bodyToMono<KakaoTokenResponse>()
                 .block() ?: throw RuntimeException("Failed to get Kakao tokens")
 
-        return KakaoTokens(
-            accessToken = response.get("access_token") as String,
-            expiresIn = (response.get("expires_in") as Number).toLong(),
-            refreshToken = response.get("refresh_token") as String,
-            refreshTokenExpiresIn = (response.get("refresh_token_expires_in") as Number).toLong(),
-        )
+        return response
     }
 
     private fun getKakaoAdminInfo(accessToken: String): Long {
@@ -81,35 +73,20 @@ class AdminAuthServiceImpl(
 
     private fun saveOrUpdateAdminTokens(
         kakaoId: Long,
-        tokens: KakaoTokens,
+        tokens: KakaoTokenResponse,
     ): String {
         val admin = adminRepository.findByKakaoId(kakaoId)
         if (admin != null) {
-            admin.updateTokens(
-                accessToken = tokens.accessToken,
-                refreshToken = tokens.refreshToken,
-                tokenExpiresIn = tokens.expiresIn,
-                refreshTokenExpiresIn = tokens.refreshTokenExpiresIn,
-            )
+            admin.updateTokens(tokens)
             return "update"
         } else {
-            val newAdmin =
-                Admin(
-                    kakaoId = kakaoId,
-                    accessToken = tokens.accessToken,
-                    tokenExpiresIn = tokens.expiresIn,
-                    refreshToken = tokens.refreshToken,
-                    refreshTokenExpiresIn = tokens.refreshTokenExpiresIn,
-                )
+            val newAdmin = AdminConverter.toEntity(kakaoId, tokens)
             adminRepository.save(newAdmin)
             return "sign-in"
         }
     }
-}
 
-private data class KakaoTokens(
-    val accessToken: String,
-    val expiresIn: Long,
-    val refreshToken: String,
-    val refreshTokenExpiresIn: Long,
-)
+    override fun kakaoTokenRefresh(admin: Admin) {
+        TODO("Not yet implemented")
+    }
+}

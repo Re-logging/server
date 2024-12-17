@@ -1,6 +1,7 @@
 package com.relogging.server.infrastructure.admin.entity
 
 import com.relogging.server.global.BaseEntity
+import com.relogging.server.infrastructure.kakao.dto.KakaoTokenResponse
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
@@ -16,19 +17,14 @@ class Admin(
     @field:Column(unique = true)
     val kakaoId: Long,
     var accessToken: String,
-    var tokenExpiresIn: Long,
+    var expiresIn: Int,
     var refreshToken: String,
-    var refreshTokenExpiresIn: Long,
+    var refreshTokenExpiresIn: Int,
 ) : BaseEntity() {
-    fun updateTokens(
-        accessToken: String,
-        tokenExpiresIn: Long,
-        refreshToken: String,
-        refreshTokenExpiresIn: Long,
-    ) {
-        this.accessToken = accessToken
-        this.tokenExpiresIn = tokenExpiresIn
-        this.refreshToken = refreshToken
-        this.refreshTokenExpiresIn = refreshTokenExpiresIn
+    fun updateTokens(tokens: KakaoTokenResponse) {
+        this.accessToken = tokens.accessToken
+        this.expiresIn = tokens.expiresIn
+        this.refreshToken = tokens.refreshToken
+        this.refreshTokenExpiresIn = tokens.refreshTokenExpiresIn
     }
 }
