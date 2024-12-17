@@ -116,7 +116,6 @@ oauth:
     user-info-uri: https://kapi.kakao.com/v2/user/me
 
 kakao:
-  api-url: https://kapi.kakao.com
   admin:
     client-id: ${ADMIN_KAKAO_CLIENT_ID}
     client-secret: ${ADMIN_KAKAO_CLIENT_SECRET}

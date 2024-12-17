@@ -7,4 +7,6 @@ interface AdminService {
     fun adminKakaoLogin(request: AdminRequest): String
 
     fun findById(id: Long): Admin
+
+    fun findAll(): List<Admin>
 }

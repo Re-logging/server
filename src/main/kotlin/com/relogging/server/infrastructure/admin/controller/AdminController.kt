@@ -137,11 +137,11 @@ class AdminController(
         }
     }
 
-    @Operation(summary = "관리자 카카오 나에게 보내기")
+    @Operation(summary = "모든 관리자 카카오 나에게 보내기", description = "모든 관리자에게 카카오 나에게 보내기로 메시지를 보냅니다.")
     @PostMapping("/kakao/send/memo")
-    fun adminKakaoSendMemo(): ResponseEntity<String> {
-        val admin = adminService.findById(1)
-        kakaoMessageService.sendMemo(admin.accessToken, "테스트")
+    fun adminKakaoSendMemo(message: String): ResponseEntity<String> {
+        val adminList = adminService.findAll()
+        adminList.map { kakaoMessageService.sendMemo(it.accessToken, message) }
         return ResponseEntity.ok("성공했습니다")
     }
 }

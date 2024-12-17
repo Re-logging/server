@@ -113,6 +113,10 @@ class AdminServiceImpl(
             throw GlobalException(GlobalErrorCode.ADMIN_NOT_FOUND)
         }
     }
+
+    override fun findAll(): List<Admin> {
+        return adminRepository.findAll()
+    }
 }
 
 private data class KakaoTokens(
