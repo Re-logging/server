@@ -114,3 +114,10 @@ oauth:
     authorization-grant-type: authorization_code
     token-uri: https://kauth.kakao.com/oauth/token
     user-info-uri: https://kapi.kakao.com/v2/user/me
+
+kakao:
+  api-url: https://kapi.kakao.com
+  admin:
+    client-id: ${ADMIN_KAKAO_CLIENT_ID}
+    client-secret: ${ADMIN_KAKAO_CLIENT_SECRET}
+    redirect-uri: ${ADMIN_KAKAO_REDIRECT_URI}
