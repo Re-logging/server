@@ -8,6 +8,12 @@ import com.relogging.server.domain.plogging.dto.PloggingEventResponse
 import com.relogging.server.domain.plogging.service.PloggingEventService
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
 import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
+import com.relogging.server.global.exception.GlobalErrorCode
+import com.relogging.server.global.exception.GlobalException
+import com.relogging.server.infrastructure.admin.dto.AdminRequest
+import com.relogging.server.infrastructure.admin.service.AdminAuthService
+import com.relogging.server.infrastructure.admin.service.AdminService
+import com.relogging.server.infrastructure.kakao.service.KakaoMessageService
 import com.relogging.server.infrastructure.scraping.service.NewsArticleScrapingService
 import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import io.swagger.v3.oas.annotations.Operation
@@ -19,13 +25,14 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/api/admins")
 @Tag(name = "Admin", description = "admin 컨트롤러")
 class AdminController(
     private val newsArticleScrapingService: NewsArticleScrapingService,
@@ -33,6 +40,9 @@ class AdminController(
     private val ploggingEventService: PloggingEventService,
     private val ploggingMeetupService: PloggingMeetupService,
     private val ploggingEventScrapingService: PloggingEventScrapingService,
+    private val adminService: AdminService,
+    private val adminAuthService: AdminAuthService,
+    private val kakaoMessageService: KakaoMessageService,
 ) {
     @Operation(summary = "뉴스 아티클 생성하기", description = "뉴스가 100자 미만이면 AI 요약을 하지 않습니다.")
     @PostMapping("/newsArticles", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -55,7 +65,7 @@ class AdminController(
 
     @Operation(summary = "뉴스 아티클 크롤링하기")
     @PostMapping("/newsArticles/crawl")
-    fun startCrawling(): ResponseEntity<String> {
+    fun fetchNewsArticles(): ResponseEntity<String> {
         var count = newsArticleScrapingService.scrapEconomyNews().count()
         count += newsArticleScrapingService.scrapEconomyNews().count()
         return ResponseEntity.ok("뉴스 아티클 $count 개 크롤링 성공했습니다")
@@ -115,5 +125,42 @@ class AdminController(
         this.ploggingEventScrapingService.scrapingPloggingEventImage(
             "https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=3217081",
         )
+    }
+
+    @Operation(summary = "관리자 카카오 로그인")
+    @PostMapping("/kakao/login")
+    fun kakaoLogin(
+        @RequestBody request: AdminRequest,
+    ): ResponseEntity<String> {
+        return when (adminAuthService.kakaoLogin(request)) {
+            "sign-in" -> ResponseEntity.ok("관리자 회원가입 성공")
+            "update" -> ResponseEntity.ok("관리자 로그인 성공")
+            else -> throw GlobalException(GlobalErrorCode.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    @Operation(summary = "관리자 카카오 토큰 리프레시")
+    @PostMapping("/kakao/token/refresh")
+    fun kakaoTokenRefresh(): ResponseEntity<String> {
+        val admin = adminService.findById(1)
+        adminAuthService.kakaoTokenRefresh(admin)
+        return ResponseEntity.ok("성공했습니다")
+    }
+
+    @Operation(summary = "모든 관리자에게 카카오 나에게 보내기로 메세지 발송", description = "모든 관리자에게 카카오 나에게 보내기로 메시지를 보냅니다.")
+    @PostMapping("/kakao/send/memo")
+    fun adminKakaoSendMemo(message: String): ResponseEntity<String> {
+        val adminList = adminService.findAll()
+        adminList.map { kakaoMessageService.sendMemo(it.accessToken, message) }
+        return ResponseEntity.ok(adminList.map { it.id }.joinToString(", "))
+    }
+
+    @Operation(summary = "관리자 삭제하기")
+    @DeleteMapping("/{id}")
+    fun delete(
+        @PathVariable id: Long,
+    ): ResponseEntity<String> {
+        adminService.deleteById(id)
+        return ResponseEntity.ok("성공했습니다")
     }
 }
