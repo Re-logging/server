@@ -95,6 +95,15 @@ class NewsArticleServiceImpl(
         return NewsArticleConverter.toResponse(newsArticlePage)
     }
 
+    @Transactional(readOnly = true)
+    override fun getNewsArticleTitleAndSource(count: Int): Map<String, String?> {
+        val mutableMap = mutableMapOf<String, String?>()
+        val pageable = PageRequest.of(0, 2)
+        val newsArticlePage = newsArticleRepository.findAllByOrderByPublishedAtDescIdAsc(pageable)
+        newsArticlePage.map { mutableMap.put(it.title, it.source) }
+        return mutableMap.toMap()
+    }
+
     @Transactional
     override fun deleteNewsArticle(id: Long) = newsArticleRepository.delete(getNewsArticleById(id))
 
