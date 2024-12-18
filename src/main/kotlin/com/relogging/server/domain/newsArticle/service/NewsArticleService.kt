@@ -30,7 +30,5 @@ interface NewsArticleService {
         pageSize: Int,
     ): NewsArticleListResponse
 
-    fun getNewsArticleTitleAndSource(count: Int): Map<String, String?>
-
     fun deleteNewsArticle(id: Long)
 }
