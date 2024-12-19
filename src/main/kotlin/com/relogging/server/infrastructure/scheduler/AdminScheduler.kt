@@ -85,7 +85,6 @@ class AdminScheduler(
     }
 
     @Scheduled(cron = "0 0 */1 * * *") // 매 시간마다
-    @Async
     fun refreshAdminTokens() {
         val admins = adminService.findAll()
         admins.forEach { admin ->
