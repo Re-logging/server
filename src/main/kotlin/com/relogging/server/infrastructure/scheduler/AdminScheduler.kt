@@ -9,7 +9,6 @@ import com.relogging.server.infrastructure.admin.service.AdminAuthService
 import com.relogging.server.infrastructure.admin.service.AdminService
 import com.relogging.server.infrastructure.kakao.service.KakaoMessageService
 import org.springframework.data.domain.Sort
-import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
