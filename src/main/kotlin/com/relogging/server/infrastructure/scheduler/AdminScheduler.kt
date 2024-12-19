@@ -9,7 +9,6 @@ import com.relogging.server.infrastructure.admin.service.AdminAuthService
 import com.relogging.server.infrastructure.admin.service.AdminService
 import com.relogging.server.infrastructure.kakao.service.KakaoMessageService
 import org.springframework.data.domain.Sort
-import org.springframework.scheduling.annotation.Async
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
@@ -84,8 +83,7 @@ class AdminScheduler(
         return message
     }
 
-    @Scheduled(cron = "0 0 */1 * * *") // 매 시간마다
-    @Async
+    @Scheduled(cron = "0 0 * * * *") // 매 시간마다
     fun refreshAdminTokens() {
         val admins = adminService.findAll()
         admins.forEach { admin ->
