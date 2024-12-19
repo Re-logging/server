@@ -3,12 +3,14 @@ package com.relogging.server.domain.ploggingMeetup.dto
 import com.relogging.server.domain.comment.dto.CommentConverter
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
+import com.relogging.server.domain.user.entity.User
 import org.springframework.data.domain.Page
 
 object PloggingMeetupConverter {
     fun toEntity(
         request: PloggingMeetupRequest,
         imageUrl: String?,
+        user: User,
     ): PloggingMeetup {
         return PloggingMeetup(
             title = request.title,
@@ -23,6 +25,7 @@ object PloggingMeetupConverter {
             contactPerson = request.contactPerson,
             contactNumber = request.contactNumber,
             registrationLink = request.registrationLink,
+            host = user,
             imageUrl = imageUrl,
         )
     }

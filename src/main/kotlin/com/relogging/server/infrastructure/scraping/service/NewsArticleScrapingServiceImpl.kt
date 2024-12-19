@@ -9,7 +9,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Service
-class NewsArticleNewsArticleScrapingServiceImpl(
+class NewsArticleScrapingServiceImpl(
     private val newsArticleService: NewsArticleService,
     private val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy.MM.dd"),
 ) : NewsArticleScrapingService {

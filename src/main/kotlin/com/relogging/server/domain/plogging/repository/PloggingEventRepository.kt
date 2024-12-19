@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param
 import java.time.LocalDate
 import java.util.Optional
 
-interface PloggingEventRepository : JpaRepository<PloggingEvent, Long> {
+interface PloggingEventRepository : JpaRepository<PloggingEvent, Long>, PloggingEventCustomRepository {
     fun findFirstByIdGreaterThanOrderByIdAsc(id: Long): Optional<PloggingEvent>
 
     fun findFirstByIdLessThanOrderByIdDesc(id: Long): Optional<PloggingEvent>

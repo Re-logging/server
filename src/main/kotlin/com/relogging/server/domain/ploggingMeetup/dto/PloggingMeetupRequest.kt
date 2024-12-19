@@ -27,5 +27,6 @@ class PloggingMeetupRequest(
     val contactPerson: String,
     @field:NotBlank
     val contactNumber: String,
-    val registrationLink: String?,
+    @field:NotBlank
+    val registrationLink: String,
 )
