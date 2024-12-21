@@ -8,6 +8,7 @@ import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
 import com.relogging.server.infrastructure.admin.service.AdminAuthService
 import com.relogging.server.infrastructure.admin.service.AdminService
 import com.relogging.server.infrastructure.kakao.service.KakaoMessageService
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -22,8 +23,10 @@ class AdminScheduler(
     private val ploggingMeetupService: PloggingMeetupService,
     private val newsArticleService: NewsArticleService,
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @Scheduled(cron = "0 0 8,18 * * *") // 매일 오전 8,18시
-    fun sendPromotionToKakaoMemoDaily() {
+    fun sendPromotionToKakaoMemo() {
         val admins = adminService.findAll()
         val message = buildPromotionMessage()
         admins.forEach { admin ->
@@ -32,6 +35,7 @@ class AdminScheduler(
                 message = message,
             )
         }
+        log.info("AdminScheduler: sendPromotionToKakaoMemo")
     }
 
     private fun buildPromotionMessage(): String {
@@ -89,5 +93,6 @@ class AdminScheduler(
         admins.forEach { admin ->
             adminAuthService.kakaoTokenRefresh(admin)
         }
+        log.info("AdminScheduler: refreshAdminTokens")
     }
 }
