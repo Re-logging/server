@@ -29,11 +29,15 @@ class AdminScheduler(
     fun sendPromotionToKakaoMemo() {
         val admins = adminService.findAll()
         val message = buildPromotionMessage()
-        admins.forEach { admin ->
-            kakaoMessageService.sendMemo(
-                accessToken = admin.accessToken,
-                message = message,
-            )
+        admins.forEach {
+            try {
+                kakaoMessageService.sendMemo(
+                    accessToken = it.accessToken,
+                    message = message,
+                )
+            } catch (e: Exception) {
+                log.error("Error sending memo to kakao message (admin id: ${it.id}): ", e)
+            }
         }
         log.info("AdminScheduler: sendPromotionToKakaoMemo")
     }
@@ -69,19 +73,19 @@ class AdminScheduler(
 
         ploggingMeetup.ploggingMeetupSimpleResponseList.forEach {
             message += "\uD83C\uDF31 [플로깅 모임] ${it.title}\n" +
-                " - ${it.region}\n" +
-                " - ${baseUrl}events/${it.id}\n"
+                    " - ${it.region}\n" +
+                    " - ${baseUrl}events/${it.id}\n"
         }
         message += "\n"
         ploggingEvents.forEach {
             message += "\uD83C\uDF31 [우리 동네 플로깅] ${it.title}\n" +
-                " - ${it.region}\n" +
-                " - ${baseUrl}meetup/${it.id}\n"
+                    " - ${it.region}\n" +
+                    " - ${baseUrl}meetup/${it.id}\n"
         }
         message += "\n"
         newsArticle.newsArticleSimpleResponseList.forEach {
             message += "\uD83C\uDF31 [환경 뉴스] ${it.title}\n" +
-                " - ${baseUrl}news/${it.id}\n"
+                    " - ${baseUrl}news/${it.id}\n"
         }
 
         return message
@@ -90,8 +94,12 @@ class AdminScheduler(
     @Scheduled(cron = "0 0 * * * *") // 매 시간마다
     fun refreshAdminTokens() {
         val admins = adminService.findAll()
-        admins.forEach { admin ->
-            adminAuthService.kakaoTokenRefresh(admin)
+        admins.forEach {
+            try {
+                adminAuthService.kakaoTokenRefresh(it)
+            } catch (e: Exception) {
+                log.error("Error to refresh kakao tokens (id: ${it.id}) : ", e)
+            }
         }
         log.info("AdminScheduler: refreshAdminTokens")
     }
