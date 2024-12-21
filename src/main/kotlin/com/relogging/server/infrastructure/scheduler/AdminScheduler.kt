@@ -29,11 +29,15 @@ class AdminScheduler(
     fun sendPromotionToKakaoMemo() {
         val admins = adminService.findAll()
         val message = buildPromotionMessage()
-        admins.forEach { admin ->
-            kakaoMessageService.sendMemo(
-                accessToken = admin.accessToken,
-                message = message,
-            )
+        admins.forEach {
+            try {
+                kakaoMessageService.sendMemo(
+                    accessToken = it.accessToken,
+                    message = message,
+                )
+            } catch (e: Exception) {
+                log.error("Error sending memo to kakao message (admin id: ${it.id}): ", e)
+            }
         }
         log.info("AdminScheduler: sendPromotionToKakaoMemo")
     }
@@ -90,8 +94,12 @@ class AdminScheduler(
     @Scheduled(cron = "0 0 * * * *") // 매 시간마다
     fun refreshAdminTokens() {
         val admins = adminService.findAll()
-        admins.forEach { admin ->
-            adminAuthService.kakaoTokenRefresh(admin)
+        admins.forEach {
+            try {
+                adminAuthService.kakaoTokenRefresh(it)
+            } catch (e: Exception) {
+                log.error("Error to refresh kakao tokens (id: ${it.id}) : ", e)
+            }
         }
         log.info("AdminScheduler: refreshAdminTokens")
     }
