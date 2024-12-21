@@ -73,19 +73,19 @@ class AdminScheduler(
 
         ploggingMeetup.ploggingMeetupSimpleResponseList.forEach {
             message += "\uD83C\uDF31 [플로깅 모임] ${it.title}\n" +
-                    " - ${it.region}\n" +
-                    " - ${baseUrl}events/${it.id}\n"
+                " - ${it.region}\n" +
+                " - ${baseUrl}events/${it.id}\n"
         }
         message += "\n"
         ploggingEvents.forEach {
             message += "\uD83C\uDF31 [우리 동네 플로깅] ${it.title}\n" +
-                    " - ${it.region}\n" +
-                    " - ${baseUrl}meetup/${it.id}\n"
+                " - ${it.region}\n" +
+                " - ${baseUrl}meetup/${it.id}\n"
         }
         message += "\n"
         newsArticle.newsArticleSimpleResponseList.forEach {
             message += "\uD83C\uDF31 [환경 뉴스] ${it.title}\n" +
-                    " - ${baseUrl}news/${it.id}\n"
+                " - ${baseUrl}news/${it.id}\n"
         }
 
         return message
