@@ -8,6 +8,7 @@ import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
 import com.relogging.server.infrastructure.admin.service.AdminAuthService
 import com.relogging.server.infrastructure.admin.service.AdminService
 import com.relogging.server.infrastructure.kakao.service.KakaoMessageService
+import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -22,16 +23,23 @@ class AdminScheduler(
     private val ploggingMeetupService: PloggingMeetupService,
     private val newsArticleService: NewsArticleService,
 ) {
+    private val log = LoggerFactory.getLogger(javaClass)
+
     @Scheduled(cron = "0 0 8,18 * * *") // 매일 오전 8,18시
-    fun sendPromotionToKakaoMemoDaily() {
+    fun sendPromotionToKakaoMemo() {
         val admins = adminService.findAll()
         val message = buildPromotionMessage()
-        admins.forEach { admin ->
-            kakaoMessageService.sendMemo(
-                accessToken = admin.accessToken,
-                message = message,
-            )
+        admins.forEach {
+            try {
+                kakaoMessageService.sendMemo(
+                    accessToken = it.accessToken,
+                    message = message,
+                )
+            } catch (e: Exception) {
+                log.error("Error sending memo to kakao message (admin id: ${it.id}): ", e)
+            }
         }
+        log.info("AdminScheduler: sendPromotionToKakaoMemo")
     }
 
     private fun buildPromotionMessage(): String {
@@ -86,8 +94,13 @@ class AdminScheduler(
     @Scheduled(cron = "0 0 * * * *") // 매 시간마다
     fun refreshAdminTokens() {
         val admins = adminService.findAll()
-        admins.forEach { admin ->
-            adminAuthService.kakaoTokenRefresh(admin)
+        admins.forEach {
+            try {
+                adminAuthService.kakaoTokenRefresh(it)
+            } catch (e: Exception) {
+                log.error("Error to refresh kakao tokens (id: ${it.id}) : ", e)
+            }
         }
+        log.info("AdminScheduler: refreshAdminTokens")
     }
 }
