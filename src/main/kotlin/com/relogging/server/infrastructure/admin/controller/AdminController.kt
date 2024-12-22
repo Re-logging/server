@@ -155,7 +155,7 @@ class AdminController(
         }
         return ResponseEntity.ok(
             "success: " + successList.joinToString(", ") +
-                    "failed: " + failedList.joinToString(", ")
+                "failed: " + failedList.joinToString(", "),
         )
     }
 
@@ -175,7 +175,7 @@ class AdminController(
         }
         return ResponseEntity.ok(
             "success: " + successList.joinToString(", ") +
-                    "failed: " + failedList.joinToString(", ")
+                "failed: " + failedList.joinToString(", "),
         )
     }
 
