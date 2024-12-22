@@ -1,0 +1,122 @@
+spring:
+  application:
+    name: server
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
+
+  #  security:
+  #    oauth2:
+  #      client:
+  #        registration:
+  #          google:
+  #            client-id: ${GOOGLE_CLIENT_ID}
+  #            client-secret: ${GOOGLE_CLIENT_SECRET}
+  #            redirect-uri: ${GOOGLE_REDIRECT_URI}
+  #            scope:
+  #              - email
+  #              - profile
+  #          kakao:
+  #            client-id: ${KAKAO_CLIENT_ID}
+  #            client-secret: ${KAKAO_CLIENT_SECRET}
+  #            client-authentication-method: client_secret_post
+  #            redirect-uri: ${KAKAO_REDIRECT_URI}
+  #            authorization-grant-type: authorization_code
+  #            client-name: kakao
+  #            scope:
+  #              - profile_nickname
+  #              - profile_image
+  #              - account_email
+  #        provider:
+  #          kakao:
+  #            authorization-uri: https://kauth.kakao.com/oauth/authorize
+  #            token-uri: https://kauth.kakao.com/oauth/token
+  #            user-info-uri: https://kapi.kakao.com/v2/user/me
+  #            user-name-attribute: id
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: false
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+
+  ai:
+    openai:
+      api-key: ${OPEN_AI_KEY}
+      chat:
+        options:
+          model: gpt-4o
+          temperature: 0.5
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+
+cors-allow-url:
+  local: ${LOCAL_URL}
+  front: ${FRONT_URL}
+
+jwt:
+  secret: ${JWT_SECRET}
+  validity-in-seconds: ${VALIDITY_IN_SECONDS}
+  validity-in-seconds-refresh: ${VALIDITY_IN_SECONDS_REFRESH}
+
+server:
+  forward-headers-strategy: native
+
+cloud:
+  aws:
+    s3:
+      bucket: relogging
+      path:
+        crew: ${S3_BASE_DIR}/image/crew
+        user: ${S3_BASE_DIR}/image/user
+        plogging-meetup: ${S3_BASE_DIR}/image/plogging-meetup
+        plogging-event: ${S3_BASE_DIR}/image/plogging-event
+        news-article: ${S3_BASE_DIR}/image/news-article
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      accessKey: ${AWS_ACCESS_KEY_ID}
+      secretKey: ${AWS_SECRET_ACCESS_KEY}
+
+1365-api:
+  host: ${VOLUNTEER_API_HOST}
+  path: ${VOLUNTEER_API_PATH}
+  key: ${VOLUNTEER_API_KEY}
+
+oauth:
+  google:
+    client-id: ${GOOGLE_CLIENT_ID}
+    client-secret: ${GOOGLE_CLIENT_SECRET}
+    #    redirect-uri: ${GOOGLE_REDIRECT_URI}
+    authorization-grant-type: authorization_code
+    token-uri: https://oauth2.googleapis.com/token
+    user-info-uri: https://www.googleapis.com/oauth2/v1/userinfo
+  kakao:
+    client-id: ${KAKAO_CLIENT_ID}
+    client-secret: ${KAKAO_CLIENT_SECRET}
+    #    redirect-uri: ${KAKAO_REDIRECT_URI}
+    authorization-grant-type: authorization_code
+    token-uri: https://kauth.kakao.com/oauth/token
+    user-info-uri: https://kapi.kakao.com/v2/user/me
+
+kakao:
+  admin:
+    client-id: ${ADMIN_KAKAO_CLIENT_ID}
+    client-secret: ${ADMIN_KAKAO_CLIENT_SECRET}
+    redirect-uri: ${ADMIN_KAKAO_REDIRECT_URI}
