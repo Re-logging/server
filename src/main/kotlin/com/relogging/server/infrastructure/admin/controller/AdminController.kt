@@ -19,7 +19,6 @@ import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapin
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
-import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -144,28 +143,40 @@ class AdminController(
     @PostMapping("/kakao/token/refresh")
     fun kakaoTokenRefresh(): ResponseEntity<String> {
         val adminList = adminService.findAll()
-        adminList.map {
+        val successList = mutableListOf<Long>()
+        val failedList = mutableListOf<Long>()
+        adminList.forEach {
             try {
                 adminAuthService.kakaoTokenRefresh(it)
+                successList.add(it.id!!)
             } catch (e: Exception) {
-                log.error("Error to refresh kakao tokens (id: ${it.id}) : ", e)
+                failedList.add(it.id!!)
             }
         }
-        return ResponseEntity.ok("성공했습니다")
+        return ResponseEntity.ok(
+            "success: " + successList.joinToString(", ") +
+                    "failed: " + failedList.joinToString(", ")
+        )
     }
 
     @Operation(summary = "모든 관리자에게 카카오 나에게 보내기로 메세지 발송", description = "모든 관리자에게 카카오 나에게 보내기로 메시지를 보냅니다.")
     @PostMapping("/kakao/send/memo")
     fun adminKakaoSendMemo(message: String): ResponseEntity<String> {
         val adminList = adminService.findAll()
-        adminList.map {
+        val successList = mutableListOf<Long>()
+        val failedList = mutableListOf<Long>()
+        adminList.forEach {
             try {
                 kakaoMessageService.sendMemo(it.accessToken, message)
+                successList.add(it.id!!)
             } catch (e: Exception) {
-                log.error("Error sending memo to kakao message (admin id: ${it.id}): ", e)
+                failedList.add(it.id!!)
             }
         }
-        return ResponseEntity.ok(adminList.map { it.id }.joinToString(", "))
+        return ResponseEntity.ok(
+            "success: " + successList.joinToString(", ") +
+                    "failed: " + failedList.joinToString(", ")
+        )
     }
 
     @Operation(summary = "관리자 삭제하기")
