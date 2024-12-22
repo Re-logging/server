@@ -142,17 +142,41 @@ class AdminController(
     @Operation(summary = "관리자 카카오 토큰 리프레시")
     @PostMapping("/kakao/token/refresh")
     fun kakaoTokenRefresh(): ResponseEntity<String> {
-        val admin = adminService.findById(1)
-        adminAuthService.kakaoTokenRefresh(admin)
-        return ResponseEntity.ok("성공했습니다")
+        val adminList = adminService.findAll()
+        val successList = mutableListOf<Long>()
+        val failedList = mutableListOf<Long>()
+        adminList.forEach {
+            try {
+                adminAuthService.kakaoTokenRefresh(it)
+                successList.add(it.id!!)
+            } catch (e: Exception) {
+                failedList.add(it.id!!)
+            }
+        }
+        return ResponseEntity.ok(
+            "success: " + successList.joinToString(", ") +
+                "failed: " + failedList.joinToString(", "),
+        )
     }
 
     @Operation(summary = "모든 관리자에게 카카오 나에게 보내기로 메세지 발송", description = "모든 관리자에게 카카오 나에게 보내기로 메시지를 보냅니다.")
     @PostMapping("/kakao/send/memo")
     fun adminKakaoSendMemo(message: String): ResponseEntity<String> {
         val adminList = adminService.findAll()
-        adminList.map { kakaoMessageService.sendMemo(it.accessToken, message) }
-        return ResponseEntity.ok(adminList.map { it.id }.joinToString(", "))
+        val successList = mutableListOf<Long>()
+        val failedList = mutableListOf<Long>()
+        adminList.forEach {
+            try {
+                kakaoMessageService.sendMemo(it.accessToken, message)
+                successList.add(it.id!!)
+            } catch (e: Exception) {
+                failedList.add(it.id!!)
+            }
+        }
+        return ResponseEntity.ok(
+            "success: " + successList.joinToString(", ") +
+                "failed: " + failedList.joinToString(", "),
+        )
     }
 
     @Operation(summary = "관리자 삭제하기")

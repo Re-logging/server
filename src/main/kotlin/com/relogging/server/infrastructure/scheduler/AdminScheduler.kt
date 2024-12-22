@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Component
@@ -26,6 +27,7 @@ class AdminScheduler(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Scheduled(cron = "0 0 8,18 * * *") // 매일 오전 8,18시
+    @Transactional
     fun sendPromotionToKakaoMemo() {
         val admins = adminService.findAll()
         val message = buildPromotionMessage()
@@ -92,6 +94,7 @@ class AdminScheduler(
     }
 
     @Scheduled(cron = "0 0 * * * *") // 매 시간마다
+    @Transactional
     fun refreshAdminTokens() {
         val admins = adminService.findAll()
         admins.forEach {
