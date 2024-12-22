@@ -31,6 +31,9 @@ class PloggingEventController(
         @RequestParam(required = false, defaultValue = "END_DATE") sortBy: PloggingEventSortType?,
         @RequestParam(required = false, defaultValue = "DESC") sortDirection: Sort.Direction,
     ): ResponseEntity<Page<PloggingEventListResponse>> {
+        println("===============================")
+        println("첫요청")
+        println("===============================")
         val response: Page<PloggingEventListResponse> =
             ploggingEventService.getPloggingEventList(
                 page = page,
