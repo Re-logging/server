@@ -19,6 +19,7 @@ import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapin
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.hibernate.query.sqm.tree.SqmNode.log
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -142,8 +143,14 @@ class AdminController(
     @Operation(summary = "관리자 카카오 토큰 리프레시")
     @PostMapping("/kakao/token/refresh")
     fun kakaoTokenRefresh(): ResponseEntity<String> {
-        val admin = adminService.findById(1)
-        adminAuthService.kakaoTokenRefresh(admin)
+        val adminList = adminService.findAll()
+        adminList.map {
+            try {
+                adminAuthService.kakaoTokenRefresh(it)
+            } catch (e: Exception) {
+                log.error("Error to refresh kakao tokens (id: ${it.id}) : ", e)
+            }
+        }
         return ResponseEntity.ok("성공했습니다")
     }
 
@@ -151,7 +158,13 @@ class AdminController(
     @PostMapping("/kakao/send/memo")
     fun adminKakaoSendMemo(message: String): ResponseEntity<String> {
         val adminList = adminService.findAll()
-        adminList.map { kakaoMessageService.sendMemo(it.accessToken, message) }
+        adminList.map {
+            try {
+                kakaoMessageService.sendMemo(it.accessToken, message)
+            } catch (e: Exception) {
+                log.error("Error sending memo to kakao message (admin id: ${it.id}): ", e)
+            }
+        }
         return ResponseEntity.ok(adminList.map { it.id }.joinToString(", "))
     }
 
