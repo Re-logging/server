@@ -30,18 +30,21 @@ class AdminScheduler(
     @Transactional
     fun sendPromotionToKakaoMemo() {
         val admins = adminService.findAll()
+        val successList = mutableListOf<Long>()
+        val failedList = mutableListOf<Long>()
         val message = buildPromotionMessage()
         admins.forEach {
             try {
-                kakaoMessageService.sendMemo(
-                    accessToken = it.accessToken,
-                    message = message,
-                )
+                kakaoMessageService.sendMemo(it.accessToken, message)
+                successList.add(it.id!!)
             } catch (e: Exception) {
-                log.error("Error sending memo to kakao message (admin id: ${it.id}): ", e)
+                failedList.add(it.id!!)
             }
         }
-        log.info("AdminScheduler: sendPromotionToKakaoMemo")
+        log.info(
+            "\n" + "success: " + successList.joinToString(", "),
+            "\n" + "failed: " + failedList.joinToString(", "),
+        )
     }
 
     private fun buildPromotionMessage(): String {
@@ -97,13 +100,19 @@ class AdminScheduler(
     @Transactional
     fun refreshAdminTokens() {
         val admins = adminService.findAll()
+        val successList = mutableListOf<Long>()
+        val failedList = mutableListOf<Long>()
         admins.forEach {
             try {
                 adminAuthService.kakaoTokenRefresh(it)
+                successList.add(it.id!!)
             } catch (e: Exception) {
-                log.error("Error to refresh kakao tokens (id: ${it.id}) : ", e)
+                failedList.add(it.id!!)
             }
         }
-        log.info("AdminScheduler: refreshAdminTokens")
+        log.info(
+            "\n" + "success: " + successList.joinToString(", "),
+            "\n" + "failed: " + failedList.joinToString(", "),
+        )
     }
 }
