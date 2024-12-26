@@ -22,10 +22,6 @@ interface PloggingMeetupService {
         increaseHits: Boolean = false,
     ): PloggingMeetupResponse
 
-    fun getNextMeetup(currentId: Long): PloggingMeetupResponse
-
-    fun getPrevMeetup(currentId: Long): PloggingMeetupResponse
-
     fun getMeetupList(
         page: Int,
         pageSize: Int,

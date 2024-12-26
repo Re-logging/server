@@ -53,28 +53,6 @@ class PloggingMeetupServiceImpl(
         return PloggingMeetupConverter.toResponse(meetup, getRootComments(meetup))
     }
 
-    @Transactional
-    override fun getNextMeetup(currentId: Long): PloggingMeetupResponse {
-        val nextMeetup =
-            ploggingMeetupRepository.findFirstByIdGreaterThanOrderByIdAsc(currentId)
-                .orElseThrow {
-                    throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
-                }
-        nextMeetup.hits += 1
-        return PloggingMeetupConverter.toResponse(nextMeetup, getRootComments(nextMeetup))
-    }
-
-    @Transactional
-    override fun getPrevMeetup(currentId: Long): PloggingMeetupResponse {
-        val prevMeetup =
-            ploggingMeetupRepository.findFirstByIdLessThanOrderByIdDesc(currentId)
-                .orElseThrow {
-                    throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
-                }
-        prevMeetup.hits += 1
-        return PloggingMeetupConverter.toResponse(prevMeetup, getRootComments(prevMeetup))
-    }
-
     override fun getMeetupList(
         page: Int,
         pageSize: Int,

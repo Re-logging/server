@@ -94,24 +94,4 @@ class PloggingMeetupController(
         ploggingMeetupService.deleteMeetup(id, principalDetails.user)
         return ResponseEntity.ok("성공했습니다")
     }
-
-//    @Operation(summary = "다음 플로깅 모임 조회하기", description = "조회수를 증가시킵니다.")
-//    @GetMapping("/{currentId}/next")
-//    fun getNextPloggingMeetup(
-//        @PathVariable currentId: Long,
-//    ): ResponseEntity<PloggingMeetupResponse> {
-//        val response: PloggingMeetupResponse =
-//            ploggingMeetupService.getNextMeetup(currentId)
-//        return ResponseEntity.ok(response)
-//    }
-//
-//    @Operation(summary = "이전 플로깅 모임 조회하기", description = "조회수를 증가시킵니다.")
-//    @GetMapping("/{currentId}/prev")
-//    fun getPrevPloggingMeetup(
-//        @PathVariable currentId: Long,
-//    ): ResponseEntity<PloggingMeetupResponse> {
-//        val response: PloggingMeetupResponse =
-//            ploggingMeetupService.getPrevMeetup(currentId)
-//        return ResponseEntity.ok(response)
-//    }
 }
