@@ -44,6 +44,10 @@ class PloggingMeetup(
     @field:OneToMany(mappedBy = "ploggingMeetup", cascade = [CascadeType.ALL])
     val commentList: MutableList<Comment> = mutableListOf(),
 ) : BaseEntity() {
+    fun increaseHits(count: Int = 1) {
+        hits += count
+    }
+
     fun checkUserAccess(user: User) {
         if (this.host.id != user.id) {
             throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_AUTHORIZED)

@@ -43,16 +43,12 @@ class PloggingMeetupServiceImpl(
         id: Long,
         increaseHits: Boolean,
     ): PloggingMeetupResponse {
-        val meetup =
-            ploggingMeetupRepository.findById(id).orElseThrow {
-                throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
-            }
-        if (increaseHits) {
-            meetup.hits++
-        }
+        val meetup = getMeetupEntity(id)
+        meetup.increaseHits()
         return PloggingMeetupConverter.toResponse(meetup, getRootComments(meetup))
     }
 
+    @Transactional(readOnly = true)
     override fun getMeetupList(
         page: Int,
         pageSize: Int,
