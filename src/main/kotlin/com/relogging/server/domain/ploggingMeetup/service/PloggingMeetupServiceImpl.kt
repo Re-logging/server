@@ -3,9 +3,10 @@ package com.relogging.server.domain.ploggingMeetup.service
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.ploggingMeetup.PloggingMeetupSortType
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupConverter
+import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupCreateRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupListResponse
-import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
+import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupUpdateRequest
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.ploggingMeetup.repository.PloggingMeetupRepository
 import com.relogging.server.domain.user.entity.User
@@ -28,7 +29,7 @@ class PloggingMeetupServiceImpl(
 ) : PloggingMeetupService {
     @Transactional
     override fun createMeetup(
-        request: PloggingMeetupRequest,
+        request: PloggingMeetupCreateRequest,
         image: MultipartFile?,
         user: User,
     ): Long {
@@ -104,4 +105,25 @@ class PloggingMeetupServiceImpl(
         meetup.commentList
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
+
+    @Transactional
+    override fun updateMeetup(
+        id: Long,
+        request: PloggingMeetupUpdateRequest,
+        user: User,
+    ) {
+        val meetup = getMeetupEntity(id)
+        meetup.checkUserAccess(user)
+        meetup.update(request)
+    }
+
+    @Transactional
+    override fun deleteMeetup(
+        id: Long,
+        user: User,
+    ) {
+        val meetup = getMeetupEntity(id)
+        meetup.checkUserAccess(user)
+        ploggingMeetupRepository.delete(meetup)
+    }
 }

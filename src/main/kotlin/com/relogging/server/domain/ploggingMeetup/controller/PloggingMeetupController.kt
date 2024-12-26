@@ -1,9 +1,10 @@
 package com.relogging.server.domain.ploggingMeetup.controller
 
 import com.relogging.server.domain.ploggingMeetup.PloggingMeetupSortType
+import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupCreateRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupListResponse
-import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
+import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupUpdateRequest
 import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
 import com.relogging.server.security.details.PrincipalDetails
 import io.swagger.v3.oas.annotations.Operation
@@ -13,9 +14,12 @@ import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
@@ -53,7 +57,7 @@ class PloggingMeetupController(
     @Operation(summary = "플로깅 모임 생성하기")
     @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun createPloggingMeetup(
-        @RequestPart @Valid request: PloggingMeetupRequest,
+        @RequestPart @Valid request: PloggingMeetupCreateRequest,
         @RequestPart(value = "image", required = false) image: MultipartFile?,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
@@ -68,6 +72,27 @@ class PloggingMeetupController(
     ): ResponseEntity<PloggingMeetupResponse> {
         val response = ploggingMeetupService.getMeetup(id, true)
         return ResponseEntity.ok(response)
+    }
+
+    @Operation(summary = "플로깅 모임 수정하기")
+    @PutMapping("/{id}")
+    fun updatePloggingMeetup(
+        @PathVariable id: Long,
+        @RequestBody request: PloggingMeetupUpdateRequest,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails,
+    ): ResponseEntity<String> {
+        ploggingMeetupService.updateMeetup(id, request, principalDetails.user)
+        return ResponseEntity.ok("성공했습니다")
+    }
+
+    @Operation(summary = "플로깅 모임 삭제하기")
+    @DeleteMapping("/{id}")
+    fun updatePloggingMeetup(
+        @PathVariable id: Long,
+        @AuthenticationPrincipal principalDetails: PrincipalDetails,
+    ): ResponseEntity<String> {
+        ploggingMeetupService.deleteMeetup(id, principalDetails.user)
+        return ResponseEntity.ok("성공했습니다")
     }
 
 //    @Operation(summary = "다음 플로깅 모임 조회하기", description = "조회수를 증가시킵니다.")

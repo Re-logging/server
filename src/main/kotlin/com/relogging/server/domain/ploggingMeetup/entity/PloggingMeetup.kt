@@ -1,8 +1,11 @@
 package com.relogging.server.domain.ploggingMeetup.entity
 
 import com.relogging.server.domain.comment.entity.Comment
+import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupUpdateRequest
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.BaseEntity
+import com.relogging.server.global.exception.GlobalErrorCode
+import com.relogging.server.global.exception.GlobalException
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -22,22 +25,43 @@ class PloggingMeetup(
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     @field:Column(name = "plogging_meetup_id")
     val id: Long? = null,
-    val title: String,
-    val content: String,
-    val startDate: LocalDateTime,
-    val endDate: LocalDateTime,
-    val location: String,
-    val activityHours: String,
-    val region: String,
+    var title: String,
+    var content: String,
+    var startDate: LocalDateTime,
+    var endDate: LocalDateTime,
+    var location: String,
+    var activityHours: String,
+    var region: String,
     var imageUrl: String?,
-    val contactPerson: String,
-    val contactNumber: String,
-    val participationTarget: String,
-    val supportDetails: String,
-    val registrationLink: String,
+    var contactPerson: String,
+    var contactNumber: String,
+    var participationTarget: String,
+    var supportDetails: String,
+    var registrationLink: String,
     var hits: Long = 0,
     @field:ManyToOne(fetch = FetchType.LAZY)
     val host: User,
     @field:OneToMany(mappedBy = "ploggingMeetup", cascade = [CascadeType.ALL])
     val commentList: MutableList<Comment> = mutableListOf(),
-) : BaseEntity()
+) : BaseEntity() {
+    fun checkUserAccess(user: User) {
+        if (this.host.id != user.id) {
+            throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_AUTHORIZED)
+        }
+    }
+
+    fun update(request: PloggingMeetupUpdateRequest) {
+        request.title?.let { this.title = it }
+        request.content?.let { this.content = it }
+        request.location?.let { this.location = it }
+        request.region?.let { this.region = it }
+        request.startDate?.let { this.startDate = it }
+        request.endDate?.let { this.endDate = it }
+        request.participantTarget?.let { this.participationTarget = it }
+        request.supportDetails?.let { this.supportDetails = it }
+        request.activityHours?.let { this.activityHours = it }
+        request.contactPerson?.let { this.contactPerson = it }
+        request.contactNumber?.let { this.contactNumber = it }
+        request.registrationLink?.let { this.registrationLink = it }
+    }
+}
