@@ -6,6 +6,7 @@ import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.crew.entity.CrewApplication
 import com.relogging.server.domain.crew.entity.CrewMember
 import com.relogging.server.domain.image.entity.Image
+import com.relogging.server.domain.notification.entity.Notification
 import com.relogging.server.global.BaseEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -44,6 +45,8 @@ class User(
     val role: Role = Role.USER,
     @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
     val commentList: MutableList<Comment> = mutableListOf(),
+    @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    val notificationList: MutableList<Notification> = mutableListOf(),
 ) : BaseEntity()
 
 enum class SocialType(val value: String) {
