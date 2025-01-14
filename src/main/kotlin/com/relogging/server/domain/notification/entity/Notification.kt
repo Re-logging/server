@@ -27,5 +27,5 @@ class Notification(
 
 enum class NotificationType {
     COMMENT,
-    REPLY
+    REPLY,
 }
