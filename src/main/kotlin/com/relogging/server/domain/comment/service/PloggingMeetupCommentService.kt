@@ -6,9 +6,9 @@ import com.relogging.server.domain.user.entity.User
 
 interface PloggingMeetupCommentService {
     fun createComment(
+        user: User,
         meetupId: Long,
         request: CommentCreateRequest,
-        user: User,
     ): Long
 
     fun updateComment(
@@ -25,9 +25,9 @@ interface PloggingMeetupCommentService {
     )
 
     fun createReply(
+        user: User,
         meetupId: Long,
         parentCommentId: Long,
         request: CommentCreateRequest,
-        user: User,
     ): Long
 }

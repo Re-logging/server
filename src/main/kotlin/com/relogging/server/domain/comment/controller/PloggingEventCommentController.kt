@@ -29,7 +29,7 @@ class PloggingEventCommentController(
         @RequestBody request: CommentCreateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.createComment(eventId, request, principalDetails.user)
+        val response = commentService.createComment(principalDetails.user, eventId, request)
         return ResponseEntity.ok(response)
     }
 
@@ -41,7 +41,8 @@ class PloggingEventCommentController(
         @RequestBody request: CommentUpdateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.updateComment(eventId, commentId, request, principalDetails.user)
+        val response =
+            commentService.updateComment(eventId, commentId, request, principalDetails.user)
         return ResponseEntity.ok(response)
     }
 
@@ -64,7 +65,8 @@ class PloggingEventCommentController(
         @RequestBody request: CommentCreateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.createReply(eventId, commentId, request, principalDetails.user)
+        val response =
+            commentService.createReply(principalDetails.user, eventId, commentId, request)
         return ResponseEntity.ok(response)
     }
 }

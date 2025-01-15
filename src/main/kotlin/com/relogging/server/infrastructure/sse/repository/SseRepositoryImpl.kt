@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 @Repository
 class SseRepositoryImpl(
     override val emitterMap: ConcurrentHashMap<String, SseEmitter> = ConcurrentHashMap(),
-    override val userMap: ConcurrentHashMap<Long, MutableList<String>> = ConcurrentHashMap()
+    override val userMap: ConcurrentHashMap<Long, MutableList<String>> = ConcurrentHashMap(),
 ) : SseRepository {
     override fun save(
         userId: Long,
@@ -33,9 +33,7 @@ class SseRepositoryImpl(
         }
     }
 
-    override fun get(eventId: String): SseEmitter =
-        this.emitterMap[eventId] ?: throw GlobalException(GlobalErrorCode.EMITTER_NOT_FOUND)
+    override fun get(eventId: String): SseEmitter = this.emitterMap[eventId] ?: throw GlobalException(GlobalErrorCode.EMITTER_NOT_FOUND)
 
-    override fun getEventIdList(userId: Long): List<String> =
-        this.userMap[userId]?.toList() ?: emptyList()
+    override fun getEventIdList(userId: Long): List<String> = this.userMap[userId]?.toList() ?: emptyList()
 }

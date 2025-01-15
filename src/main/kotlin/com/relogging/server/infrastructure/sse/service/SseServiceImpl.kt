@@ -13,7 +13,7 @@ class SseServiceImpl(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     companion object {
-        private const val DEFAULT_TIMEOUT = 1 * 1000L
+        private const val DEFAULT_TIMEOUT = 60 * 1000L
     }
 
     override fun connect(userId: Long): SseEmitter {
@@ -50,7 +50,7 @@ class SseServiceImpl(
                     .id(eventId)
                     .apply {
                         if (data != null) data(data)
-                    }
+                    },
             )
         } catch (e: IOException) {
             this.sseRepository.delete(eventId)

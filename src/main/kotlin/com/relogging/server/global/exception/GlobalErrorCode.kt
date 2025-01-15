@@ -58,7 +58,7 @@ enum class GlobalErrorCode(
     PLOGGING_MEETUP_NOT_AUTHORIZED(
         HttpStatus.FORBIDDEN,
         "PLOGGING-MEETUP-002",
-        "플로깅 모임에 대한 권한이 없습니다"
+        "플로깅 모임에 대한 권한이 없습니다",
     ),
 
     // 어드민 관련
@@ -71,6 +71,6 @@ enum class GlobalErrorCode(
     EMITTER_NOT_FOUND(
         HttpStatus.INTERNAL_SERVER_ERROR,
         "SSE-001",
-        "해당 이벤트 아이디에 해당하는 에미터가 존재하지 않습니다."
-    )
+        "해당 이벤트 아이디에 해당하는 에미터가 존재하지 않습니다.",
+    ),
 }

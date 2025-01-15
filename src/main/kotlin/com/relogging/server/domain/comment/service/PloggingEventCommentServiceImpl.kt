@@ -5,6 +5,8 @@ import com.relogging.server.domain.comment.dto.CommentCreateRequest
 import com.relogging.server.domain.comment.dto.CommentUpdateRequest
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.comment.repository.CommentRepository
+import com.relogging.server.domain.notification.annotation.SendNotification
+import com.relogging.server.domain.notification.entity.NotificationType
 import com.relogging.server.domain.plogging.service.PloggingEventService
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.exception.GlobalErrorCode
@@ -18,10 +20,11 @@ class PloggingEventCommentServiceImpl(
     private val ploggingEventService: PloggingEventService,
 ) : PloggingEventCommentService {
     @Transactional
+    @SendNotification(NotificationType.COMMENT)
     override fun createComment(
+        user: User,
         eventId: Long,
         request: CommentCreateRequest,
-        user: User,
     ): Long {
         val ploggingEvent = ploggingEventService.getPloggingEventEntity(eventId)
         val comment = CommentConverter.toEntity(ploggingEvent, request, user)
@@ -55,11 +58,12 @@ class PloggingEventCommentServiceImpl(
     }
 
     @Transactional
+    @SendNotification(NotificationType.REPLY)
     override fun createReply(
+        user: User,
         eventId: Long,
         parentCommentId: Long,
         request: CommentCreateRequest,
-        user: User,
     ): Long {
         val parentComment = getCommentById(parentCommentId)
         parentComment.validateReplyDepth()
@@ -71,7 +75,9 @@ class PloggingEventCommentServiceImpl(
         return commentRepository.save(reply).id!!
     }
 
-    private fun getCommentById(id: Long) = commentRepository.findById(id).orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
+    private fun getCommentById(id: Long) =
+        commentRepository.findById(id)
+            .orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
 
     private fun checkEventCommentMatch(
         eventId: Long,
