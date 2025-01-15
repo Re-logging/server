@@ -19,7 +19,8 @@ class SseServiceImpl(
     override fun connect(userId: Long): SseEmitter {
         val eventId: String = userId.toString() + "_" + System.currentTimeMillis()
 
-        val emitter: SseEmitter = this.sseRepository.save(eventId, SseEmitter(DEFAULT_TIMEOUT))
+        val emitter: SseEmitter =
+            this.sseRepository.save(userId, eventId, SseEmitter(DEFAULT_TIMEOUT))
 
         emitter.onCompletion {
             logger.info("onCompletion callback")
@@ -31,7 +32,7 @@ class SseServiceImpl(
             this.sseRepository.delete(eventId)
         }
 
-        send(eventId, SseEventName.CONNECT, emitter, "SSE 연결 성공: [$eventId]")
+        send(eventId, SseEventName.CONNECT, "SSE 연결 성공: [$eventId]")
 
         return emitter
     }
@@ -39,15 +40,17 @@ class SseServiceImpl(
     override fun send(
         eventId: String,
         name: SseEventName,
-        emitter: SseEmitter,
-        data: Any,
+        data: Any?,
     ) {
+        val emitter = this.sseRepository.get(eventId)
         try {
             emitter.send(
                 SseEmitter.event()
                     .name(name.value)
                     .id(eventId)
-                    .data(data),
+                    .apply {
+                        if (data != null) data(data)
+                    }
             )
         } catch (e: IOException) {
             this.sseRepository.delete(eventId)

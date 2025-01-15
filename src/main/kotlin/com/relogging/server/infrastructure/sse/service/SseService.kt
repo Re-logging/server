@@ -8,7 +8,6 @@ interface SseService {
     fun send(
         eventId: String,
         name: SseEventName,
-        emitter: SseEmitter,
-        data: Any,
+        data: Any?,
     )
 }
