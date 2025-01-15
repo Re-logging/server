@@ -18,7 +18,7 @@ class Notification(
     @field:Id
     @field:GeneratedValue(strategy = GenerationType.IDENTITY)
     @field:Column(name = "comment_id")
-    val id: Long,
+    val id: Long? = null,
     @field:ManyToOne(fetch = FetchType.LAZY)
     @field:JoinColumn(name = "user_id")
     val user: User,

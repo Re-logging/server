@@ -41,7 +41,6 @@ class NotificationAspect(
             throw IllegalArgumentException("첫 번째 인자는 반드시 User 타입이어야 합니다.")
         }
 
-
         val result =
             try {
                 joinPoint.proceed()
@@ -52,6 +51,7 @@ class NotificationAspect(
         val receiver = args[0] as User
         val type = sendNotification.type
 
+        this.notificationService.createNotification(receiver, type)
         this.notificationService.sendNotification(receiver, type)
 
         return result

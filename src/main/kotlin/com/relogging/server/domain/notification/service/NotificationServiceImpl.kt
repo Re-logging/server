@@ -1,6 +1,9 @@
 package com.relogging.server.domain.notification.service
 
+import com.relogging.server.domain.notification.dto.NotificationConverter
+import com.relogging.server.domain.notification.entity.Notification
 import com.relogging.server.domain.notification.entity.NotificationType
+import com.relogging.server.domain.notification.repository.NotificationRepository
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.infrastructure.sse.repository.SseRepository
 import com.relogging.server.infrastructure.sse.service.SseEventName
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service
 class NotificationServiceImpl(
     private val sseService: SseService,
     private val sseRepository: SseRepository,
+    private val notificationRepository: NotificationRepository,
 ) : NotificationService {
     override fun sendNotification(
         receiver: User,
@@ -19,6 +23,17 @@ class NotificationServiceImpl(
         val eventIdList = this.sseRepository.getEventIdList(receiver.id!!)
         val eventName = this.getEventNameToNotificationType(type)
         eventIdList.forEach { this.sseService.send(it, eventName, null) }
+    }
+
+    override fun getNotificationList(userId: Long): List<Notification> =
+        this.notificationRepository.findAllByUserIdOrderByCreateAtDesc(userId)
+
+    override fun createNotification(
+        user: User,
+        type: NotificationType,
+    ): Notification {
+        val notification = NotificationConverter.toEntity(user, type)
+        return this.notificationRepository.save(notification)
     }
 
     private fun getEventNameToNotificationType(type: NotificationType): SseEventName =
