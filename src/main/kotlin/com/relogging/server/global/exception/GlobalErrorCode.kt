@@ -55,11 +55,22 @@ enum class GlobalErrorCode(
 
     // 플로깅 모임 관련
     PLOGGING_MEETUP_NOT_FOUND(HttpStatus.NOT_FOUND, "PLOGGING-MEETUP-001", "플로깅 모임이 존재하지 않습니다"),
-    PLOGGING_MEETUP_NOT_AUTHORIZED(HttpStatus.FORBIDDEN, "PLOGGING-MEETUP-002", "플로깅 모임에 대한 권한이 없습니다"),
+    PLOGGING_MEETUP_NOT_AUTHORIZED(
+        HttpStatus.FORBIDDEN,
+        "PLOGGING-MEETUP-002",
+        "플로깅 모임에 대한 권한이 없습니다",
+    ),
 
     // 어드민 관련
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN-001", "관리자가 존재하지 않습니다"),
 
     // Refresh Token 관련
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "REFRESH_TOKEN-001", "해당 아이디로 저장된 토큰이 없습니다."),
+
+    // SSE 관련
+    EMITTER_NOT_FOUND(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "SSE-001",
+        "해당 이벤트 아이디에 해당하는 에미터가 존재하지 않습니다.",
+    ),
 }

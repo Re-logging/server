@@ -1,11 +1,13 @@
 package com.relogging.server.domain.comment.entity
 
+import com.relogging.server.domain.notification.entity.Notification
 import com.relogging.server.domain.plogging.entity.PloggingEvent
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.BaseEntity
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -15,6 +17,7 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToMany
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 
 @Entity
@@ -40,6 +43,8 @@ class Comment(
     @field:OneToMany(mappedBy = "parentComment")
     var childComment: MutableList<Comment> = mutableListOf(),
     var isDeleted: Boolean = false,
+    @field:OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var notification: Notification? = null,
 ) : BaseEntity() {
     fun delete() {
         this.isDeleted = true

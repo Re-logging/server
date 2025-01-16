@@ -19,13 +19,13 @@ class PloggingEventCommentServiceImpl(
 ) : PloggingEventCommentService {
     @Transactional
     override fun createComment(
+        user: User,
         eventId: Long,
         request: CommentCreateRequest,
-        user: User,
-    ): Long {
+    ): Comment {
         val ploggingEvent = ploggingEventService.getPloggingEventEntity(eventId)
         val comment = CommentConverter.toEntity(ploggingEvent, request, user)
-        return commentRepository.save(comment).id!!
+        return commentRepository.save(comment)
     }
 
     @Transactional
@@ -56,11 +56,11 @@ class PloggingEventCommentServiceImpl(
 
     @Transactional
     override fun createReply(
+        user: User,
         eventId: Long,
         parentCommentId: Long,
         request: CommentCreateRequest,
-        user: User,
-    ): Long {
+    ): Comment {
         val parentComment = getCommentById(parentCommentId)
         parentComment.validateReplyDepth()
         checkEventCommentMatch(eventId, parentComment)
@@ -68,10 +68,12 @@ class PloggingEventCommentServiceImpl(
         val reply = CommentConverter.toEntity(parentComment.ploggingEvent!!, request, user)
         parentComment.addReply(reply)
 
-        return commentRepository.save(reply).id!!
+        return commentRepository.save(reply)
     }
 
-    private fun getCommentById(id: Long) = commentRepository.findById(id).orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
+    private fun getCommentById(id: Long) =
+        commentRepository.findById(id)
+            .orElseThrow { GlobalException(GlobalErrorCode.COMMENT_NOT_FOUND) }
 
     private fun checkEventCommentMatch(
         eventId: Long,
