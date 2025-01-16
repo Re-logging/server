@@ -8,7 +8,7 @@ interface NotificationService {
     fun sendNotification(
         receiver: User,
         type: NotificationType,
-    )
+    ): Notification
 
     fun getNotificationList(userId: Long): List<Notification>
 
@@ -16,4 +16,6 @@ interface NotificationService {
         user: User,
         type: NotificationType,
     ): Notification
+
+    fun deleteNotification(notification: Notification?)
 }

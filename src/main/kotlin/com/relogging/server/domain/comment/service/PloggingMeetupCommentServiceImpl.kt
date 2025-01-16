@@ -6,7 +6,7 @@ import com.relogging.server.domain.comment.dto.CommentUpdateRequest
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.comment.repository.CommentRepository
 import com.relogging.server.domain.notification.annotation.CommentNotification
-import com.relogging.server.domain.notification.entity.NotificationType
+import com.relogging.server.domain.notification.annotation.ReplyNotification
 import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.exception.GlobalErrorCode
@@ -19,7 +19,7 @@ class PloggingMeetupCommentServiceImpl(
     private val commentRepository: CommentRepository,
     private val ploggingMeetupService: PloggingMeetupService,
 ) : PloggingMeetupCommentService {
-    @CommentNotification(NotificationType.COMMENT)
+    @CommentNotification
     @Transactional
     override fun createComment(
         user: User,
@@ -55,10 +55,11 @@ class PloggingMeetupCommentServiceImpl(
         checkMeetupCommentMatch(meetupId, comment)
         checkUserAccess(user, comment)
         comment.delete()
+        comment.notification = null
     }
 
     @Transactional
-    @CommentNotification(NotificationType.REPLY)
+    @ReplyNotification
     override fun createReply(
         user: User,
         meetupId: Long,

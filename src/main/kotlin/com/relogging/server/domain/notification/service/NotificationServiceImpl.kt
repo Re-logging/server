@@ -19,11 +19,11 @@ class NotificationServiceImpl(
     override fun sendNotification(
         receiver: User,
         type: NotificationType,
-    ) {
+    ): Notification {
         val eventIdList = this.sseRepository.getEventIdList(receiver.id!!)
         val eventName = this.getEventNameToNotificationType(type)
         eventIdList.forEach { this.sseService.send(it, eventName, null) }
-        this.createNotification(receiver, type)
+        return this.createNotification(receiver, type)
     }
 
     override fun getNotificationList(userId: Long): List<Notification> =
@@ -35,6 +35,12 @@ class NotificationServiceImpl(
     ): Notification {
         val notification = NotificationConverter.toEntity(user, type)
         return this.notificationRepository.save(notification)
+    }
+
+    override fun deleteNotification(notification: Notification?) {
+        if (notification?.id != null) {
+            this.notificationRepository.deleteById(notification.id)
+        }
     }
 
     private fun getEventNameToNotificationType(type: NotificationType): SseEventName =

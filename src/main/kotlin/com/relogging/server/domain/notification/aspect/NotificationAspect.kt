@@ -17,6 +17,10 @@ class NotificationAspect(
     fun commentNotification() {
     }
 
+    @Pointcut("@annotation(com.relogging.server.domain.notification.annotation.ReplyNotification)")
+    fun replyNotification() {
+    }
+
 //    @Pointcut("execution(public * com.relogging.server.domain..controller..*(..))")
 //    fun onRequest() {
 //    }
@@ -36,9 +40,20 @@ class NotificationAspect(
             return
         }
 
-        val type =
-            if (comment.parentComment == null) NotificationType.COMMENT else NotificationType.REPLY
+        val notification =
+            this.notificationService.sendNotification(receiver, NotificationType.COMMENT)
+        comment.notification = notification
+    }
 
-        this.notificationService.sendNotification(receiver, type)
+    @AfterReturning(pointcut = "replyNotification()", returning = "comment")
+    fun sendReplyNotification(comment: Comment) {
+        val receiver = comment.parentComment!!.user
+        val sender = comment.user
+
+        if (receiver.id == sender.id) {
+            return
+        }
+
+        this.notificationService.sendNotification(receiver, NotificationType.REPLY)
     }
 }

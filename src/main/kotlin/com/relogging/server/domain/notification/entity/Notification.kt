@@ -1,5 +1,6 @@
 package com.relogging.server.domain.notification.entity
 
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.BaseEntity
 import jakarta.persistence.Column
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 
 @Entity
@@ -23,6 +25,8 @@ class Notification(
     @field:JoinColumn(name = "user_id")
     val user: User,
     val type: NotificationType,
+    @field:OneToOne(mappedBy = "notification")
+    val comment: Comment? = null,
 ) : BaseEntity()
 
 enum class NotificationType {
