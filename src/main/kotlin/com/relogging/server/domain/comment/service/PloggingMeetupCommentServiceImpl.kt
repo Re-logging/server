@@ -5,7 +5,7 @@ import com.relogging.server.domain.comment.dto.CommentCreateRequest
 import com.relogging.server.domain.comment.dto.CommentUpdateRequest
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.comment.repository.CommentRepository
-import com.relogging.server.domain.notification.annotation.SendNotification
+import com.relogging.server.domain.notification.annotation.CommentNotification
 import com.relogging.server.domain.notification.entity.NotificationType
 import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
 import com.relogging.server.domain.user.entity.User
@@ -19,17 +19,16 @@ class PloggingMeetupCommentServiceImpl(
     private val commentRepository: CommentRepository,
     private val ploggingMeetupService: PloggingMeetupService,
 ) : PloggingMeetupCommentService {
-    @SendNotification(NotificationType.COMMENT)
+    @CommentNotification(NotificationType.COMMENT)
     @Transactional
     override fun createComment(
         user: User,
         meetupId: Long,
         request: CommentCreateRequest,
-    ): Long {
+    ): Comment {
         val ploggingMeetup = ploggingMeetupService.getMeetupEntity(meetupId)
         val comment = CommentConverter.toEntity(ploggingMeetup, request, user)
-        println("뭐임???")
-        return commentRepository.save(comment).id!!
+        return commentRepository.save(comment)
     }
 
     @Transactional
@@ -59,13 +58,13 @@ class PloggingMeetupCommentServiceImpl(
     }
 
     @Transactional
-    @SendNotification(NotificationType.REPLY)
+    @CommentNotification(NotificationType.REPLY)
     override fun createReply(
         user: User,
         meetupId: Long,
         parentCommentId: Long,
         request: CommentCreateRequest,
-    ): Long {
+    ): Comment {
         val parentComment = getCommentById(parentCommentId)
         parentComment.validateReplyDepth()
         checkMeetupCommentMatch(meetupId, parentComment)
@@ -73,7 +72,7 @@ class PloggingMeetupCommentServiceImpl(
         val reply = CommentConverter.toEntity(parentComment.ploggingMeetup!!, request, user)
         parentComment.addReply(reply)
 
-        return commentRepository.save(reply).id!!
+        return commentRepository.save(reply)
     }
 
     private fun getCommentById(id: Long) =

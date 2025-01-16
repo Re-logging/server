@@ -4,6 +4,6 @@ import com.relogging.server.domain.notification.entity.NotificationType
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class SendNotification(
+annotation class CommentNotification(
     val type: NotificationType,
 )

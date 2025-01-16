@@ -2,6 +2,7 @@ package com.relogging.server.domain.comment.service
 
 import com.relogging.server.domain.comment.dto.CommentCreateRequest
 import com.relogging.server.domain.comment.dto.CommentUpdateRequest
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.user.entity.User
 
 interface PloggingMeetupCommentService {
@@ -9,7 +10,7 @@ interface PloggingMeetupCommentService {
         user: User,
         meetupId: Long,
         request: CommentCreateRequest,
-    ): Long
+    ): Comment
 
     fun updateComment(
         meetupId: Long,
@@ -29,5 +30,5 @@ interface PloggingMeetupCommentService {
         meetupId: Long,
         parentCommentId: Long,
         request: CommentCreateRequest,
-    ): Long
+    ): Comment
 }

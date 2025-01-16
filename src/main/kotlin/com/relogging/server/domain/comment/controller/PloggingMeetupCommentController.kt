@@ -30,7 +30,7 @@ class PloggingMeetupCommentController(
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
         val response = commentService.createComment(principalDetails.user, meetupId, request)
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(response.id)
     }
 
     @Operation(summary = "댓글 수정하기")
@@ -67,6 +67,6 @@ class PloggingMeetupCommentController(
     ): ResponseEntity<Long> {
         val response =
             commentService.createReply(principalDetails.user, meetupId, commentId, request)
-        return ResponseEntity.ok(response)
+        return ResponseEntity.ok(response.id)
     }
 }

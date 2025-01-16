@@ -45,7 +45,7 @@ class User(
     val role: Role = Role.USER,
     @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
     val commentList: MutableList<Comment> = mutableListOf(),
-    @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL])
+    @field:OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     val notificationList: MutableList<Notification> = mutableListOf(),
 ) : BaseEntity()
 

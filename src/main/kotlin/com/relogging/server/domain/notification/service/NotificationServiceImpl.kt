@@ -23,6 +23,7 @@ class NotificationServiceImpl(
         val eventIdList = this.sseRepository.getEventIdList(receiver.id!!)
         val eventName = this.getEventNameToNotificationType(type)
         eventIdList.forEach { this.sseService.send(it, eventName, null) }
+        this.createNotification(receiver, type)
     }
 
     override fun getNotificationList(userId: Long): List<Notification> =

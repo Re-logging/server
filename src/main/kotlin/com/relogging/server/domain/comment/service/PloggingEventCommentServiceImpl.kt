@@ -5,8 +5,6 @@ import com.relogging.server.domain.comment.dto.CommentCreateRequest
 import com.relogging.server.domain.comment.dto.CommentUpdateRequest
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.comment.repository.CommentRepository
-import com.relogging.server.domain.notification.annotation.SendNotification
-import com.relogging.server.domain.notification.entity.NotificationType
 import com.relogging.server.domain.plogging.service.PloggingEventService
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.exception.GlobalErrorCode
@@ -20,15 +18,14 @@ class PloggingEventCommentServiceImpl(
     private val ploggingEventService: PloggingEventService,
 ) : PloggingEventCommentService {
     @Transactional
-    @SendNotification(NotificationType.COMMENT)
     override fun createComment(
         user: User,
         eventId: Long,
         request: CommentCreateRequest,
-    ): Long {
+    ): Comment {
         val ploggingEvent = ploggingEventService.getPloggingEventEntity(eventId)
         val comment = CommentConverter.toEntity(ploggingEvent, request, user)
-        return commentRepository.save(comment).id!!
+        return commentRepository.save(comment)
     }
 
     @Transactional
@@ -58,13 +55,12 @@ class PloggingEventCommentServiceImpl(
     }
 
     @Transactional
-    @SendNotification(NotificationType.REPLY)
     override fun createReply(
         user: User,
         eventId: Long,
         parentCommentId: Long,
         request: CommentCreateRequest,
-    ): Long {
+    ): Comment {
         val parentComment = getCommentById(parentCommentId)
         parentComment.validateReplyDepth()
         checkEventCommentMatch(eventId, parentComment)
@@ -72,7 +68,7 @@ class PloggingEventCommentServiceImpl(
         val reply = CommentConverter.toEntity(parentComment.ploggingEvent!!, request, user)
         parentComment.addReply(reply)
 
-        return commentRepository.save(reply).id!!
+        return commentRepository.save(reply)
     }
 
     private fun getCommentById(id: Long) =
