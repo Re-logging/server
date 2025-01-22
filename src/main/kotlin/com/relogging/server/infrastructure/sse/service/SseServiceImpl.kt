@@ -13,7 +13,7 @@ class SseServiceImpl(
     private val logger = LoggerFactory.getLogger(javaClass)
 
     companion object {
-        private const val DEFAULT_TIMEOUT = 60 * 1000L
+        private const val DEFAULT_TIMEOUT = 1800 * 1000L
     }
 
     override fun connect(userId: Long): SseEmitter {
