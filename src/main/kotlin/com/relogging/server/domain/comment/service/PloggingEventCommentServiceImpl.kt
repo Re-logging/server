@@ -5,6 +5,7 @@ import com.relogging.server.domain.comment.dto.CommentCreateRequest
 import com.relogging.server.domain.comment.dto.CommentUpdateRequest
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.comment.repository.CommentRepository
+import com.relogging.server.domain.notification.annotation.ReplyNotification
 import com.relogging.server.domain.plogging.service.PloggingEventService
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.exception.GlobalErrorCode
@@ -54,6 +55,7 @@ class PloggingEventCommentServiceImpl(
         comment.delete()
     }
 
+    @ReplyNotification
     @Transactional
     override fun createReply(
         user: User,

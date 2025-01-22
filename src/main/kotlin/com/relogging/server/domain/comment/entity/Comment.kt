@@ -64,4 +64,13 @@ class Comment(
             throw GlobalException(GlobalErrorCode.COMMENT_DEPTH_EXCEEDED)
         }
     }
+
+    fun requirePloggingMeetup(): PloggingMeetup {
+        return this.ploggingMeetup
+            ?: throw GlobalException(GlobalErrorCode.INTERNAL_SERVER_ERROR)
+    }
+
+    fun requireParentComment(): Comment {
+        return this.parentComment ?: throw GlobalException(GlobalErrorCode.INTERNAL_SERVER_ERROR)
+    }
 }
