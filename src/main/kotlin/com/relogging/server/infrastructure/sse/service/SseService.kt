@@ -6,8 +6,10 @@ interface SseService {
     fun connect(userId: Long): SseEmitter
 
     fun send(
-        eventId: String,
+        emitterId: String,
         name: SseEventName,
         data: Any?,
     )
+
+    fun sendHeartbeat()
 }

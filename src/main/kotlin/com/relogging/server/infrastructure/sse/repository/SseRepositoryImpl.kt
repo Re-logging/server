@@ -13,27 +13,29 @@ class SseRepositoryImpl(
 ) : SseRepository {
     override fun save(
         userId: Long,
-        eventId: String,
+        emitterId: String,
         emitter: SseEmitter,
     ): SseEmitter {
-        this.emitterMap[eventId] = emitter
+        this.emitterMap[emitterId] = emitter
         if (this.userMap.contains(userId)) {
-            this.userMap[userId]!!.add(eventId)
+            this.userMap[userId]!!.add(emitterId)
         } else {
-            this.userMap[userId] = mutableListOf(eventId)
+            this.userMap[userId] = mutableListOf(emitterId)
         }
         return emitter
     }
 
-    override fun delete(eventId: String) {
-        val userId: Long = eventId.substringBefore('_').toLong()
-        this.emitterMap.remove(eventId)
+    override fun delete(emitterId: String) {
+        val userId: Long = emitterId.substringBefore('_').toLong()
+        this.emitterMap.remove(emitterId)
         if (this.userMap[userId]?.size == 0) {
             this.userMap.remove(userId)
         }
     }
 
-    override fun get(eventId: String): SseEmitter = this.emitterMap[eventId] ?: throw GlobalException(GlobalErrorCode.EMITTER_NOT_FOUND)
+    override fun get(emitterId: String): SseEmitter =
+        this.emitterMap[emitterId] ?: throw GlobalException(GlobalErrorCode.EMITTER_NOT_FOUND)
 
-    override fun getEventIdList(userId: Long): List<String> = this.userMap[userId]?.toList() ?: emptyList()
+    override fun getEmitterIdList(userId: Long): List<String> =
+        this.userMap[userId]?.toList() ?: emptyList()
 }

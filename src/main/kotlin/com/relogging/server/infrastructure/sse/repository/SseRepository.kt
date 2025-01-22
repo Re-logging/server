@@ -9,13 +9,13 @@ interface SseRepository {
 
     fun save(
         userId: Long,
-        eventId: String,
+        emitterId: String,
         emitter: SseEmitter,
     ): SseEmitter
 
-    fun delete(eventId: String)
+    fun delete(emitterId: String)
 
-    fun get(eventId: String): SseEmitter
+    fun get(emitterId: String): SseEmitter
 
-    fun getEventIdList(userId: Long): List<String>
+    fun getEmitterIdList(userId: Long): List<String>
 }

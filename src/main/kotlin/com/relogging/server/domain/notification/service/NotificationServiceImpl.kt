@@ -20,9 +20,9 @@ class NotificationServiceImpl(
         receiver: User,
         type: NotificationType,
     ): Notification {
-        val eventIdList = this.sseRepository.getEventIdList(receiver.id!!)
+        val emitterIdList = this.sseRepository.getEmitterIdList(receiver.id!!)
         val eventName = this.getEventNameToNotificationType(type)
-        eventIdList.forEach { this.sseService.send(it, eventName, null) }
+        emitterIdList.forEach { this.sseService.send(it, eventName, null) }
         return this.createNotification(receiver, type)
     }
 
