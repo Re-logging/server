@@ -1,6 +1,8 @@
 package com.relogging.server.domain.notification.aspect
 
 import com.relogging.server.domain.comment.entity.Comment
+import com.relogging.server.domain.notification.dto.CommentNotificationData
+import com.relogging.server.domain.notification.dto.ReplyNotificationData
 import com.relogging.server.domain.notification.entity.NotificationType
 import com.relogging.server.domain.notification.service.NotificationService
 import org.aspectj.lang.annotation.AfterReturning
@@ -33,7 +35,8 @@ class NotificationAspect(
 
     @AfterReturning(pointcut = "commentNotification()", returning = "comment")
     fun sendCommentNotification(comment: Comment) {
-        val receiver = comment.ploggingMeetup!!.host
+        val ploggingMeetup = comment.requirePloggingMeetup()
+        val receiver = ploggingMeetup.host
         val sender = comment.user
 
         if (receiver.id == sender.id) {
@@ -41,19 +44,30 @@ class NotificationAspect(
         }
 
         val notification =
-            this.notificationService.sendNotification(receiver, NotificationType.COMMENT)
+            this.notificationService.sendNotification(
+                receiver,
+                NotificationType.COMMENT,
+                CommentNotificationData(ploggingMeetup.id!!),
+            )
         comment.notification = notification
     }
 
     @AfterReturning(pointcut = "replyNotification()", returning = "comment")
     fun sendReplyNotification(comment: Comment) {
-        val receiver = comment.parentComment!!.user
+        val parentComment = comment.requireParentComment()
+        val receiver = parentComment.user
         val sender = comment.user
 
         if (receiver.id == sender.id) {
             return
         }
 
-        this.notificationService.sendNotification(receiver, NotificationType.REPLY)
+        val notification =
+            this.notificationService.sendNotification(
+                receiver,
+                NotificationType.REPLY,
+                ReplyNotificationData(parentComment.id!!),
+            )
+        comment.notification = notification
     }
 }

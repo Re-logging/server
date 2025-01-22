@@ -33,9 +33,7 @@ class SseRepositoryImpl(
         }
     }
 
-    override fun get(emitterId: String): SseEmitter =
-        this.emitterMap[emitterId] ?: throw GlobalException(GlobalErrorCode.EMITTER_NOT_FOUND)
+    override fun get(emitterId: String): SseEmitter = this.emitterMap[emitterId] ?: throw GlobalException(GlobalErrorCode.EMITTER_NOT_FOUND)
 
-    override fun getEmitterIdList(userId: Long): List<String> =
-        this.userMap[userId]?.toList() ?: emptyList()
+    override fun getEmitterIdList(userId: Long): List<String> = this.userMap[userId]?.toList() ?: emptyList()
 }

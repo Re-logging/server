@@ -8,6 +8,7 @@ interface NotificationService {
     fun sendNotification(
         receiver: User,
         type: NotificationType,
+        data: Any?,
     ): Notification
 
     fun getNotificationList(userId: Long): List<Notification>

@@ -3,6 +3,8 @@ package com.relogging.server.domain.notification.entity
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.user.entity.User
 import com.relogging.server.global.BaseEntity
+import com.relogging.server.global.exception.GlobalErrorCode
+import com.relogging.server.global.exception.GlobalException
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -27,7 +29,11 @@ class Notification(
     val type: NotificationType,
     @field:OneToOne(mappedBy = "notification")
     val comment: Comment? = null,
-) : BaseEntity()
+) : BaseEntity() {
+    fun requireComment(): Comment {
+        return this.comment ?: throw GlobalException(GlobalErrorCode.INTERNAL_SERVER_ERROR)
+    }
+}
 
 enum class NotificationType {
     COMMENT,

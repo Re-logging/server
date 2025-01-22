@@ -73,4 +73,9 @@ enum class GlobalErrorCode(
         "SSE-001",
         "해당 이벤트 아이디에 해당하는 에미터가 존재하지 않습니다.",
     ),
+    CREATE_NOTIFICATION_ERROR(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "SSE-002",
+        "알림을 만드는 과정에서 서버 측 에러가 발생했습니다.",
+    ),
 }

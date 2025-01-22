@@ -6,10 +6,19 @@ import com.relogging.server.domain.user.entity.User
 
 object NotificationConverter {
     fun toResponse(notification: Notification): NotificationResponse =
-        NotificationResponse(
-            type = notification.type,
-            createdAt = notification.createAt,
-        )
+        when (notification.type) {
+            NotificationType.COMMENT ->
+                CommentNotificationResponse(
+                    createdAt = notification.createAt,
+                    ploggingMeetupId = notification.requireComment().requirePloggingMeetup().id!!,
+                )
+
+            NotificationType.REPLY ->
+                ReplyNotificationResponse(
+                    createdAt = notification.createAt,
+                    parentCommeitId = notification.requireComment().requireParentComment().id!!,
+                )
+        }
 
     fun toEntity(
         user: User,
