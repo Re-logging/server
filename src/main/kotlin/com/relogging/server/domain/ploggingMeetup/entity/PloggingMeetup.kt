@@ -27,8 +27,8 @@ class PloggingMeetup(
     val id: Long? = null,
     var title: String,
     var content: String,
-    var startDate: LocalDateTime,
-    var endDate: LocalDateTime,
+    var startDate: LocalDateTime? = null,
+    var endDate: LocalDateTime? = null,
     var location: String,
     var activityHours: String,
     var region: String,
@@ -55,17 +55,17 @@ class PloggingMeetup(
     }
 
     fun update(request: PloggingMeetupUpdateRequest) {
-        request.title?.let { this.title = it }
-        request.content?.let { this.content = it }
-        request.location?.let { this.location = it }
-        request.region?.let { this.region = it }
-        request.startDate?.let { this.startDate = it }
-        request.endDate?.let { this.endDate = it }
-        request.participantTarget?.let { this.participationTarget = it }
-        request.supportDetails?.let { this.supportDetails = it }
-        request.activityHours?.let { this.activityHours = it }
-        request.contactPerson?.let { this.contactPerson = it }
-        request.contactNumber?.let { this.contactNumber = it }
-        request.registrationLink?.let { this.registrationLink = it }
+        this.title = request.title
+        this.content = request.content
+        this.location = request.location
+        this.region = request.region
+        this.startDate = request.startDate
+        this.endDate = request.endDate
+        this.participationTarget = request.participantTarget
+        this.supportDetails = request.supportDetails
+        this.activityHours = request.activityHours
+        this.contactPerson = request.contactPerson
+        this.contactNumber = request.contactNumber
+        this.registrationLink = request.registrationLink
     }
 }
