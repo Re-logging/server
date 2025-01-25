@@ -43,6 +43,8 @@ class Comment(
     @field:OneToMany(mappedBy = "parentComment")
     var childComment: MutableList<Comment> = mutableListOf(),
     var isDeleted: Boolean = false,
+    @field:OneToMany(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var reportList: MutableList<Report> = mutableListOf(),
     @field:OneToOne(fetch = FetchType.LAZY, cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var notification: Notification? = null,
 ) : BaseEntity() {

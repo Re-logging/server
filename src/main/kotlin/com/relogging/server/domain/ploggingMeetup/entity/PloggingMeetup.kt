@@ -41,7 +41,7 @@ class PloggingMeetup(
     var hits: Long = 0,
     @field:ManyToOne(fetch = FetchType.LAZY)
     val host: User,
-    @field:OneToMany(mappedBy = "ploggingMeetup", cascade = [CascadeType.ALL])
+    @field:OneToMany(mappedBy = "ploggingMeetup", cascade = [CascadeType.ALL], orphanRemoval = true)
     val commentList: MutableList<Comment> = mutableListOf(),
 ) : BaseEntity() {
     fun increaseHits(count: Int = 1) {

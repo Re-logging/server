@@ -53,10 +53,14 @@ object CommentConverter {
         request: ReportCommentRequest,
         comment: Comment,
         user: User,
-    ): Report =
-        Report(
-            reason = request.reason,
-            user = user,
-            comment = comment,
-        )
+    ): Report {
+        val report =
+            Report(
+                reason = request.reason,
+                user = user,
+                comment = comment,
+            )
+        comment.reportList.add(report)
+        return report
+    }
 }
