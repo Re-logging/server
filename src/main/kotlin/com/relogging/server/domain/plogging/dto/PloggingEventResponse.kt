@@ -2,6 +2,7 @@ package com.relogging.server.domain.plogging.dto
 
 import com.relogging.server.domain.comment.dto.CommentResponse
 import com.relogging.server.domain.image.dto.ImageResponse
+import com.relogging.server.domain.utils.coordinate.dto.CoordinateResponse
 import java.time.LocalDate
 
 data class PloggingEventResponse(
@@ -16,11 +17,10 @@ data class PloggingEventResponse(
     val organizerName: String,
     val managerName: String,
     val phoneNumber: String,
-//    val participationTarget: String,
-//    val volunteerScore: String,
     val imageList: List<ImageResponse>,
     val commentList: List<CommentResponse>,
     val url: String,
+    val coordinate: CoordinateResponse,
 )
 
 data class PloggingEventListResponse(

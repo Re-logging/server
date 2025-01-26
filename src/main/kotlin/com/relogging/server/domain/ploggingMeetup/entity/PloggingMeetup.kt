@@ -3,11 +3,13 @@ package com.relogging.server.domain.ploggingMeetup.entity
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupUpdateRequest
 import com.relogging.server.domain.user.entity.User
+import com.relogging.server.domain.utils.coordinate.Coordinate
 import com.relogging.server.global.BaseEntity
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -43,6 +45,8 @@ class PloggingMeetup(
     val host: User,
     @field:OneToMany(mappedBy = "ploggingMeetup", cascade = [CascadeType.ALL], orphanRemoval = true)
     val commentList: MutableList<Comment> = mutableListOf(),
+    @Embedded
+    val coordinate: Coordinate?,
 ) : BaseEntity() {
     fun increaseHits(count: Int = 1) {
         hits += count
