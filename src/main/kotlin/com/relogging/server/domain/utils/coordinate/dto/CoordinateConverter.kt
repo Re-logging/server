@@ -1,7 +1,7 @@
 package com.relogging.server.domain.utils.coordinate.dto
 
 import com.relogging.server.domain.utils.coordinate.Coordinate
-import com.relogging.server.infrastructure.naver.maps.service.dto.NaverGeocodingResponse
+import com.relogging.server.infrastructure.naver.dto.NaverGeocodingResponse
 
 object CoordinateConverter {
     fun toResponse(coordinate: Coordinate?): CoordinateResponse =

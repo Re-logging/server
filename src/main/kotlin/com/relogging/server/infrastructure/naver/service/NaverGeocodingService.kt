@@ -1,4 +1,4 @@
-package com.relogging.server.infrastructure.naver.maps.service
+package com.relogging.server.infrastructure.naver.service
 
 import com.relogging.server.domain.utils.coordinate.Coordinate
 

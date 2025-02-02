@@ -1,4 +1,4 @@
-package com.relogging.server.infrastructure.naver.maps.service.dto
+package com.relogging.server.infrastructure.naver.dto
 
 data class NaverGeocodingResponse(
     val lastBuildDate: String,

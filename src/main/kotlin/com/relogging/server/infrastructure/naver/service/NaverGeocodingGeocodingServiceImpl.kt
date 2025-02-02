@@ -1,10 +1,10 @@
-package com.relogging.server.infrastructure.naver.maps.service
+package com.relogging.server.infrastructure.naver.service
 
 import com.relogging.server.domain.utils.coordinate.Coordinate
 import com.relogging.server.domain.utils.coordinate.dto.CoordinateConverter
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
-import com.relogging.server.infrastructure.naver.maps.service.dto.NaverGeocodingResponse
+import com.relogging.server.infrastructure.naver.dto.NaverGeocodingResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient

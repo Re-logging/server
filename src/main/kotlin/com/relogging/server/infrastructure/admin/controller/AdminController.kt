@@ -15,7 +15,7 @@ import com.relogging.server.infrastructure.admin.dto.AdminRequest
 import com.relogging.server.infrastructure.admin.service.AdminAuthService
 import com.relogging.server.infrastructure.admin.service.AdminService
 import com.relogging.server.infrastructure.kakao.service.KakaoMessageService
-import com.relogging.server.infrastructure.naver.maps.service.NaverGeocodingGeocodingServiceImpl
+import com.relogging.server.infrastructure.naver.service.NaverGeocodingGeocodingServiceImpl
 import com.relogging.server.infrastructure.scraping.service.NewsArticleScrapingService
 import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import io.swagger.v3.oas.annotations.Operation
