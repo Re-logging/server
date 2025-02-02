@@ -25,6 +25,9 @@ enum class GlobalErrorCode(
         "지자체 플로깅 정보를 가져오던 중 예상치 못한 에러가 발생하였습니다.",
     ),
 
+    // 네이버 지도 API 관련
+    NAVER_MAPS_ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "NAVER-MAPS-001", "주소에 대응하는 좌표가 존재하지 않습니다"),
+
     // OAuth  관련
     OAUTH_SERVICE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "OAUTH-001", "OAuth 서비스 측에서 에러가 발생했습니다."),
     OAUTH_UNEXPECTED_ERROR(
