@@ -16,7 +16,7 @@ object NotificationConverter {
             NotificationType.REPLY ->
                 ReplyNotificationResponse(
                     createdAt = notification.createAt,
-                    parentCommeitId = notification.requireComment().requireParentComment().id!!,
+                    parentCommentId = notification.requireComment().requireParentComment().id!!,
                 )
         }
 

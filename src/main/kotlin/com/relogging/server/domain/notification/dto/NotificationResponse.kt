@@ -15,7 +15,7 @@ data class CommentNotificationResponse(
 ) : NotificationResponse()
 
 data class ReplyNotificationResponse(
-    override val type: NotificationType = NotificationType.COMMENT,
+    override val type: NotificationType = NotificationType.REPLY,
     override val createdAt: LocalDateTime,
-    val parentCommeitId: Long,
+    val parentCommentId: Long,
 ) : NotificationResponse()
