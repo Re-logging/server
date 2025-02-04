@@ -66,6 +66,7 @@ object PloggingEventConverter {
 
     fun toEntity(
         item: VolunteeringDetailApiResponseItem,
+        coordinate: Coordinate?,
         url: String,
     ): PloggingEvent =
         PloggingEvent(
@@ -81,6 +82,6 @@ object PloggingEventConverter {
             programNumber = item.programRegistrationNumber!!,
             url = url,
             noticeEndDate = item.noticeEndDate!!,
-            coordinate = Coordinate(null, null),
+            coordinate = coordinate,
         )
 }

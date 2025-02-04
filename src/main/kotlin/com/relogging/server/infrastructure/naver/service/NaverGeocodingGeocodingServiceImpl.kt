@@ -33,7 +33,7 @@ class NaverGeocodingGeocodingServiceImpl(
                 .bodyToMono<NaverGeocodingResponse>()
                 .block() ?: throw RuntimeException("Failed to get coordinate")
 
-        if (response.total < 1) {
+        if (response.items.isEmpty()) {
             throw GlobalException(GlobalErrorCode.NAVER_MAPS_ADDRESS_NOT_FOUND)
         }
 
