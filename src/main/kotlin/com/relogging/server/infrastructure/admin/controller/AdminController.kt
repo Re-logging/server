@@ -8,12 +8,14 @@ import com.relogging.server.domain.plogging.dto.PloggingEventResponse
 import com.relogging.server.domain.plogging.service.PloggingEventService
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
 import com.relogging.server.domain.ploggingMeetup.service.PloggingMeetupService
+import com.relogging.server.domain.utils.coordinate.Coordinate
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.infrastructure.admin.dto.AdminRequest
 import com.relogging.server.infrastructure.admin.service.AdminAuthService
 import com.relogging.server.infrastructure.admin.service.AdminService
 import com.relogging.server.infrastructure.kakao.service.KakaoMessageService
+import com.relogging.server.infrastructure.naver.service.NaverGeocodingGeocodingServiceImpl
 import com.relogging.server.infrastructure.scraping.service.NewsArticleScrapingService
 import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import io.swagger.v3.oas.annotations.Operation
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
@@ -43,6 +46,7 @@ class AdminController(
     private val adminService: AdminService,
     private val adminAuthService: AdminAuthService,
     private val kakaoMessageService: KakaoMessageService,
+    private val naverGeocodingService: NaverGeocodingGeocodingServiceImpl,
 ) {
     @Operation(summary = "뉴스 아티클 생성하기", description = "뉴스가 100자 미만이면 AI 요약을 하지 않습니다.")
     @PostMapping("/newsArticles", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
@@ -119,7 +123,7 @@ class AdminController(
         this.ploggingEventService.deleteExpiredPloggingEvents()
     }
 
-    @Operation(summary = "플로깅 행사 이미지 스크래필 테스트")
+    @Operation(summary = "플로깅 행사 이미지 스크래핑 테스트")
     @GetMapping("ploggingEventImage")
     fun ploggingEventImage() {
         this.ploggingEventScrapingService.scrapingPloggingEventImage(
@@ -186,5 +190,14 @@ class AdminController(
     ): ResponseEntity<String> {
         adminService.deleteById(id)
         return ResponseEntity.ok("성공했습니다")
+    }
+
+    @Operation(summary = "주소를 좌표로 변환")
+    @GetMapping("/geocode")
+    fun geocode(
+        @RequestParam address: String,
+    ): ResponseEntity<Coordinate> {
+        val coordinate = naverGeocodingService.addressToCoordinate(address)
+        return ResponseEntity.ok(coordinate)
     }
 }

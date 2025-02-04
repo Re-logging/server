@@ -1,5 +1,6 @@
 package com.relogging.server.domain.ploggingMeetup.dto
 
+import com.relogging.server.domain.utils.coordinate.dto.CoordinateRequest
 import jakarta.validation.constraints.NotBlank
 import java.time.LocalDateTime
 
@@ -26,6 +27,7 @@ class PloggingMeetupCreateRequest(
     val contactNumber: String,
     @field:NotBlank
     val registrationLink: String,
+    val coordinate: CoordinateRequest,
 )
 
 class PloggingMeetupUpdateRequest(
@@ -41,4 +43,5 @@ class PloggingMeetupUpdateRequest(
     @field:NotBlank val contactPerson: String,
     @field:NotBlank val contactNumber: String,
     @field:NotBlank val registrationLink: String,
+    val coordinate: CoordinateRequest,
 )

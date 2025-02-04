@@ -4,6 +4,7 @@ import com.relogging.server.domain.comment.dto.CommentConverter
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.user.entity.User
+import com.relogging.server.domain.utils.coordinate.dto.CoordinateConverter
 import org.springframework.data.domain.Page
 
 object PloggingMeetupConverter {
@@ -27,6 +28,7 @@ object PloggingMeetupConverter {
             registrationLink = request.registrationLink,
             host = user,
             imageUrl = imageUrl,
+            coordinate = CoordinateConverter.toEntity(request.coordinate),
         )
     }
 
@@ -50,6 +52,7 @@ object PloggingMeetupConverter {
             registrationLink = entity.registrationLink,
             imageUrl = entity.imageUrl,
             hits = entity.hits,
+            coordinate = CoordinateConverter.toResponse(entity.coordinate),
             commentList = rootComments.map { CommentConverter.toResponse(it) },
         )
     }

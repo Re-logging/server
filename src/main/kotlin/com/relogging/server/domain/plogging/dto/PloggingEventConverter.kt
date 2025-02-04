@@ -4,6 +4,8 @@ import com.relogging.server.domain.comment.dto.CommentConverter
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.image.dto.ImageConverter
 import com.relogging.server.domain.plogging.entity.PloggingEvent
+import com.relogging.server.domain.utils.coordinate.Coordinate
+import com.relogging.server.domain.utils.coordinate.dto.CoordinateConverter
 
 object PloggingEventConverter {
     fun toListResponse(ploggingEvent: PloggingEvent): PloggingEventListResponse =
@@ -34,9 +36,8 @@ object PloggingEventConverter {
             organizerName = ploggingEvent.organizerName,
             managerName = ploggingEvent.managerName,
             phoneNumber = ploggingEvent.phoneNumber,
-//            participationTarget = ploggingEvent.participationTarget,
-//            volunteerScore = ploggingEvent.volunteerScore,
             url = ploggingEvent.url,
+            coordinate = CoordinateConverter.toResponse(ploggingEvent.coordinate),
             imageList =
                 ploggingEvent.imageList.mapNotNull { entity ->
                     ImageConverter.toResponse(
@@ -58,14 +59,14 @@ object PloggingEventConverter {
             region = request.region,
             managerName = request.managerName,
             phoneNumber = request.phoneNumber,
-//            participationTarget = request.participationTarget,
-//            volunteerScore = request.volunteerScore,
             programNumber = request.programNumber,
             url = request.url,
+            coordinate = CoordinateConverter.toEntity(request.coordinateRequest),
         )
 
     fun toEntity(
         item: VolunteeringDetailApiResponseItem,
+        coordinate: Coordinate?,
         url: String,
     ): PloggingEvent =
         PloggingEvent(
@@ -81,5 +82,6 @@ object PloggingEventConverter {
             programNumber = item.programRegistrationNumber!!,
             url = url,
             noticeEndDate = item.noticeEndDate!!,
+            coordinate = coordinate,
         )
 }

@@ -16,6 +16,7 @@ import com.relogging.server.domain.plogging.repository.PloggingEventRepository
 import com.relogging.server.global.exception.GlobalErrorCode
 import com.relogging.server.global.exception.GlobalException
 import com.relogging.server.infrastructure.aws.s3.AmazonS3Service
+import com.relogging.server.infrastructure.naver.service.NaverGeocodingService
 import com.relogging.server.infrastructure.scraping.service.PloggingEventScrapingService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.data.domain.Page
@@ -41,6 +42,7 @@ class PloggingEventServiceImpl(
     @Value("\${1365-api.key}")
     private val apiKey: String,
     private val ploggingEventScrapingService: PloggingEventScrapingService,
+    private val naverGeocodingService: NaverGeocodingService,
 ) : PloggingEventService {
     companion object {
         private const val API_HOST = "openapi.1365.go.kr"
@@ -229,7 +231,15 @@ class PloggingEventServiceImpl(
     ): Mono<PloggingEvent> {
         return Mono.fromCallable {
             val imageUrls = this.ploggingEventScrapingService.scrapingPloggingEventImage(url)
-            val ploggingEvent = PloggingEventConverter.toEntity(item, url)
+            val coordinate =
+                item.actPlace?.let { address ->
+                    try {
+                        naverGeocodingService.addressToCoordinate(address)
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+            val ploggingEvent = PloggingEventConverter.toEntity(item, coordinate, url)
             ploggingEvent.imageList =
                 imageUrls.mapIndexed { index, s ->
                     ImageConverter.toEntityWithPloggingEvent(
