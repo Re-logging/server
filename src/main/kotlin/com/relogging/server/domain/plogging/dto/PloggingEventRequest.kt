@@ -1,5 +1,6 @@
 package com.relogging.server.domain.plogging.dto
 
+import com.relogging.server.domain.utils.coordinate.dto.CoordinateRequest
 import jakarta.validation.constraints.NotBlank
 import java.time.LocalDate
 
@@ -26,4 +27,5 @@ data class PloggingEventRequest(
     val programNumber: String,
     val url: String,
     val noticeEndDate: LocalDate,
+    val coordinateRequest: CoordinateRequest,
 )

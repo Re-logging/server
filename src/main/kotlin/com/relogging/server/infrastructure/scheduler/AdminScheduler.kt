@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.data.domain.Sort
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @Component
@@ -26,20 +27,24 @@ class AdminScheduler(
     private val log = LoggerFactory.getLogger(javaClass)
 
     @Scheduled(cron = "0 0 8,18 * * *") // 매일 오전 8,18시
+    @Transactional
     fun sendPromotionToKakaoMemo() {
         val admins = adminService.findAll()
+        val successList = mutableListOf<Long>()
+        val failedList = mutableListOf<Long>()
         val message = buildPromotionMessage()
         admins.forEach {
             try {
-                kakaoMessageService.sendMemo(
-                    accessToken = it.accessToken,
-                    message = message,
-                )
+                kakaoMessageService.sendMemo(it.accessToken, message)
+                successList.add(it.id!!)
             } catch (e: Exception) {
-                log.error("Error sending memo to kakao message (admin id: ${it.id}): ", e)
+                failedList.add(it.id!!)
             }
         }
-        log.info("AdminScheduler: sendPromotionToKakaoMemo")
+        log.info(
+            "\n" + "success: " + successList.joinToString(", "),
+            "\n" + "failed: " + failedList.joinToString(", "),
+        )
     }
 
     private fun buildPromotionMessage(): String {
@@ -92,15 +97,22 @@ class AdminScheduler(
     }
 
     @Scheduled(cron = "0 0 * * * *") // 매 시간마다
+    @Transactional
     fun refreshAdminTokens() {
         val admins = adminService.findAll()
+        val successList = mutableListOf<Long>()
+        val failedList = mutableListOf<Long>()
         admins.forEach {
             try {
                 adminAuthService.kakaoTokenRefresh(it)
+                successList.add(it.id!!)
             } catch (e: Exception) {
-                log.error("Error to refresh kakao tokens (id: ${it.id}) : ", e)
+                failedList.add(it.id!!)
             }
         }
-        log.info("AdminScheduler: refreshAdminTokens")
+        log.info(
+            "\n" + "success: " + successList.joinToString(", "),
+            "\n" + "failed: " + failedList.joinToString(", "),
+        )
     }
 }

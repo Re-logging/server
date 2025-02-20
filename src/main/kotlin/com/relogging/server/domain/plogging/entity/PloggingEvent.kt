@@ -2,9 +2,11 @@ package com.relogging.server.domain.plogging.entity
 
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.image.entity.Image
+import com.relogging.server.domain.utils.coordinate.Coordinate
 import com.relogging.server.global.BaseEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -37,11 +39,11 @@ class PloggingEvent(
     var imageList: List<Image> = ArrayList(),
     val managerName: String,
     val phoneNumber: String,
-//    val participationTarget: String,
-//    val volunteerScore: String,
     @field:OneToMany(mappedBy = "ploggingEvent", cascade = [CascadeType.ALL], orphanRemoval = true)
     val commentList: MutableList<Comment> = mutableListOf(),
     @field:Column(unique = true)
     val programNumber: String,
     val url: String,
+    @Embedded
+    val coordinate: Coordinate?,
 ) : BaseEntity()

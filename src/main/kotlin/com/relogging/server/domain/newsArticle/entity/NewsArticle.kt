@@ -36,4 +36,8 @@ class NewsArticle(
     var hits: Long = 0,
     @field:OneToMany(mappedBy = "newsArticle", cascade = [CascadeType.ALL])
     var imageList: List<Image> = ArrayList(),
-) : BaseEntity()
+) : BaseEntity() {
+    fun updateAiSummary(aiSummary: String) {
+        this.aiSummary = aiSummary
+    }
+}

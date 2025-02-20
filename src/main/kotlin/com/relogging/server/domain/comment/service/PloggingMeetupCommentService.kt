@@ -2,14 +2,15 @@ package com.relogging.server.domain.comment.service
 
 import com.relogging.server.domain.comment.dto.CommentCreateRequest
 import com.relogging.server.domain.comment.dto.CommentUpdateRequest
+import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.user.entity.User
 
 interface PloggingMeetupCommentService {
     fun createComment(
+        user: User,
         meetupId: Long,
         request: CommentCreateRequest,
-        user: User,
-    ): Long
+    ): Comment
 
     fun updateComment(
         meetupId: Long,
@@ -25,9 +26,9 @@ interface PloggingMeetupCommentService {
     )
 
     fun createReply(
+        user: User,
         meetupId: Long,
         parentCommentId: Long,
         request: CommentCreateRequest,
-        user: User,
-    ): Long
+    ): Comment
 }

@@ -29,8 +29,8 @@ class PloggingMeetupCommentController(
         @RequestBody request: CommentCreateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.createComment(meetupId, request, principalDetails.user)
-        return ResponseEntity.ok(response)
+        val response = commentService.createComment(principalDetails.user, meetupId, request)
+        return ResponseEntity.ok(response.id)
     }
 
     @Operation(summary = "댓글 수정하기")
@@ -41,7 +41,8 @@ class PloggingMeetupCommentController(
         @RequestBody request: CommentUpdateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.updateComment(meetupId, commentId, request, principalDetails.user)
+        val response =
+            commentService.updateComment(meetupId, commentId, request, principalDetails.user)
         return ResponseEntity.ok(response)
     }
 
@@ -64,7 +65,8 @@ class PloggingMeetupCommentController(
         @RequestBody request: CommentCreateRequest,
         @AuthenticationPrincipal principalDetails: PrincipalDetails,
     ): ResponseEntity<Long> {
-        val response = commentService.createReply(meetupId, commentId, request, principalDetails.user)
-        return ResponseEntity.ok(response)
+        val response =
+            commentService.createReply(principalDetails.user, meetupId, commentId, request)
+        return ResponseEntity.ok(response.id)
     }
 }

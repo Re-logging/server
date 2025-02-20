@@ -25,6 +25,9 @@ enum class GlobalErrorCode(
         "지자체 플로깅 정보를 가져오던 중 예상치 못한 에러가 발생하였습니다.",
     ),
 
+    // 네이버 지도 API 관련
+    NAVER_MAPS_ADDRESS_NOT_FOUND(HttpStatus.NOT_FOUND, "NAVER-MAPS-001", "주소에 대응하는 좌표가 존재하지 않습니다"),
+
     // OAuth  관련
     OAUTH_SERVICE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "OAUTH-001", "OAuth 서비스 측에서 에러가 발생했습니다."),
     OAUTH_UNEXPECTED_ERROR(
@@ -55,10 +58,27 @@ enum class GlobalErrorCode(
 
     // 플로깅 모임 관련
     PLOGGING_MEETUP_NOT_FOUND(HttpStatus.NOT_FOUND, "PLOGGING-MEETUP-001", "플로깅 모임이 존재하지 않습니다"),
+    PLOGGING_MEETUP_NOT_AUTHORIZED(
+        HttpStatus.FORBIDDEN,
+        "PLOGGING-MEETUP-002",
+        "플로깅 모임에 대한 권한이 없습니다",
+    ),
 
     // 어드민 관련
     ADMIN_NOT_FOUND(HttpStatus.NOT_FOUND, "ADMIN-001", "관리자가 존재하지 않습니다"),
 
     // Refresh Token 관련
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "REFRESH_TOKEN-001", "해당 아이디로 저장된 토큰이 없습니다."),
+
+    // SSE 관련
+    EMITTER_NOT_FOUND(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "SSE-001",
+        "해당 이벤트 아이디에 해당하는 에미터가 존재하지 않습니다.",
+    ),
+    CREATE_NOTIFICATION_ERROR(
+        HttpStatus.INTERNAL_SERVER_ERROR,
+        "SSE-002",
+        "알림을 만드는 과정에서 서버 측 에러가 발생했습니다.",
+    ),
 }

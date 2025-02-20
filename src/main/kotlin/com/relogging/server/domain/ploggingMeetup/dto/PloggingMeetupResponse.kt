@@ -1,6 +1,7 @@
 package com.relogging.server.domain.ploggingMeetup.dto
 
 import com.relogging.server.domain.comment.dto.CommentResponse
+import com.relogging.server.domain.utils.coordinate.dto.CoordinateResponse
 import java.time.LocalDateTime
 
 data class PloggingMeetupResponse(
@@ -9,8 +10,8 @@ data class PloggingMeetupResponse(
     val content: String,
     val location: String,
     val region: String,
-    val startDate: LocalDateTime,
-    val endDate: LocalDateTime,
+    val startDate: LocalDateTime?,
+    val endDate: LocalDateTime?,
     val participantTarget: String,
     val supportDetails: String,
     val activityHours: String,
@@ -19,6 +20,7 @@ data class PloggingMeetupResponse(
     val registrationLink: String?,
     val imageUrl: String?,
     val hits: Long,
+    val coordinate: CoordinateResponse,
     val commentList: List<CommentResponse>,
 )
 
@@ -27,8 +29,8 @@ data class PloggingMeetupSimpleResponse(
     val title: String,
     val region: String,
     val location: String,
-    val startDate: LocalDateTime,
-    val endDate: LocalDateTime,
+    val startDate: LocalDateTime?,
+    val endDate: LocalDateTime?,
     val imageUrl: String?,
     val activityHours: String,
     val hits: Long,

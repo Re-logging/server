@@ -3,9 +3,10 @@ package com.relogging.server.domain.ploggingMeetup.service
 import com.relogging.server.domain.comment.entity.Comment
 import com.relogging.server.domain.ploggingMeetup.PloggingMeetupSortType
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupConverter
+import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupCreateRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupListResponse
-import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupRequest
 import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupResponse
+import com.relogging.server.domain.ploggingMeetup.dto.PloggingMeetupUpdateRequest
 import com.relogging.server.domain.ploggingMeetup.entity.PloggingMeetup
 import com.relogging.server.domain.ploggingMeetup.repository.PloggingMeetupRepository
 import com.relogging.server.domain.user.entity.User
@@ -28,7 +29,7 @@ class PloggingMeetupServiceImpl(
 ) : PloggingMeetupService {
     @Transactional
     override fun createMeetup(
-        request: PloggingMeetupRequest,
+        request: PloggingMeetupCreateRequest,
         image: MultipartFile?,
         user: User,
     ): Long {
@@ -42,38 +43,12 @@ class PloggingMeetupServiceImpl(
         id: Long,
         increaseHits: Boolean,
     ): PloggingMeetupResponse {
-        val meetup =
-            ploggingMeetupRepository.findById(id).orElseThrow {
-                throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
-            }
-        if (increaseHits) {
-            meetup.hits++
-        }
+        val meetup = getMeetupEntity(id)
+        meetup.increaseHits()
         return PloggingMeetupConverter.toResponse(meetup, getRootComments(meetup))
     }
 
-    @Transactional
-    override fun getNextMeetup(currentId: Long): PloggingMeetupResponse {
-        val nextMeetup =
-            ploggingMeetupRepository.findFirstByIdGreaterThanOrderByIdAsc(currentId)
-                .orElseThrow {
-                    throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
-                }
-        nextMeetup.hits += 1
-        return PloggingMeetupConverter.toResponse(nextMeetup, getRootComments(nextMeetup))
-    }
-
-    @Transactional
-    override fun getPrevMeetup(currentId: Long): PloggingMeetupResponse {
-        val prevMeetup =
-            ploggingMeetupRepository.findFirstByIdLessThanOrderByIdDesc(currentId)
-                .orElseThrow {
-                    throw GlobalException(GlobalErrorCode.PLOGGING_MEETUP_NOT_FOUND)
-                }
-        prevMeetup.hits += 1
-        return PloggingMeetupConverter.toResponse(prevMeetup, getRootComments(prevMeetup))
-    }
-
+    @Transactional(readOnly = true)
     override fun getMeetupList(
         page: Int,
         pageSize: Int,
@@ -104,4 +79,25 @@ class PloggingMeetupServiceImpl(
         meetup.commentList
             .filter { it.parentComment == null }
             .sortedByDescending { it.createAt }
+
+    @Transactional
+    override fun updateMeetup(
+        id: Long,
+        request: PloggingMeetupUpdateRequest,
+        user: User,
+    ) {
+        val meetup = getMeetupEntity(id)
+        meetup.checkUserAccess(user)
+        meetup.update(request)
+    }
+
+    @Transactional
+    override fun deleteMeetup(
+        id: Long,
+        user: User,
+    ) {
+        val meetup = getMeetupEntity(id)
+        meetup.checkUserAccess(user)
+        ploggingMeetupRepository.delete(meetup)
+    }
 }
