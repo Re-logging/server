@@ -161,6 +161,7 @@ jobs:
             echo "VOLUNTEER_API_KEY=${{ secrets.VOLUNTEER_API_KEY }}" >> .env
             echo "ADMIN_KAKAO_CLIENT_ID=${{ secrets.ADMIN_KAKAO_CLIENT_ID }}" >> .env
             echo "ADMIN_KAKAO_CLIENT_SECRET=${{ secrets.ADMIN_KAKAO_CLIENT_SECRET }}" >> .env
+            echo "ADMIN_KAKAO_REDIRECT_URI=${{ secrets.ADMIN_KAKAO_REDIRECT_URI }}" >> .env
             echo "NAVER_CLIENT_ID=${{ secrets.PROD_NAVER_CLIENT_ID }}" >> .env
             echo "NAVER_CLIENT_SECRET=${{ secrets.PROD_NAVER_CLIENT_SECRET }}" >> .env
             echo "S3_BASE_DIR=prod" >> .env
